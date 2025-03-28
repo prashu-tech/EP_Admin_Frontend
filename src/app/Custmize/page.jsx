@@ -1,25 +1,35 @@
-import Adminnav from "@/components/adminnav/adminnav"
-import Adminsidebar from "@/components/adminsidebar/adminsidebar"
+
+import Sidebar from "@/components/adminsidebar/adminsidebar";
 import Customized from "@/components/Custmize test/custmize"
 
 
 function page() {
   return (
-  
-      <div className="flex-1 ml-64">
-        {/* Navbar - Fixed */}
-        <div className="fixed top-0 left-64 w-[calc(100%-16rem)] z-20"></div>
-      <Adminnav/>
-          
-      <Adminsidebar/> <div className="flex">
-      {/* Sidebar - Fixed */}
-      <div className="fixed left-0 top-0 h-full w-64 z-10">
-        <Adminsidebar/>
-      </div>
-      <Customized/>
-    </div>
-    </div>
-  )
-}
+    <div className="min-h-screen md:flex bg-white">
+    <div className="md:hidden block">
+      < MobileNavbar />
+    </div>  
 
-export default page
+      {/* Sidebar Section */}
+      <div className="md:w-1/6 bg-[#007AFF]">
+        <Sidebar />
+      </div>
+
+      {/* Main Content Section */}
+      <div className="w-full md:w-5/6 md:flex-1 h-screen bg-white">
+        {/* Navigation Bar */}
+        <Nav />
+
+      
+
+          
+
+        
+      </div>
+
+      
+    </div>
+  );
+};
+
+export default Page;
