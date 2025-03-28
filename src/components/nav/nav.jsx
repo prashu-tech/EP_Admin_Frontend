@@ -38,7 +38,7 @@ const Nav = () => {
   }, []);
 
   return (
-    <div className="hidden md:flex h-[90px] bg-gradient-to-r from-blue-100 to-yellow-100 p-4 items-center justify-end relative">
+    <div className="hidden md:flex h-[90px] bg-gradient-to-r from-blue-200 to-yellow-100 p-4 items-center justify-end relative">
       {/* Right Section with Profile Image */}
       <div className="flex items-center space-x-4 mr-4">
         <img
