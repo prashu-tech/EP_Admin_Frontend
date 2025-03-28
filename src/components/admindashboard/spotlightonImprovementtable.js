@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
 
-const TopPerformersTable = ({ selectedMode }) => {
-  // Define data for both Practice and Customized
+const SpotlightOnImprovementTable = ({ selectedMode }) => {
+  // Data for both Previous Test and Customized
   const practiceData = [
     {
       rank: 1,
@@ -89,21 +89,21 @@ const TopPerformersTable = ({ selectedMode }) => {
     },
   ];
 
-  // Select data based on the selected mode
+  // Select data based on the selected mode (Previous Test or Customized)
   const dataToDisplay = selectedMode === "Practice" ? practiceData : customizedData;
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 rounded-xl mt-10">
+    <div className="w-full max-w-4xl mx-auto p-4">
       {/* Title and Previous Test Button */}
       <div className="flex justify-between items-center bg-blue-200 p-4 rounded-t-xl shadow-lg">
-        <h2 className="text-lg font-semibold text-blue-700">Top Performer</h2>
-        <button className="bg-blue-500 text-white px-4 py-2 rounded-md text-sm cursor-pointer">
+        <h2 className="text-lg font-semibold text-blue-700">Spotlight on Improvement</h2>
+        <button className="bg-white text-blue-500 px-4 py-2 rounded-md text-sm font-bold blue-500 border-blue-500 hover:bg-blue-500 hover:text-white">
           Previous Test
         </button>
       </div>
 
       {/* Table */}
-      <table className="w-full table-auto mt-0 rounded-t-2xl ">
+      <table className="w-full table-auto mt-0 rounded-t-2xl">
         <thead>
           <tr className="bg-[#F5F5F5] text-gray-700">
             <th className="p-3 text-left">Rank</th>
@@ -135,4 +135,4 @@ const TopPerformersTable = ({ selectedMode }) => {
   );
 };
 
-export default TopPerformersTable;
+export default SpotlightOnImprovementTable;
