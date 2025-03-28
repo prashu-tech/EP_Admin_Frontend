@@ -74,9 +74,9 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="hidden md:block fixed top-0 left-0 h-screen bg-[#007AFF] text-white w-1/6 z-50 shadow-md">
+    <div className="hidden md:block fixed top-0 left-0 h-screen bg-[#007AFF] text-white w-1/6 z-50 shadow-md ">
       {/* Logo Section */}
-      <div className="pt-4 pr-4 pl-4 flex justify-center items-center py-">
+      <div className="pt-4 pr-4 pl-4 flex justify-center items-center">
         <img
           src="/signinlogomobileview.svg"
           alt="Nexcore Logo"
@@ -85,7 +85,7 @@ const Sidebar = () => {
       </div>
 
       {/* Navigation Menu */}
-      <ul className="space-y-3 px-4 overflow-y-auto max-h-[calc(100vh-150px)] pr-2">
+      <ul className="space-y-1 px-4 overflow-y-auto max-h-[calc(100vh-150px)] pr-2 transparent-scrollbar">
         {menuItems.map((item, index) => {
           const isActive = pathname === item.href;
 
