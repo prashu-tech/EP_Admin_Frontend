@@ -25,7 +25,7 @@ export default function MobileNavbar() {
       <div className="flex justify-between items-center p-4 bg-white shadow-md">
         <button onClick={() => setIsOpen(!isOpen)}>
           <Menu className="w-6 h-6 text-gray-700" />
-        </button>
+        </button> 
         <h1 className="text-lg font-bold text-blue-700">Dashboard</h1>
         <img
           src="/mobilenavprofile.png"
