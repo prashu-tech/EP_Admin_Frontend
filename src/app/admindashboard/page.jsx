@@ -8,7 +8,6 @@ import Adminnav from "@/components/adminnav/adminnav";
 import Adminsidebar from "@/components/adminsidebar/adminsidebar";
 import React, { useState } from "react";
 
-
 function Page() {
   const [selectedMode, setSelectedMode] = useState("Practice"); // State to track selected mode
 
