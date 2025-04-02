@@ -1,8 +1,7 @@
+import Adminnav from "@/components/adminnav/adminnav"
+import Adminsidebar from "@/components/adminsidebar/adminsidebar"
+import Customized from "@/components/Custmize test/custmize"
 
-import Adminnav from '@/components/adminnav/adminnav'
-import Adminsidebar from '@/components/adminsidebar/adminsidebar'
-import Test from '@/components/pracrtice test/test'
-import React from 'react'
 
 function page() {
   return (
@@ -15,14 +14,12 @@ function page() {
       <Adminsidebar/> <div className="flex">
       {/* Sidebar - Fixed */}
       <div className="fixed left-0 top-0 h-full w-64 z-10">
-        <Adminsidebar />
+        <Adminsidebar/>
       </div>
-      <Test/>
+      <Customized/>
     </div>
     </div>
   )
 }
 
 export default page
-
-

@@ -97,40 +97,42 @@ const TopPerformersTable = ({ selectedMode }) => {
       {/* Title and Previous Test Button */}
       <div className="flex justify-between items-center bg-blue-200 p-4 rounded-t-xl shadow-lg">
         <h2 className="text-lg font-semibold text-blue-700">Top Performer</h2>
-        <button className="bg-blue-500 text-white px-4 py-2 rounded-md text-sm cursor-pointer">
+        <button className="bg-white text-blue-500 px-4 py-2 rounded-md text-sm font-bold cursor-pointer border-blue-500 hover:bg-blue-500 hover:text-white">
           Previous Test
         </button>
       </div>
 
       {/* Table */}
-      <table className="w-full table-auto mt-0 rounded-t-2xl ">
-        <thead>
-          <tr className="bg-[#F5F5F5] text-gray-700">
-            <th className="p-3 text-left">Rank</th>
-            <th className="p-3 text-left">Student ID</th>
-            <th className="p-3 text-left">Name</th>
-            <th className="p-3 text-left">Score</th>
-            <th className="p-3 text-left">Practices</th>
-            <th className="p-3 text-left">Test Count</th>
-            <th className="p-3 text-left">Accuracy</th>
-            <th className="p-3 text-left">Speed</th>
-          </tr>
-        </thead>
-        <tbody>
-          {dataToDisplay.map((performer) => (
-            <tr key={performer.rank} className="border-b border-gray-200">
-              <td className="p-3">{performer.rank}</td>
-              <td className="p-3">{performer.studentId}</td>
-              <td className="p-3">{performer.name}</td>
-              <td className="p-3">{performer.score}</td>
-              <td className="p-3">{performer.practices}</td>
-              <td className="p-3">{performer.testCount}</td>
-              <td className="p-3">{performer.accuracy}</td>
-              <td className="p-3">{performer.speed}</td>
+      <div className="overflow-x-auto">
+        <table className="min-w-full table-auto mt-0 rounded-t-xl">
+          <thead>
+            <tr className="bg-[#F5F5F5] text-gray-700">
+              <th className="p-3 text-left text-sm md:text-base">Rank</th>
+              <th className="p-3 text-left text-sm md:text-base">Student ID</th>
+              <th className="p-3 text-left text-sm md:text-base">Name</th>
+              <th className="p-3 text-left text-sm md:text-base">Score</th>
+              <th className="p-3 text-left text-sm md:text-base">Practices</th>
+              <th className="p-3 text-left text-sm md:text-base">Test Count</th>
+              <th className="p-3 text-left text-sm md:text-base">Accuracy</th>
+              <th className="p-3 text-left text-sm md:text-base">Speed</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {dataToDisplay.map((performer) => (
+              <tr key={performer.rank} className="border-b border-gray-200">
+                <td className="p-3 text-sm md:text-base">{performer.rank}</td>
+                <td className="p-3 text-sm md:text-base">{performer.studentId}</td>
+                <td className="p-3 text-sm md:text-base">{performer.name}</td>
+                <td className="p-3 text-sm md:text-base">{performer.score}</td>
+                <td className="p-3 text-sm md:text-base">{performer.practices}</td>
+                <td className="p-3 text-sm md:text-base">{performer.testCount}</td>
+                <td className="p-3 text-sm md:text-base">{performer.accuracy}</td>
+                <td className="p-3 text-sm md:text-base">{performer.speed}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
