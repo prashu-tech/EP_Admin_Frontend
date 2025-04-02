@@ -100,7 +100,7 @@ function MobileNavbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full block sm:hidden md:hidden lg:hidden xl:hidden">
       {/* Top Navbar */}
       <div className="flex justify-between items-center p-4 bg-white shadow-md">
         <button onClick={() => setIsOpen(!isOpen)}>
@@ -207,21 +207,32 @@ function MobileNavbar() {
 /* -------------------------------------------
    MOBILE BOTTOM NAVBAR
 -------------------------------------------- */
+
+
 function MobilebottomNavbar() {
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-10 sm:hidden">
-      <div className="flex justify-around py-2">
-        <a href="/dashboard" className="flex flex-col items-center text-gray-700 hover:text-blue-500">
+    <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-10 block  md:hidden lg:hidden xl:hidden">
+     <div className="flex justify-around py-2">
+        <a
+          href="/dashboard"
+          className="flex flex-col items-center text-gray-700 hover:text-blue-500"
+        >
           <FaTachometerAlt className="text-2xl text-black hover:text-black" />
           <span className="text-xs">Dashboard</span>
         </a>
 
-        <a href="/batches" className="flex flex-col items-center text-gray-700 hover:text-blue-500">
+        <a
+          href="/batches"
+          className="flex flex-col items-center text-gray-700 hover:text-blue-500"
+        >
           <PiStudentFill className="text-2xl text-black hover:text-black" />
           <span className="text-xs">View Students</span>
         </a>
 
-        <a href="/papergenerator" className="flex flex-col items-center text-gray-700 hover:text-blue-500">
+        <a
+          href="/papergenerator"
+          className="flex flex-col items-center text-gray-700 hover:text-blue-500"
+        >
           <FaClipboardList className="text-2xl text-black hover:text-black" />
           <span className="text-xs">Test</span>
         </a>
@@ -229,6 +240,9 @@ function MobilebottomNavbar() {
     </div>
   );
 }
+
+
+
 
 export default Nav;
 export { MobileNavbar, MobilebottomNavbar };
