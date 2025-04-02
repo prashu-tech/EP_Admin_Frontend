@@ -104,7 +104,7 @@ const TopPerformersTable = ({ selectedMode }) => {
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="min-w-full table-auto mt-4 rounded-t-2xl">
+        <table className="min-w-full table-auto mt-0 rounded-t-xl">
           <thead>
             <tr className="bg-[#F5F5F5] text-gray-700">
               <th className="p-3 text-left text-sm md:text-base">Rank</th>
