@@ -4,10 +4,9 @@ import SpotlightOnImprovementTable from "@/components/admindashboard/spotlighton
 
 import StatsCards from "@/components/admindashboard/statscards";
 import TopPerformersTable from "@/components/admindashboard/TopPerformersTable";
-import Adminnav from "@/components/adminnav/adminnav";
-import Adminsidebar from "@/components/adminsidebar/adminsidebar";
+import Adminnav from "@/components/nav/nav";
+import Adminsidebar from "@/components/sidebar/sidebar";
 import React, { useState } from "react";
-
 
 function Page() {
   const [selectedMode, setSelectedMode] = useState("Practice"); // State to track selected mode
@@ -26,17 +25,17 @@ function Page() {
 
         {/* Mode Switcher Buttons */}
         <div className="flex justify-center mt-4">
-          <ModeSwitcher selectedMode={selectedMode} setSelectedMode={setSelectedMode} />
+          <ModeSwitcher
+            selectedMode={selectedMode}
+            setSelectedMode={setSelectedMode}
+          />
         </div>
 
-        < StatsCards />
-        < TopPerformersTable selectedMode={selectedMode} />
-        < SpotlightOnImprovementTable selectedMode={selectedMode} />
-        
-        <div className="flex justify-between mt-4">
-        
-        </div>
+        <StatsCards />
+        <TopPerformersTable selectedMode={selectedMode} />
+        <SpotlightOnImprovementTable selectedMode={selectedMode} />
 
+        <div className="flex justify-between mt-4"></div>
       </div>
     </div>
   );
