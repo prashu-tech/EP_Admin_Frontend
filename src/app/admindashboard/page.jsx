@@ -13,12 +13,8 @@ import Nav from "@/components/nav/nav";
 import Sidebar from "@/components/sidebar/sidebar";
 import React, { useState } from "react";
 
-<<<<<<< HEAD
-function Page() {
-=======
 
 const Page = () => {
->>>>>>> e2cae8620f4b7c48bc148bd87caa0c5caf71e52e
   const [selectedMode, setSelectedMode] = useState("Practice"); // State to track selected mode
 
 
