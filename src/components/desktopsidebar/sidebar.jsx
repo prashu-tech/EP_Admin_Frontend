@@ -69,7 +69,7 @@ const Sidebar = () => {
     {
       label: "Settings",
       icon: <FaCogs className="text-xl" />,
-      href: "/settings/papercandidate",
+      href: "/paper_candidate_field",
     },
   ];
 
