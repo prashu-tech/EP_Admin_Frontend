@@ -21,6 +21,14 @@
   }
 }
 
+@layer utilities{
+  hello::placeholder{
+    color:red;
+    font-weight: bold;
+    
+  }
+}
+
 /* :root {
   --background: #ffffff;
   --foreground: #171717;
