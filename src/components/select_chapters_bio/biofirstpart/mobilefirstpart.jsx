@@ -2,7 +2,7 @@
 import React from "react";
 import { BsSearch } from "react-icons/bs";
 
-export default function MobileFirstPart() {
+export default function MobileBioFirstPart() {
   return (
     <section className="block md:hidden p-4 gap-2 font-['Segoe_UI']">
       {/* Search Bar - Visible only in Mobile View */}

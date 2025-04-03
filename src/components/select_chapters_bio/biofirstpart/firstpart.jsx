@@ -2,17 +2,17 @@
 import React from "react";
 import { BsSearch } from "react-icons/bs";
 
-export default function DesktopFirstPart() {
+export default function BioFirstPart() {
   return (
     <section className="hidden md:block p-4 gap-2 font-['Segoe_UI']">
       {/* Top Section - Generate Test Button and Title */}
       <div className="w-full flex flex-row justify-between items-center">
-        <div className="bg-white text-[#979797] px-6 py-4 -mt-5  rounded-lg border border-[#BBBBBB] shadow-[0_4px_6px_0_rgba(0,0,0,0.25)]  hover:bg-gray-100 transition cursor-pointer">
+        <div className="bg-white text-[#979797] px-6 py-4 mt-1  rounded-lg border border-[#BBBBBB] shadow-[0_4px_6px_0_rgba(0,0,0,0.25)]  hover:bg-gray-100 transition cursor-pointer">
           Generate Test
         </div>
 
         {/* Centered Heading */}
-        <h1 className="text-2xl font-medium font-SegoeUI whitespace-nowrap mr-36">
+        <h1 className="text-2xl font-medium font-SegoeUI whitespace-nowrap mr-36 mt-8">
           Select Bio Chapters
         </h1>
 
@@ -30,12 +30,12 @@ export default function DesktopFirstPart() {
       {/* Select Chapters and Search Bar Section */}
       <div className="flex items-center justify-between w-full mt-8">
         {/* Select Chapters */}
-        <div className="flex items-center gap-2 ml-25">
+        <div className="flex items-center gap-2 ml-33">
           <h2 className="text-xl font-medium whitespace-nowrap">Select Chapters</h2>
         </div>
 
         {/* Search Bar */}
-        <div className="flex items-center rounded-full px-4 py-2 bg-[#EEF5FF] text-[#8BA3CB] hover:bg-blue-200 transition w-1/3">
+        <div className="flex items-center rounded-full px-4 py-2 bg-[#EEF5FF] text-[#8BA3CB] hover:bg-blue-200 transition w-1/3 mr-15">
           <BsSearch className="mr-2 text-lg text-[#718EBF]" />
           <input
             type="text"
