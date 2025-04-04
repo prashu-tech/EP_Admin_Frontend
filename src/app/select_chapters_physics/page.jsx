@@ -9,6 +9,7 @@ import MobilephysicsChapterList from "@/components/select_chapters_physics/physi
 import PhysicsFirstPart from "@/components/select_chapters_physics/physicsfirstpart/firstpart";
 import MobilePhysicsFirstPart from "@/components/select_chapters_physics/physicsfirstpart/mobilefirstpart";
 import PhysicsLastnav from "@/components/select_chapters_physics/physicslastnav/lastnav";
+import PhysicsLastnavmobile from "@/components/select_chapters_physics/physicslastnav/mobilelastnav";
 
 
 
@@ -45,6 +46,7 @@ export default function Home() {
       <div className=" block md:hidden">
      <MobilePhysicsFirstPart/>
      <MobilephysicsChapterList/>
+     < PhysicsLastnavmobile />
       </div> 
       </div>
     </div>

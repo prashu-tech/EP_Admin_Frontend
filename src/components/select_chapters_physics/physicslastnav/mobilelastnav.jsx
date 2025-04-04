@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";  // <-- Add this import
+import React, { useState, useEffect } from "react";
 import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 import { useRouter } from "next/navigation";
 
-export default function PhysicsLastnav() {
+export default function PhysicsLastnavmobile() {
   const router = useRouter();
 
   const [selectedSubjects, setSelectedSubjects] = useState([]);
@@ -12,8 +12,6 @@ export default function PhysicsLastnav() {
     setSelectedSubjects(savedSubjects);
   }, []);
 
-
-
   // Handle back navigation (to the previous subject)
   const handleBackClick = () => {
     if (selectedSubjects.indexOf("Physics") > 0) {
@@ -22,9 +20,7 @@ export default function PhysicsLastnav() {
     }
   };
 
-  
-
-    // Handle continue navigation (to the next subject or to the Test Preview if it's the last one)
+  // Handle continue navigation (to the next subject or to the Test Preview if it's the last one)
   const handleContinueClick = () => {
     const currentIndex = selectedSubjects.indexOf("Physics");
     const nextSubject = selectedSubjects[currentIndex + 1]?.toLowerCase();
@@ -37,18 +33,17 @@ export default function PhysicsLastnav() {
     }
   };
 
-
   return (
-    <div className="hidden md:flex justify-between items-center w-full p-4">
+    <div className="flex justify-between  items-center w-full p-4 md:hidden m-6"> {/* Hide on desktop, show on mobile */}
       <button
         onClick={handleBackClick}
-        className="flex items-center px-10 py-2 mt-8 ml-10 font-Poppins text-lg bg-[#FFBB38] text-white rounded-full shadow-md hover:bg-yellow-500 transition"
+        className="flex items-center px-4 py-2 mt-8 font-Poppins text-lg bg-[#FFBB38] text-white rounded-full shadow-md hover:bg-yellow-500 transition w-[48%] mb-3"
       >
         <HiOutlineArrowLeft className="mr-3 text-xl" /> Back
       </button>
       <button
-         onClick={handleContinueClick}
-        className="flex items-center px-6 py-2 mt-8 mr-17 font-Poppins text-lg bg-[#007AFF] text-white rounded-full shadow-md hover:bg-blue-600 transition"
+        onClick={handleContinueClick}
+        className="  flex items-center px-4 py-2 mt-6 font-Poppins text-lg bg-[#007AFF] text-white rounded-full shadow-md hover:bg-blue-600 transition w-[48%]"
       >
         Continue <HiOutlineArrowRight className="ml-3 text-xl" />
       </button>
