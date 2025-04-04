@@ -1,21 +1,24 @@
-'use client';
+"use client";
 
-import React, { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { FaSignOutAlt, FaUserAlt } from 'react-icons/fa';
+import React, { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { FaSignOutAlt, FaUserAlt } from "react-icons/fa";
 
-const Nav = () => {
-  const router = useRouter(); // Initialize useRouter for navigation
+/* -------------------------------------------
+   DESKTOP NAVBAR
+-------------------------------------------- */
+const DesktopNavbar = () => {
+  const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null); // Ref to detect clicks outside
+  const dropdownRef = useRef(null);
 
   const handleProfileClick = () => {
-    router.push('/profile');
+    router.push("/profile");
   };
 
   const handleLogoutClick = () => {
-    localStorage.clear(); // Clear all data from localStorage
-    router.push('/'); // Redirect to home page after logout
+    localStorage.clear(); 
+    router.push("/"); 
   };
 
   const toggleDropdown = () => {
@@ -30,10 +33,9 @@ const Nav = () => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -42,14 +44,14 @@ const Nav = () => {
       {/* Right Section with Profile Image */}
       <div className="flex items-center space-x-4 mr-4">
         <img
-          src="/profilphoto.png" // Update with your profile image path
+          src="/profilphoto.png"
           alt="Profile"
           className="w-16 h-16 rounded-2xl border border-gray-300 cursor-pointer"
-          onClick={toggleDropdown} // Toggle dropdown on click
+          onClick={toggleDropdown}
         />
         {isDropdownOpen && (
           <div
-            ref={dropdownRef} // Attach ref to the dropdown
+            ref={dropdownRef}
             className="absolute right-4 top-24 bg-white shadow-lg rounded-lg w-48 py-2 z-50"
           >
             <ul className="text-gray-700">
@@ -75,4 +77,4 @@ const Nav = () => {
   );
 };
 
-export default Nav;
+export default DesktopNavbar;
