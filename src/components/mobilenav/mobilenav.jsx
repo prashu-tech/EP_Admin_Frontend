@@ -46,65 +46,16 @@ const MobileNavbar = () => {
         />
       </div>
 
-    {/* Sidebar Navigation */}
-<div
-  className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-50 transform ${
-    isOpen ? "translate-x-0" : "-translate-x-full"
-  } transition-transform duration-300 ease-in-out`}
->
-  {/* Back Icon */}
-  <div className="absolute top-4 left-4">
-    <button onClick={() => setIsOpen(false)}>
-      <ChevronLeft className="w-6 h-6 text-gray-900 font-bold" />
-    </button>
-  </div>
-
-  {/* Logo and Title */}
-  <div className="flex flex-col justify-center items-center p-4 mt-10">
-    <img
-      src="/mobilenavprofile.png"
-      alt="Nexcore Logo"
-      className="w-16 h-16 rounded-full drop-shadow-lg"
-    />
-    <h2 className="text-xl font-bold mt-2">Nexcore</h2>
-  </div>
-
-  <nav className="flex flex-col gap-2 px-4">
-    <button className="flex items-center gap-3 p-2 rounded-lg text-sm font-medium transition duration-200 hover:bg-gradient-to-r hover:from-yellow-500/80 hover:to-yellow-500/0 hover:text-yellow-700">
-      <FileText className="w-5 h-5" />
-      <span className="text-lg">Practice Test</span>
-    </button>
-    <button className="flex items-center gap-3 p-2 rounded-lg text-sm font-medium transition duration-200 hover:bg-gradient-to-r hover:from-yellow-500/80 hover:to-yellow-500/0 hover:text-yellow-700">
-      <Edit className="w-5 h-5" />
-      <span className="text-lg">Customized Test</span>
-    </button>
-
-    {/* Paper Generator Dropdown */}
-    <div className="flex flex-col">
-      <button
-        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        className="flex items-center justify-between gap-3 p-2 rounded-lg text-sm font-medium transition duration-200 hover:bg-gradient-to-r hover:from-yellow-500/80 hover:to-yellow-500/0 hover:text-yellow-700"
+      {/* Sidebar Navigation */}
+      <div
+        className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-50 transform ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } transition-transform duration-300 ease-in-out`}
       >
-        <div className="flex items-center gap-3">
-          <Layers className="w-5 h-5" />
-          <span className="text-lg">Paper Generator</span>
-        </div>
-        {isDropdownOpen ? (
-          <ChevronUp className="w-5 h-5" />
-        ) : (
-          <ChevronDown className="w-5 h-5" />
-        )}
-      </button>
-
-      {isDropdownOpen && (
-        <div className="ml-8 flex flex-col gap-2">
-          <button className="flex items-center gap-3 p-2 rounded-lg text-sm font-medium transition duration-200 hover:bg-gradient-to-r hover:from-yellow-500/80 hover:to-yellow-500/0 hover:text-yellow-700">
-            <File className="w-5 h-5" />
-            <span className="text-lg">Tests</span>
-          </button>
-          <button className="flex items-center gap-3 p-2 rounded-lg text-sm font-medium transition duration-200 hover:bg-gradient-to-r hover:from-yellow-500/80 hover:to-yellow-500/0 hover:text-yellow-700">
-            <Archive className="w-5 h-5" />
-            <span className="text-lg">Batches</span>
+        {/* Back Icon */}
+        <div className="absolute top-4 left-4">
+          <button onClick={() => setIsOpen(false)}>
+            <ChevronLeft className="w-6 h-6 text-gray-900 font-bold" />
           </button>
         </div>
 
@@ -208,30 +159,6 @@ const MobileNavbar = () => {
           onClick={() => setIsOpen(false)}
         />
       )}
-    </div>
-
-    <button className="flex items-center gap-3 p-2 rounded-lg text-sm font-medium transition duration-200 hover:bg-gradient-to-r hover:from-yellow-500/80 hover:to-yellow-500/0 hover:text-yellow-700">
-      <Settings className="w-5 h-5" />
-      <span className="text-lg">Settings</span>
-    </button>
-    <button className="flex items-center gap-3 p-2 rounded-lg text-sm font-medium transition duration-200 hover:bg-gradient-to-r hover:from-yellow-500/80 hover:to-yellow-500/0 hover:text-yellow-700">
-      <User className="w-5 h-5" />
-      <span className="text-lg">Profile</span>
-    </button>
-    <button className="flex items-center gap-3 p-2 rounded-lg text-sm font-medium transition duration-200 hover:bg-gradient-to-r hover:from-red-500/80 hover:to-red-500/0 hover:text-red-700">
-      <LogOut className="w-5 h-5" />
-      <span className="text-lg">Logout</span>
-    </button>
-  </nav>
-</div>
-
-{/* Overlay */}
-{isOpen && (
-  <div
-    className="fixed inset-0 bg-black bg-opacity-25 z-40"
-    onClick={() => setIsOpen(false)}
-  />
-)}
     </div>
   );
 };
