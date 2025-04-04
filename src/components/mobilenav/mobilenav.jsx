@@ -1,7 +1,21 @@
 "use client";
 
 import React, { useState } from "react";
-import { Menu, ChevronLeft, FileText, Edit, Layers, Settings, User, LogOut, ChevronDown, ChevronUp, File, Archive } from "lucide-react";
+import { useRouter } from "next/navigation";
+import {
+  Menu,
+  ChevronLeft,
+  FileText,
+  Edit,
+  Layers,
+  Settings,
+  User,
+  LogOut,
+  ChevronDown,
+  ChevronUp,
+  File,
+  Archive,
+} from "lucide-react";
 
 /* -------------------------------------------
    MOBILE SIDEBAR NAV
@@ -9,9 +23,15 @@ import { Menu, ChevronLeft, FileText, Edit, Layers, Settings, User, LogOut, Chev
 const MobileNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const router = useRouter();
+
+  const handleNavigation = (path) => {
+    router.push(path);
+    setIsOpen(false);
+  };
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full block sm:hidden md:hidden lg:hidden xl:hidden">
       {/* Top Navbar */}
       <div className="flex justify-between items-center p-4 bg-white shadow-md">
         <button onClick={() => setIsOpen(!isOpen)}>
@@ -20,8 +40,9 @@ const MobileNavbar = () => {
         <h1 className="text-lg font-bold text-blue-700">Dashboard</h1>
         <img
           src="/mobilenavprofile.png"
-          alt="Logo"
-          className="w-10 h-10 rounded-full shadow-md"
+          alt="Profile"
+          className="w-10 h-10 rounded-full shadow-md cursor-pointer"
+          onClick={() => handleNavigation("/profile")}
         />
       </div>
 

@@ -55,12 +55,12 @@ const Sidebar = () => {
     {
       label: "Practise Test",
       icon: <AiOutlineFileText className="text-xl" />,
-      href: "/practicetest",
+      href: "/Practisetest",
     },
     {
       label: "Customized Test",
       icon: <GiTestTubes className="text-xl" />,
-      href: "/customizetest",
+      href: "/Customize",
     },
     {
       label: "Generate Test",
@@ -75,7 +75,7 @@ const Sidebar = () => {
     {
       label: "Settings",
       icon: <FaCogs className="text-xl" />,
-      href: "/settings/papercandidate",
+      href: "/paper_candidate_field",
     },
   ];
 
