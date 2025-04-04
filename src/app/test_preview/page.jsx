@@ -1,10 +1,15 @@
 "use client";
 
-import TestPreview from "@/components/Action_test_preview/Test_preview";
-import MobileNavbar from "@/components/moblieadminnav/nav";
-import Nav from "@/components/nav/nav";
-import Sidebar from "@/components/sidebar/sidebar";
+import MobileNavbar from "C:/Users/user/Desktop/EP_Admin_Frontend/src/components/moblieadminnav/nav.jsx";
+
 import React, { useState } from "react";
+import Mobile_Office_mode from "@/components/Moblie/moblie_office_mode";
+
+import MobilebottomNavbar from "@/components/mobilenav/MobileBottomNavbar";
+import Sidebar from "@/components/desktopsidebar/sidebar";
+import DesktopNavbar from "@/components/desktopnav/nav";
+import TestPreview from "@/components/Action_test_preview/Test_preview";
+import Moblie_test_Preview from "@/components/Moblie/moblie_test_preview";
 
 
 const Page = () => {
@@ -14,31 +19,30 @@ const Page = () => {
   return (
     <div className="min-h-screen md:flex bg-white">
     <div className="md:hidden block">
-      < MobileNavbar />
+      
+      <MobileNavbar/>
+      <Moblie_test_Preview/>
+      <MobilebottomNavbar/>
+     
     </div>  
 
       {/* Sidebar Section */}
       <div className="md:w-1/6 bg-[#007AFF]">
-        <Sidebar />
+        <Sidebar/>
       </div>
-
-      {/* Main Content Section */}
       <div className="w-full md:w-5/6 md:flex-1 h-screen bg-white">
         {/* Navigation Bar */}
-        <Nav />
-
-        <TestPreview/>
-
+        <DesktopNavbar/>
         
 
-      
-
+        <main className="hidden md:block">
           
+            <TestPreview/>
+          
+        </main>
 
-        
-      </div>
-
-      
+    
+    </div>
     </div>
   );
 };

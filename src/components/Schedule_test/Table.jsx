@@ -60,7 +60,7 @@ const Table = () => {
               <th className="py-4 px-2 w-36">SCHEDULE FROM</th>
               <th className="py-4 px-2 w-36">ENDS AT</th>
               <th className="py-4 px-2 w-32">RESULT STATUS</th>
-              <th className="py-4 px-2 w-28">ACTION</th>
+              <th className="py-4 px-2 w-28">RESCHEDULE</th>
             </tr>
           </thead>
           <tbody className="text-gray-700 text-xs font-light">
@@ -75,7 +75,7 @@ const Table = () => {
                 <td className="py-4 px-2 border-r-2 w-32 font-roboto">{row.resultStatus}</td>
                 <td className="py-4 px-2 w-28 font-roboto">
                   <button 
-                    className="border text-black px-4 rounded-sm hover:bg-gray-300 whitespace-nowrap text-xs"
+                    className="border w-20   text-black px-4 rounded-sm hover:bg-gray-300 whitespace-nowrap text-xs"
                   >
                     Edit
                   </button>

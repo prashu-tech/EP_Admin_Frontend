@@ -1,5 +1,5 @@
 
-import Adminnav from '@/components/adminnav/adminnav'
+
 import Adminsidebar from '@/components/adminsidebar/adminsidebar'
 import Test from '@/components/pracrtice test/test'
 import React from 'react'

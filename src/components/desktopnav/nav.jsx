@@ -1,24 +1,14 @@
-<<<<<<<< HEAD:src/components/nav/nav.jsx
-/*navbar*/
-'use client';
-========
 "use client";
->>>>>>>> e6bc994be5901469b6c5b6faa1b4cd8886929770:src/components/desktopnav/nav.jsx
 
 import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FaSignOutAlt, FaUserAlt } from "react-icons/fa";
 
-<<<<<<<< HEAD:src/components/nav/nav.jsx
-const Nav = () => {
-  const router = useRouter(); // Initialize useRouter for navigation
-========
 /* -------------------------------------------
    DESKTOP NAVBAR
 -------------------------------------------- */
 const DesktopNavbar = () => {
   const router = useRouter();
->>>>>>>> e6bc994be5901469b6c5b6faa1b4cd8886929770:src/components/desktopnav/nav.jsx
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -87,10 +77,4 @@ const DesktopNavbar = () => {
   );
 };
 
-<<<<<<<< HEAD:src/components/nav/nav.jsx
-
-
-export default Nav;
-========
 export default DesktopNavbar;
->>>>>>>> e6bc994be5901469b6c5b6faa1b4cd8886929770:src/components/desktopnav/nav.jsx
