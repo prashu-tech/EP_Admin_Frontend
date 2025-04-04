@@ -39,7 +39,7 @@ export default function Paper() {
                        <div className="relative left-94">
                           {/* Top Left Blue Button */}
                           <div className=" top-4 hidden md:block" >
-                            <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold p-3 rounded-full shadow-lg flex items-center justify-center">
+                            <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold p-3 rounded-full shadow-[0px_2px_8px_rgba(0,0,0,0.5)] flex items-center justify-center">
                               <IoIosArrowBack size={15} />
                             </button>
                           </div>
@@ -75,7 +75,7 @@ export default function Paper() {
                         <input
                             type="date"
                             name="date"
-                            className="w-full p-2 border border-gray-500 rounded mt-4 text-xl"
+                            className="w-full p-2 border border-gray-500 rounded mt-4 text-xl  text-gray-500 font-medium"
                             onChange={handleChange}
                         />
                         <input
@@ -85,10 +85,10 @@ export default function Paper() {
                             className="w-full p-2 border border-gray-500 rounded mt-4 text-xl"
                             onChange={handleChange}
                         />
-                        <p className="mt-4 text-gray-400  text-medium font-semibold text-xl">Candidate Detail Feild</p>
+                        <p className="mt-5 text-gray-500  text-medium font-semibold text-xl">Candidate Detail Feild</p>
                         <select
                             name="batch"
-                            className="w-full p-2 border border-gray-500 rounded mt-0 text-xl"
+                            className="w-full p-2 border border-gray-500 rounded mt-0 text-xl  text-gray-500 font-medium"
                             onChange={handleChange}
                         >
                             <option value="">Batch No</option>

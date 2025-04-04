@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { FaFlask, FaDumbbell, FaArrowRight } from "react-icons/fa";
 import { GiFruitBowl } from "react-icons/gi";
 import { MdScience } from "react-icons/md";
+import { FaSearch } from "react-icons/fa";  // Import the search icon
 import { useRouter } from "next/navigation";
 
 const SubjectSelectMobile = () => {
@@ -32,6 +33,22 @@ const SubjectSelectMobile = () => {
       return updatedSubjects;
     });
   };
+
+
+// Handle "Continue" button click (route to first subject's page)
+const handleContinueClick = () => {
+  if (selectedSubjects.length > 0) {
+    const subject = selectedSubjects[0].toLowerCase(); // Get the first selected subject and convert it to lowercase
+    router.push(`/select_chapters_${subject}`); // Route to the first selected subject's page
+  } else {
+    alert("Please select at least one subject!");
+  }
+};
+
+
+
+
+
 
   // load marks in local storgae
   useEffect(() => {
@@ -77,9 +94,9 @@ const SubjectSelectMobile = () => {
     setTestName(e.target.value);
   };
 
-  const handleContinueClick = () => {
-    router.push("/viewtestdetails");
-  };
+  // const handleContinueClick = () => {
+  //   router.push("/viewtestdetails");
+  // };
 
   return (
     <div className="w-full max-w-7xl mx-auto p-6">
@@ -88,9 +105,27 @@ const SubjectSelectMobile = () => {
         Generate Test
       </button>
 
+
+      {/* Search Bar */}
+  <div className="flex justify-center mt-4">
+    <div className="relative w-full max-w-md">
+      <input
+        type="text"
+        placeholder="Search Tests"
+        className="w-full px-4 py-2 pl-10 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 font-medium "
+      />
+      <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+        <FaSearch className="h-5 w-5 text-gray-400" />
+      </div>
+    </div>
+  </div>
+
+
+
+
       {/* Top Section: Create Test */}
-      <div className="text-center mb-8 md:ml-50">
-        <h3 className="text-2xl  font-medium text-black text-center mb-2 sm:text-lg md:text-xl mt-20">Create Test</h3>
+      <div className="text-center mb-8 md:ml-50 mt-2">
+        <h3 className="text-2xl  font-medium text-black text-center mb-2 sm:text-lg md:text-xl mt-12">Create Test</h3>
         <h2 className="text-2xl text-black-500 text-center mt-3">Name your Test</h2>
         <input
           type="text"
@@ -106,20 +141,21 @@ const SubjectSelectMobile = () => {
 
         {/* Right Section: Step Indicator & Cards */}
         <div className="lg:col-span-1 flex flex-row gap-6 items-center mt-4 lg:mt-0">
-          {/* Step Indicator */}
-          <div className="flex flex-col items-center gap-8">
-            <div className="w-10 h-10 rounded-full bg-blue-500 flex justify-center items-center text-white text-lg">
-              1
-            </div>
-            <div className="w-1 h-20 bg-blue-500"></div>
-            <div className="w-10 h-10 rounded-full bg-gray-400 flex justify-center items-center text-white text-lg">
-              2
-            </div>
-            <div className="w-1 h-20 bg-blue-500"></div>
-            <div className="w-10 h-10 rounded-full bg-gray-400 flex justify-center items-center text-white text-lg">
-              3
-            </div>
-          </div>
+         {/* Step Indicator */}
+<div className="flex flex-col items-center gap-0">
+  <div className="w-10 h-10 rounded-full bg-blue-500 flex justify-center items-center text-white text-lg">
+    
+  </div>
+  <div className="w-1 h-32 bg-blue-500"></div>
+  <div className="w-10 h-10 rounded-full bg-gray-400 flex justify-center items-center text-white text-lg">
+    
+  </div>
+  <div className="w-1 h-32 bg-blue-500"></div>
+  <div className="w-10 h-10 rounded-full bg-gray-400 flex justify-center items-center text-white text-lg">
+    
+  </div>
+</div>
+
 
           {/* Cards */}
           <div className="flex flex-col gap-2">
@@ -176,14 +212,14 @@ const SubjectSelectMobile = () => {
           </div>
 
           {/* Subjects */}
-          <div className="mb-8">
-            <h3 className="text-lg font-semibold">Select Subjects</h3>
-            <div className="flex flex-wrap gap-4 mt-2">
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold mt-1">Select Subjects</h3>
+            <div className="flex flex-wrap gap-4 mt-3">
               {[
                 { name: "Physics", img: "physic.png" },
                 { name: "Chemistry", img: "chemistry.png" },
-                { name: "Botany", img: "botany.png" },
-                { name: "Zoology", img: "botany.png" },
+                { name: "Biology", img: "botany.png" },
+           
               ].map((subject) => (
                 <div
                   key={subject.name}

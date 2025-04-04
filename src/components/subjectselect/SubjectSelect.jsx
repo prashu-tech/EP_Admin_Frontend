@@ -11,11 +11,9 @@ import { useRouter } from "next/navigation";
 
 const SelectSubjectPage = () => {
   const [difficulty, setDifficulty] = useState("Medium");
-  const [selectedSubjects, setSelectedSubjects] = useState([]);
   const [marks, setMarks] = useState([]);
   const [testName, setTestName] = useState("");
-
-
+  const [selectedSubjects, setSelectedSubjects] = useState([]);
   const router = useRouter();
 
 
@@ -25,19 +23,20 @@ const SelectSubjectPage = () => {
       setSelectedSubjects(savedSubjects);
     }, []);
   
-    // Function to update selected subjects and store them in localStorage
-    const handleSubjectChange = (subject) => {
-      setSelectedSubjects((prev) => {
-        let updatedSubjects;
-        if (prev.includes(subject)) {
-          updatedSubjects = prev.filter((s) => s !== subject);
-        } else {
-          updatedSubjects = [...prev, subject];
-        }
-        localStorage.setItem("selectedSubjects", JSON.stringify(updatedSubjects));
-        return updatedSubjects;
-      });
-    };
+ // Function to update selected subjects and store them in localStorage
+const handleSubjectChange = (subject) => {
+  setSelectedSubjects((prev) => {
+    let updatedSubjects;
+    if (prev.includes(subject)) {
+      updatedSubjects = prev.filter((s) => s !== subject);
+    } else {
+      updatedSubjects = [...prev, subject];
+    }
+    localStorage.setItem("selectedSubjects", JSON.stringify(updatedSubjects));
+    return updatedSubjects;
+  });
+};
+
 
 // load marks in local storgae
 useEffect(() => {
@@ -97,15 +96,18 @@ const handleNegativeMarksChange = (e) => {
   //   router.push("/viewtestdetails");
   // };
 
-  //continue button
+
+
+  // Handle "Continue" button click (route to first subject's page)
   const handleContinueClick = () => {
     if (selectedSubjects.length > 0) {
-      const subject = selectedSubjects[0].toLowerCase(); // Get the first subject and convert it to lowercase
-      router.push(`/${subject}`); // Dynamically route to the subject-specific page (e.g., /physics, /chemistry)
+      const subject = selectedSubjects[0].toLowerCase(); // Get the first selected subject and convert it to lowercase
+      router.push(`/select_chapters_${subject}`); // Route to the first selected subject's page
     } else {
       alert("Please select at least one subject!");
     }
   };
+
   
 
   return (
@@ -163,8 +165,8 @@ const handleNegativeMarksChange = (e) => {
     {[
       { name: "Physics", img: "physic.png" },
       { name: "Chemistry", img: "chemistry.png" },
-      { name: "Botany", img: "botany.png" },
-      { name: "Zoology", img: "botany.png" }
+      { name: "Biology", img: "botany.png" },
+     
     ].map((subject) => (
       <div
         key={subject.name}
@@ -241,17 +243,20 @@ const handleNegativeMarksChange = (e) => {
           {/* Step Indicator */}
           <div className="flex flex-col items-center gap-0 mt-9 md:w-[10px] pl-80 ">
             <div className="w-10 h-10 rounded-full bg-blue-500 flex justify-center items-center text-white text-lg">
-              1
+              
             </div>
             <div className="w-1 h-34 bg-blue-500 "></div>
             <div className="w-10 h-10 rounded-full bg-gray-400 flex justify-center items-center text-white text-lg">
-              2
+              
             </div>
             <div className="w-1 h-34 bg-blue-500"></div>
             <div className="w-10 h-10 rounded-full bg-gray-400 flex justify-center items-center text-white text-lg">
-              3
+              
             </div>
           </div>
+
+          
+          
 
 
 
@@ -297,7 +302,7 @@ const handleNegativeMarksChange = (e) => {
 
       {/* form section */}
 <div 
-  className="absolute lg:block hidden left-[55%] transform -translate-x-[45%] top-[995px] w-[583px] h-fit bg-[#FFBB38]
+  className="absolute lg:block hidden left-[55%] transform -translate-x-[45%] top-[965px] w-[583px] h-fit bg-[#FFBB38]
  rounded-[38px] p-6 shadow-lg border border-[#FBB03B]"
 >
   <h2 className="text-2xl font-medium text-center text-white">Select Marks per Question</h2>
@@ -328,7 +333,7 @@ const handleNegativeMarksChange = (e) => {
 </div>
 
       {/* Continue Button */}
-      <div className="mt-[360px] mb-5  flex justify-end text-center pr-8 ">
+      <div className="mt-[440px] mb-5  flex justify-end text-center pr-6 ">
         <button
           className="bg-blue-500 text-white py-2 px-6 rounded-full flex items-center"
           onClick={handleContinueClick}

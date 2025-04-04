@@ -1,12 +1,13 @@
 
-
+import Nav from '@/components/desktopnav/nav'
+import { Sidebar } from 'lucide-react'
 import React from 'react'
 
 function page() {
   return (
   <>
-  <h1>hello</h1>
-
+  <Nav/>
+  <Sidebar/>
   </>
     
   )

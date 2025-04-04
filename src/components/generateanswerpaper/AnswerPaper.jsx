@@ -12,7 +12,7 @@ export default function AnswerPaper() {
         <div className="relative left-24">
       {/* Top Left Blue Button */}
       <div className=" top-2 hidden md:block" >
-        <button className="bg-blue-600 hover:bg-blue-600 text-white font-semibold p-3 rounded-full shadow-lg flex items-center justify-center">
+        <button className="bg-blue-600 hover:bg-blue-600 text-white font-semibold p-3 rounded-full shadow-[0px_2px_8px_rgba(0,0,0,0.5)] flex items-center justify-center">
           <IoIosArrowBack size={15} />
         </button>
       </div>
@@ -35,10 +35,10 @@ export default function AnswerPaper() {
             <label className="flex items-center">
               <input type="checkbox" className="mr-2 w-5 h-5 text-blue-500 bg-white border-gray-300 rounded-lg focus:ring-blue-500 checked:bg-blue-500 checked:border-transparent" /> Enable header (Logo) in the Question paper
             </label>
-            <label className="flex items-center">
+            <label className="flex items-center mt-5">
               <input type="checkbox" className="mr-2 w-5 h-5 text-blue-500 bg-white border-gray-300 rounded-lg focus:ring-blue-500 checked:bg-blue-500 checked:border-transparent" /> Show Solutions
             </label>
-            <label className="flex items-center">
+            <label className="flex items-center mt-5">
               <input type="checkbox" className="mr-2 w-5 h-5 text-blue-500 bg-white border-gray-300 rounded-lg focus:ring-blue-500 checked:bg-blue-500 checked:border-transparent" /> Enable chapter details for the test
             </label>
           </div>
@@ -50,8 +50,8 @@ export default function AnswerPaper() {
 
         {/* Print Preview Section */}
         <div className="mt-8 md:ml-46">
-  <h3 className="font-semibold italic">Print Preview</h3>
-  <div className="border-4 border-gray-300 border-dashed h-70 w-[96%] mt-2 rounded-md bg-gray-"></div>
+  <h3 className="font-semibold italic text-2xl">Print Preview</h3>
+  <div className="border-4 border-gray-300 border-dashed h-70 w-[96%] mt-1 rounded-md bg-gray-"></div>
   <button className="bg-red-500 text-white w-[96%] py-2 mt-4 rounded-md cursor-pointer transition duration-300 hover:bg-red-600 shadow-[0_4px_6px_rgba(0,0,0,0.2)]">
     Print
   </button>

@@ -11,7 +11,7 @@ const MobileNavbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full block sm:hidden md:hidden lg:hidden xl:hidden">
       {/* Top Navbar */}
       <div className="flex justify-between items-center p-4 bg-white shadow-md">
         <button onClick={() => setIsOpen(!isOpen)}>
@@ -114,5 +114,6 @@ const MobileNavbar = () => {
     </div>
   );
 };
+
 
 export default MobileNavbar;
