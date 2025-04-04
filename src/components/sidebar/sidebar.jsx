@@ -49,12 +49,12 @@ const Sidebar = () => {
     {
       label: "Practise Test",
       icon: <AiOutlineFileText className="text-xl" />,
-      href: "/practicetest",
+      href: "/Practisetest",
     },
     {
       label: "Customized Test",
       icon: <GiTestTubes className="text-xl" />,
-      href: "/customizetest",
+      href: "/Customize",
     },
     {
       label: "Generate Test",

@@ -1,6 +1,12 @@
+"use client";
 
-import Sidebar from "@/components/adminsidebar/adminsidebar";
-import Customized from "@/components/Custmize test/custmize"
+import StudentTestTable from "@/components/Customize test/customize";
+import MobileNavbar from "@/components/mobileadminnav/nav";
+import Nav from "@/components/nav/nav";
+
+import Sidebar from "@/components/sidebar/sidebar";
+
+import React, { useState } from "react";
 
 
 function page() {
@@ -12,13 +18,17 @@ function page() {
 
       {/* Sidebar Section */}
       <div className="md:w-1/6 bg-[#007AFF]">
-        <Sidebar />
+        < Sidebar />
       </div>
 
       {/* Main Content Section */}
       <div className="w-full md:w-5/6 md:flex-1 h-screen bg-white">
         {/* Navigation Bar */}
         <Nav />
+
+        < StudentTestTable />
+
+        
 
       
 
@@ -32,4 +42,4 @@ function page() {
   );
 };
 
-export default Page;
+export default page;
