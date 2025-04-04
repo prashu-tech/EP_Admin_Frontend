@@ -1,5 +1,15 @@
 "use client";
 
+<<<<<<< HEAD
+import StatsCards from "@/components/admindashboard/statscards";
+import TopPerformersTable from "@/components/admindashboard/TopPerformersTable";
+import Adminnav from "@/components/nav/nav";
+import Adminsidebar from "@/components/sidebar/sidebar";
+import React, { useState } from "react";
+
+function Page() {
+  const [selectedMode, setSelectedMode] = useState("Practice"); // State to track selected mode
+=======
 import React, { useState } from "react";
 
 // Import your nav components
@@ -22,6 +32,7 @@ import DesktopNavbar from "@/components/desktopnav/nav";
 
 export default function Page() {
   const [selectedMode, setSelectedMode] = useState("Practice");
+>>>>>>> e6bc994be5901469b6c5b6faa1b4cd8886929770
 
   return (
     <div className="min-h-screen md:flex bg-white">
@@ -41,10 +52,19 @@ export default function Page() {
 
         {/* Mode Switcher */}
         <div className="flex justify-center mt-4">
-          <ModeSwitcher selectedMode={selectedMode} setSelectedMode={setSelectedMode} />
+          <ModeSwitcher
+            selectedMode={selectedMode}
+            setSelectedMode={setSelectedMode}
+          />
         </div>
 
         <StatsCards />
+<<<<<<< HEAD
+        <TopPerformersTable selectedMode={selectedMode} />
+        <SpotlightOnImprovementTable selectedMode={selectedMode} />
+
+        <div className="flex justify-between mt-4"></div>
+=======
 
         <TopPerformersTable selectedMode={selectedMode} />
         <SpotlightOnImprovementTable selectedMode={selectedMode} />
@@ -78,6 +98,7 @@ export default function Page() {
      
 
         </main>
+>>>>>>> e6bc994be5901469b6c5b6faa1b4cd8886929770
       </div>
     </div>
   );

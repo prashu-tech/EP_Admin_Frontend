@@ -13,6 +13,7 @@ import BioLastnavDesktop from "@/components/select_chapters_bio/biolastnav/lastn
 
 
 import React from "react";
+import BioLastnavMobile from "@/components/select_chapters_bio/biolastnav/mobilelastnav";
 
 export default function Home() {
   return (
@@ -46,6 +47,7 @@ export default function Home() {
       <div className=" block md:hidden">
       <MobileBioFirstPart/>
       <MobileBiologyChapterList/>
+      <BioLastnavMobile/>
       </div> 
       </div>
     </div>

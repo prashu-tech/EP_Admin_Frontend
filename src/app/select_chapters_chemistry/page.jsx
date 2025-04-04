@@ -9,6 +9,7 @@ import MobilechemistryChapterList from "@/components/select_chapters_chemistry/c
 import ChemistryFirstPart from "@/components/select_chapters_chemistry/chemfirstpart/firstpart";
 import MobileChemistryFirstPart from "@/components/select_chapters_chemistry/chemfirstpart/mobilefirstpart";
 import ChemLastnav from "@/components/select_chapters_chemistry/chemlastnav/lastnav";
+import ChemLastnavMobile from "@/components/select_chapters_chemistry/chemlastnav/mobilelastnav";
 
 
 
@@ -46,6 +47,8 @@ export default function Home() {
       <div className=" block md:hidden">
       <MobileChemistryFirstPart/>
       <MobilechemistryChapterList/>
+      <ChemLastnavMobile/>
+
       </div> 
       </div>
     </div>
