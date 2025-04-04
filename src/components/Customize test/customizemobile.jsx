@@ -93,7 +93,7 @@ export default function StudentTestTable() {
       </div>
 
       {/* Filter Bar with Boxed Stats */}
-      <div className="lg:flex grid grid-cols-2 lg:grid-cols-5 grid-cols-1 lg:flex-wrap gap-2 mb-6 p-3 bg-white rounded-lg drop-shadow hover:bg-white-100 w-full max-w-6xl mx-auto lg:justify-between">
+      <div className="lg:flex grid lg:grid-cols-5 grid-cols-1 lg:flex-wrap gap-2 mb-6 p-3 bg-white rounded-lg drop-shadow hover:bg-white-100 w-full max-w-6xl mx-auto lg:justify-between">
         {["Total Test: 8", "Average Marks: 180", "Physics Test: 8", "Target Test: 4", "Customized Test: 4"].map((item, index) => (
           <div
             key={index}

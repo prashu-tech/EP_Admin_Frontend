@@ -71,7 +71,7 @@ const MobileNavbar = () => {
 
         <nav className="flex flex-col gap-2 px-4">
           <button
-            onClick={() => handleNavigation("/practise-test")}
+            onClick={() => handleNavigation("/Practisetest")}
             className="flex items-center gap-3 p-2 rounded-lg group transition-all"
           >
             <FileText className="w-5 h-5 text-gray-700 group-hover:text-white" />
@@ -79,7 +79,7 @@ const MobileNavbar = () => {
           </button>
 
           <button
-            onClick={() => handleNavigation("/customized-test")}
+            onClick={() => handleNavigation("/Customize")}
             className="flex items-center gap-3 p-2 rounded-lg group transition-all"
           >
             <Edit className="w-5 h-5 text-gray-700 group-hover:text-white" />
