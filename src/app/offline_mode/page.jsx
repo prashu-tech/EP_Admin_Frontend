@@ -1,5 +1,5 @@
 "use client";
-import Home from "@/components/Action_offline_mode/Office_mode";
+import Home from "@/components/Action_offline_mode/Offline_mode";
 import MobileNavbar from "C:/Users/user/Desktop/EP_Admin_Frontend/src/components/moblieadminnav/nav.jsx";
 
 import React, { useState } from "react";

@@ -43,6 +43,11 @@ const Sidebar = () => {
       href: "/view_student",
     },
     {
+      label: "Batches",
+      icon: <PiStudent className="text-xl" />,
+      href: "/batches",
+    },
+    {
       label: "Dashboard",
       icon: <BiSolidDashboard className="text-xl" />,
       href: "/dashboard",
