@@ -19,7 +19,11 @@ export default function PhysicsLastnav() {
     if (selectedSubjects.indexOf("Physics") > 0) {
       const previousSubject = selectedSubjects[selectedSubjects.indexOf("Physics") - 1].toLowerCase();
       router.push(`/select_chapters_${previousSubject}`);
+    }else {
+      // If there's no previous subject, navigate to the first subject page or any fallback page
+      router.push("/subjectselect"); // Replace with your fallback subject selection page URL
     }
+
   };
 
   

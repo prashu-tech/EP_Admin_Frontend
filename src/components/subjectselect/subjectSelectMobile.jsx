@@ -47,16 +47,25 @@ const handleContinueClick = () => {
 
 
 
-
-
-
   // load marks in local storgae
   useEffect(() => {
     const savedMarks = JSON.parse(localStorage.getItem("selectedMarks")) || [];
     setMarks(savedMarks);
   }, []);
-  
- 
+//local storage
+  const handleMarksChange = (marksOption) => {
+    setMarks((prev) => {
+      let updatedMarks;
+      if (prev.includes(marksOption)) {
+        updatedMarks = prev.filter((m) => m !== marksOption); // Deselect the mark if already selected
+      } else {
+        updatedMarks = [...prev, marksOption]; // Add the mark to the list
+      }
+      localStorage.setItem("selectedMarks", JSON.stringify(updatedMarks)); // Save to localStorage
+      return updatedMarks;
+    });
+  };
+
 
 
   // local storage form data
@@ -85,10 +94,7 @@ const handleContinueClick = () => {
     localStorage.setItem("negativeMarks", value);
   };
   
-  
-  const handleMarksChange = (marksOption) => {
-    setMarks([marksOption]);
-  };
+
 
   const handleTestNameChange = (e) => {
     setTestName(e.target.value);
@@ -99,7 +105,7 @@ const handleContinueClick = () => {
   // };
 
   return (
-    <div className="w-full max-w-7xl mx-auto p-6">
+    <div className="w-full max-w-7xl mx-auto p-6 overflow-hidden">
       {/* Generate Button (Hidden on Mobile) */}
       <button className="lg:block hidden left-80 px-10 py-5 text-gray-400 border-[#BBBBBB] border-1 rounded-lg bg-transparent hover:bg-gray-100 shadow-[0_4px_6px_rgba(0,0,0,0.3)]">
         Generate Test
@@ -236,9 +242,65 @@ const handleContinueClick = () => {
               ))}
             </div>
           </div>
+
+            {/* Marks Checkbox (Mobile) */}
+            <div className="mt-1 flex flex-col gap-4">
+            <p className="text-xl text-black-200 whitespace-nowrap">Select how many marks should the test <br />be created for?</p>
+            <div className="flex gap-4 flex-wrap justify-center">
+              {["10 Marks", "20 Marks", "30 Marks", "40 Marks", "50 Marks", "60 Marks"].map((mark) => (
+                <div key={mark} className="w-[146px] h-[52px] shadow-lg shadow-gray-300 rounded-lg flex items-center px-4">
+                  <input
+                    type="checkbox"
+                    id={`marks${mark}`}
+                    className="w-4 h-4"
+                    checked={marks.includes(mark)}
+                    onChange={() => handleMarksChange(mark)}
+                  />
+                  <label htmlFor={`marks${mark}`} className="ml-2 font-semibold">{mark}</label>
+                </div>
+              ))}
+            </div>
+          </div>
+
+            {/* Form Section (Mobile View) */}
+            <div className="mt-8 p-6 bg-[#FFBB38] rounded-[38px] shadow-lg border border-[#FBB03B]">
+            <h2 className="text-2xl font-medium text-center text-white">Select Marks per Question</h2>
+            {/* Positive Marks Input */}
+            <div className="mt-6">
+              <label className="block text-xl font-light text-white">Positive marks (per question)</label>
+              <input
+                type="text"
+                value={positiveMarks}
+                onChange={handlePositiveMarksChange}
+                className="w-full mt-2 p-3 border border-white rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#FBB03B]"
+              />
+            </div>
+
+            {/* Negative Marks Input */}
+            <div className="mt-4">
+              <label className="block text-xl font-light text-white">Negative marks (per question)</label>
+              <input
+                type="text"
+                value={negativeMarks}
+                onChange={handleNegativeMarksChange}
+                className="w-full mt-2 p-3 border border-white rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#FBB03B]"
+              />
+            </div>
+          </div>
+
+
+          
+
+
+
+
+
+
+
         </div>
 
       </div>
+
 
       {/* Continue Button */}
       <div className="w-full flex justify-end mt-3 mb-15 ">

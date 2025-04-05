@@ -145,9 +145,9 @@ const handleNegativeMarksChange = (e) => {
       onChange={(e) => setDifficulty(e.target.value)}
       className="p-2 mt-5 w-[480px] h-[54px] rounded-[15px] bg-[#007AFF] text-white  appearance-none px-9 text-lg   outline-none focus:ring-0 shadow-lg font-normal ml-[-10px]"
     >
-      <option value="Easy" >Easy</option>
-      <option value="Medium">Medium</option>
-      <option value="Hard">Hard</option>
+      <option value="Easy" className="bg-white text-black" >Easy</option>
+      <option value="Medium" className="bg-white text-black">Medium</option>
+      <option value="Hard" className="bg-white text-black">Hard</option>
     </select>
 
     <img 
@@ -193,19 +193,19 @@ const handleNegativeMarksChange = (e) => {
 
   {/* Top Row */}
   <div className="flex gap-4">
-    <div className="w-[146px] h-[48px] shadow-lg shadow-gray-300 rounded-lg flex items-center px-4">
+    <div className="w-[146px] h-[52px] shadow-lg shadow-gray-300 rounded-lg flex items-center px-4">
 
       <input type="checkbox" id="marks10" className="w-4 h-4"checked={marks.includes("10 Marks")}
   onChange={() => handleMarksChange("10 Marks")}/>
       <label htmlFor="marks10" className="ml-2 font-semibold">10 Marks</label>
     </div>
-    <div className="w-[146px] h-[48px] shadow-lg shadow-gray-300 rounded-lg flex items-center px-4">
+    <div className="w-[146px] h-[52px] shadow-lg shadow-gray-300 rounded-lg flex items-center px-4">
 
       <input type="checkbox" id="marks20"  className="w-4 h-4"       checked={marks.includes("20 Marks")}
   onChange={() => handleMarksChange("20 Marks")}/>
       <label htmlFor="marks20" className="ml-2 font-semibold">20 Marks</label>
     </div>
-    <div className="w-[146px] h-[48px]  shadow-lg shadow-gray-300  rounded-lg flex items-center px-4">
+    <div className="w-[146px] h-[52px]  shadow-lg shadow-gray-300  rounded-lg flex items-center px-4">
 
       <input type="checkbox" id="marks30"  className="w-4 h-4"    checked={marks.includes("30 Marks")}
   onChange={() => handleMarksChange("30 Marks")} />
@@ -215,18 +215,18 @@ const handleNegativeMarksChange = (e) => {
 
   {/* Bottom Row */}
   <div className="flex gap-4">
-    <div className="w-[146px] h-[48px] shadow-lg shadow-gray-300  rounded-lg flex items-center px-4">
+    <div className="w-[146px] h-[52px] shadow-lg shadow-gray-300  rounded-lg flex items-center px-4">
 
       <input type="checkbox" id="marks40"  className="w-4 h-4"    checked={marks.includes("40 Marks")}
   onChange={() => handleMarksChange("40 Marks")} />
       <label htmlFor="marks40" className="ml-2 font-semibold">40 Marks</label>
     </div>
-    <div className="w-[146px] h-[48px] shadow-lg shadow-gray-300  rounded-lg flex items-center px-4">
+    <div className="w-[146px] h-[52px] shadow-lg shadow-gray-300  rounded-lg flex items-center px-4">
       <input type="checkbox" id="marks50"  className="w-4 h-4"    checked={marks.includes("50 Marks")}
   onChange={() => handleMarksChange("50 Marks")} />
       <label htmlFor="marks50" className="ml-2 font-semibold">50 Marks</label>
     </div>
-    <div className="w-[146px] h-[48px] shadow-lg shadow-gray-300  rounded-lg flex items-center px-4">
+    <div className="w-[146px] h-[52px] shadow-lg shadow-gray-300  rounded-lg flex items-center px-4">
 
       <input type="checkbox" id="marks60"  className="w-4 h-4"  checked={marks.includes("60 Marks")}
   onChange={() => handleMarksChange("60 Marks")}/>
@@ -242,8 +242,12 @@ const handleNegativeMarksChange = (e) => {
         <div className="grid grid-cols-2 gap-2 md:w-[800px]">
           {/* Step Indicator */}
           <div className="flex flex-col items-center gap-0 mt-9 md:w-[10px] pl-80 ">
-            <div className="w-10 h-10 rounded-full bg-blue-500 flex justify-center items-center text-white text-lg">
-              
+          {/* outer div */}
+              <div className="w-13 h-13 rounded-full border-4 border-blue-500 flex justify-center items-center">
+
+            <div className="w-10 h-10 rounded-full bg-blue-500 flex justify-center items-center text-white text-lg">   
+            </div>
+
             </div>
             <div className="w-1 h-34 bg-blue-500 "></div>
             <div className="w-10 h-10 rounded-full bg-gray-400 flex justify-center items-center text-white text-lg">

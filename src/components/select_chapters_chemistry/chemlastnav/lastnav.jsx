@@ -12,6 +12,25 @@ export default function ChemLastnav() {
     setSelectedSubjects(savedSubjects);
   }, []);
 
+
+ // Handle back navigation (to the previous subject)
+ const handleBackClick = () => {
+  if (selectedSubjects.indexOf("Chemistry") > 0) {
+    const previousSubject = selectedSubjects[selectedSubjects.indexOf("Chemistry") - 1].toLowerCase();
+    router.push(`/select_chapters_${previousSubject}`);
+  }else {
+    // If there's no previous subject, navigate to the first subject page or any fallback page
+    router.push("/subjectselect"); // Replace with your fallback subject selection page URL
+  }
+
+};
+
+
+
+
+
+
+
  
 //continue button
   const handleContinueClick = () => {
@@ -35,7 +54,7 @@ export default function ChemLastnav() {
   return (
     <div className="hidden md:flex justify-between items-center w-full p-4">
       <button
-        onClick={() => router.push("/select_chapters_physics")}
+        onClick={handleBackClick}
         className="flex items-center px-10 py-2 mt-8 ml-10 font-Poppins text-lg bg-[#FFBB38] text-white rounded-full shadow-md hover:bg-yellow-500 transition"
       >
         <HiOutlineArrowLeft className="mr-3 text-xl" /> Back

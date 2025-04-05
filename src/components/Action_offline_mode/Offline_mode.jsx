@@ -7,10 +7,11 @@ import { FaRegCircleQuestion } from "react-icons/fa6";
 import { FaEye, FaQuestionCircle } from "react-icons/fa";
 import { IoIosArrowBack } from "react-icons/io";
 import { useRouter } from "next/navigation"; // Import useRouter for navigation
+import Link from "next/link"; // Import Link for navigation
 
 const Home = () => {
   const router = useRouter(); 
-  
+
   return (
     <div className="relative min-h-screen bg-white">
       <div className="flex items-center justify-center p-4">
@@ -24,11 +25,10 @@ const Home = () => {
         </Head>
         
         <div className="absolute top-4 left-4 hidden md:block">
-          <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold p-3 rounded-full shadow-lg flex items-center justify-center"
+          <button 
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold p-3 rounded-full shadow-lg flex items-center justify-center"
             onClick={() => router.back()} // Navigates to the previous page
-
           >
-            
             <IoIosArrowBack size={20} />
           </button>
         </div>
@@ -80,14 +80,20 @@ const Home = () => {
 
           {/* Action Buttons with Icons */}
           <div className="flex w-full justify-center gap-6 sm:gap-6 my-6 overflow-x-auto">
-            <button className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 text-[10px] pr-6 rounded flex items-center justify-center gap-2 "
-            onClick={() => router}
+            <Link 
+              href="/generatequestionpaper"
             >
-              <FaRegCircleQuestion size={12} /> Generate Question Paper
-            </button>
-            <button className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-2 text-[10px] pr-6 rounded flex items-center justify-center gap-2">
-              <CiPen size={15} /> Generate Answer Key
-            </button>
+              <button className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-2 text-[10px] pr-6 rounded flex items-center justify-center gap-2">
+                <FaRegCircleQuestion size={12} /> Generate Question Paper
+              </button>
+            </Link>
+            <Link
+              href="/generateanswerpaper"
+            >
+              <button className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-2 text-[10px] pr-6 rounded flex items-center justify-center gap-2">
+                <CiPen size={15} /> Generate Answer Key
+              </button>
+            </Link>
             <button className="bg-red-500 hover:bg-red-600 text-white font-[500] py-2 px-2 text-[10px] pr-6 rounded flex items-center justify-center gap-2">
               <LuBookCheck size={15} /> Generate OMR
             </button>
