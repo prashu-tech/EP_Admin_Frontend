@@ -63,14 +63,14 @@ export default function PaperMobile() {
 
                     {/* Search Bar */}
                   <div className="flex justify-center mt-4">
-                    <div className="relative w-100 max-w-md justify-center">
+                    <div className="relative w-100 max-w-md justify-center mx-4 ">
                       <input
                         type="text"
                         placeholder="Search Tests"
-                        className="w-full px-4 py-2 pl-10 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 font-medium "
+                        className=" w-full px-4 py-3 pl-10 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#F5F7FA] font-medium text-xl "
                       />
                       <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                        <FaSearch className="h-5 w-5 text-gray-400" />
+                        <FaSearch className="h-5 w-4 text-gray-400 font-medium" />
                       </div>
                     </div>
                   </div>
@@ -82,40 +82,40 @@ export default function PaperMobile() {
 
 
                 {/* Form Container */}
-                <div className="bg-white p-6  rounded-lg w-full md:w-2/3 md:ml-100  mt-12 ml-4  max-w-[calc(100%-2rem)] shadow-sm shadow-gray-500 ">
-                    <h2 className="font-bold mb-4 text-xl">Details to Generate Test</h2>
+                <div className="bg-white p-6  w-full md:w-2/3 md:ml-100  mt-10 ml-4  max-w-[calc(100%-2rem)]  shadow-[0_2px_6px_rgba(0,0,0,0.1)] shadow-gray-400 ">
+                    <h2 className="font-medium mb-4 text-xl">Details to Generate Test</h2>
                     <div className="space-y-3">
                         <input
                             type="text"
                             name="duration"
                             placeholder="Question Paper Duration"
-                            className="w-full p-2 border border-gray-500 rounded mt-4 text-xl"
+                            className="w-full p-2 border border-gray-600 rounded mt-2 text-xl"
                             onChange={handleChange}
                         />
                         <input
                             type="text"
                             name="marks"
                             placeholder="Question Paper Marks"
-                            className="w-full p-2 border border-gray-500 rounded mt-4 text-xl"
+                            className="w-full p-2 border border-gray-600 rounded mt-4 text-xl"
                             onChange={handleChange}
                         />
                         <input
                             type="date"
                             name="date"
-                            className="w-full p-2 border border-gray-500 rounded mt-4 text-xl text-gray-500 font-medium"
+                            className="w-full p-2 border border-gray-600 rounded mt-4 text-xl text-gray-500 font-medium"
                             onChange={handleChange}
                         />
                         <input
                             type="text"
                             name="instruction"
                             placeholder="Instruction for candidate"
-                            className="w-full p-2 border border-gray-500 rounded mt-4 text-xl"
+                            className="w-full p-2 border border-gray-600 rounded mt-4 text-xl"
                             onChange={handleChange}
                         />
                         <p className="mt-4 text-gray-500  text-medium font-semibold text-xl">Candidate Detail Feild</p>
                         <select
                             name="batch"
-                            className="w-full p-2 border border-gray-500 rounded mt-0 text-xl text-gray-500 font-bold"
+                            className="w-full p-2 border border-gray-600 rounded mt-0 text-xl text-gray-500 font-bold"
                             onChange={handleChange}
                         >
                             <option value="">Batch No</option>
@@ -128,20 +128,20 @@ export default function PaperMobile() {
                 {/* Buttons */}
                 <div className="flex justify-center  gap-4 mt-6 ">
                     <button
-                        className="bg-[#007AFF] text-white px-14 py-2 text-lg rounded ml-14 "
+                        className="bg-[#007AFF] text-white px-14 py-2 text-xl rounded ml-14 "
                         onClick={handleProceed}
                     >
                         Proceed
                     </button>
-                    <button className="bg-[#F93535] text-white px-14 py-2 text-lg rounded mr-14">
+                    <button className="bg-[#F93535] text-white px-14 py-2 text-xl rounded mr-14">
                         Close
                     </button>
                 </div>
 
                 {/* Print Preview */}
                 <div className="flex flex-col  w-full md:w-1/2  px-10 md:px-0  justify-center items-center mt-6 mb-20 ">
-                    <h3 className="font-semibold italic mb-4 self-start ml-0 md:ml-[34rem]">Print Preview</h3>
-                    <div className="border-2 border-gray-400 border-dashed w-full  h-72 flex flex-col items-center justify-center pl-4 pt-4 mb-4 ml-0 md:ml-[67rem] bg-gray-50">
+                    <h3 className="font-bold italic mb-3 self-start ml-0 md:ml-[34rem]">Print Preview</h3>
+                    <div className="border-4 border-gray-400 border-dashed w-full  h-50 flex flex-col items-center justify-center pl-4 pt-4 mb-4 ml-0 md:ml-[67rem] bg-gray-50">
                         {submittedData ? (
                             <div>
                                 <p><strong>Duration:</strong> {submittedData.duration}</p>

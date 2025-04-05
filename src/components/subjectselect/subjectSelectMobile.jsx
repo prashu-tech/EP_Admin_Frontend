@@ -112,7 +112,7 @@ const handleContinueClick = () => {
       <input
         type="text"
         placeholder="Search Tests"
-        className="w-full px-4 py-2 pl-10 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 font-medium "
+        className="w-full px-4 py-3 pl-10 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 font-medium "
       />
       <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
         <FaSearch className="h-5 w-5 text-gray-400" />
@@ -125,7 +125,7 @@ const handleContinueClick = () => {
 
       {/* Top Section: Create Test */}
       <div className="text-center mb-8 md:ml-50 mt-2">
-        <h3 className="text-2xl  font-medium text-black text-center mb-2 sm:text-lg md:text-xl mt-12">Create Test</h3>
+        <h3 className="text-2xl  font-medium text-black text-center mb-2 sm:text-lg md:text-xl mt-8">Create Test</h3>
         <h2 className="text-2xl text-black-500 text-center mt-3">Name your Test</h2>
         <input
           type="text"
@@ -192,9 +192,9 @@ const handleContinueClick = () => {
         {/* Left Section: Select Difficulty and Subjects */}
         <div className="lg:col-span-2 flex flex-col gap-6 mt-4">
           {/* Difficulty */}
-          <div className="relative mb-8">
+          <div className="relative my-3">
             <h3 className="text-2xl font-semibold">Select Difficulty</h3>
-            <p className="mt-5">Select at least 1 difficulty for each subject</p>
+            <p className="mt-3">Select at least 1 difficulty for each subject</p>
             <select
               value={difficulty}
               onChange={(e) => setDifficulty(e.target.value)}
@@ -212,9 +212,9 @@ const handleContinueClick = () => {
           </div>
 
           {/* Subjects */}
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold mt-1">Select Subjects</h3>
-            <div className="flex flex-wrap gap-4 mt-3">
+          <div className="mb-12">
+            <h3 className="text-xl font-medium mt-1">Select Subjects</h3>
+            <div className="flex flex-wrap gap-4 mt-4">
               {[
                 { name: "Physics", img: "physic.png" },
                 { name: "Chemistry", img: "chemistry.png" },
@@ -224,9 +224,9 @@ const handleContinueClick = () => {
                 <div
                   key={subject.name}
                   onClick={() => handleSubjectChange(subject.name)}
-                  className={`cursor-pointer p-4 w-full lg:w-[357px] font-[700] h-[50px] drop-shadow-md rounded-2xl text-center ${
+                  className={`cursor-pointer p-4 w-full lg:w-[357px] font-[700] h-[50px] drop-shadow-lg rounded-2xl text-center ${
                     selectedSubjects.includes(subject.name)
-                      ? "bg-blue-500 text-white border-2 border-purple-500"
+                      ? "bg-blue-500 text-white border-2"
                       : "bg-white border-gray-400"
                   } flex items-center justify-start gap-4 transition-colors duration-300`}
                 >
@@ -241,7 +241,7 @@ const handleContinueClick = () => {
       </div>
 
       {/* Continue Button */}
-      <div className="w-full flex justify-end mt-5 mb-15 ">
+      <div className="w-full flex justify-end mt-3 mb-15 ">
         <button
           className="bg-blue-500 text-white py-2 px-6 rounded-full flex items-center"
           onClick={handleContinueClick}

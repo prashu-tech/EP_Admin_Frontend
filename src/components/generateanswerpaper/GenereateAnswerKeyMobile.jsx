@@ -1,9 +1,4 @@
 
-
-
-
-
-
 "use client";
 import React, { useState } from "react";
 import { FaChevronCircleLeft } from "react-icons/fa";
@@ -38,14 +33,14 @@ const GenerateAnswerKeyMobile = () => {
 
            {/* Search Bar */}
           <div className="flex justify-center mt-4">
-            <div className="relative w-full max-w-md">
+            <div className="relative w-full  mx-1">
               <input
                 type="text"
                 placeholder="Search Tests"
-                className="w-full px-4 py-2 pl-10 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 font-medium "
+                className="w-full px-6 py-3 pl-10 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#F5F7FA] font-medium "
               />
               <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                <FaSearch className="h-5 w-5 text-gray-400" />
+                <FaSearch className="h-5 w-4 text-gray-400" />
               </div>
             </div>
           </div>
@@ -53,7 +48,7 @@ const GenerateAnswerKeyMobile = () => {
 
 
         {/* Toggle Section with Action Buttons */}
-        <div className="border border-gray-100 w-full shadow-[0_4px_6px_rgba(0,0,0,0.3)] p-4 rounded-lg mt-5  ">
+        <div className="border border-gray-100 w-full shadow-[0_4px_12px_rgba(0,0,0,0.4)] p-4 mt-5  ">
           <h3 className="font-semibold mb-4">Details to Generate Answer Key</h3>
           <div className="flex flex-col gap-4 mb-12 ">
             {[
@@ -79,7 +74,7 @@ const GenerateAnswerKeyMobile = () => {
               </label>
             ))}
           </div>
-          <div className="flex justify-end mt-4 gap-3">
+          <div className="flex justify-center mt-4 gap-3">
             <button className="bg-blue-500 text-white w-30 py-2 rounded-md cursor-pointer transition duration-300 hover:bg-blue-600">
               Proceed
             </button>
@@ -92,7 +87,7 @@ const GenerateAnswerKeyMobile = () => {
         {/* Print Preview Section */}
         <div className="mt-8 text-center">
           <h3 className="font-semibold italic text-left text-xl">Print Preview</h3>
-          <div className="border-5 border-gray-300 border-dashed h-74 mt-1 rounded-md bg-white"></div>
+          <div className="border-6 border-gray-300 border-dashed h-54 mt-1 rounded-md bg-emerald-400"></div>
           <button className="bg-red-500 text-white w-full py-1 mt-4 rounded-md cursor-pointer transition duration-300 hover:bg-red-600 text-2xl">
             Print
           </button>
