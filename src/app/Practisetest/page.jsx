@@ -1,9 +1,9 @@
 "use client";
 
-import MobileNavbar from "@/components/mobileadminnav/nav";
-import Nav from "@/components/nav/nav";
+import MobileNavbar  from "@/components/mobilenav/mobilenav";
+import DesktopNavbar from "@/components/desktopnav/nav";
 import Practisetest from "@/components/Practisetest/test";
-import Sidebar from "@/components/sidebar/sidebar";
+import Sidebar from "@/components/desktopsidebar/sidebar";
 import TestMobile from "@/components/Practisetest/testmobile";
 
 function Page() {
@@ -24,7 +24,7 @@ function Page() {
 
         {/* Main Content Section */}
         <div className="w-full md:w-5/6 flex-1 bg-white">
-          <Nav />
+          <DesktopNavbar />
           <div className=""> 
             <Practisetest /> 
           </div>

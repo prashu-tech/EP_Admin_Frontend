@@ -1,5 +1,4 @@
 @import "tailwindcss";
-
 @layer utilities {
   /* Custom Transparent Scrollbar */
   .transparent-scrollbar::-webkit-scrollbar {

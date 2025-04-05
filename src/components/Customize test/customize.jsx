@@ -121,11 +121,11 @@ export default function StudentTestTable() {
               <th className="p-4 border border-r-white">ACTIONS</th>
             </tr>
           </thead>
-          <tbody className="text-center">
+          <tbody className="text-center"> 
             {/* Map through filtered students */}
             {filteredStudents.map((student) => (
               <tr key={student.id} className="border-b hover:bg-gray-50">
-                <td className="p-4 border text-center font-bold">{student.id}</td>
+                <td className="p-4 border text-left font-bold">{student.id}</td>
                 <td className="p-4 border">
                   <Link href={`/student/${student.id}`} className="text-black-600 hover:underline">
                     {student.name}
@@ -138,11 +138,12 @@ export default function StudentTestTable() {
                   </span>
                 </td>
                 <td className="p-4 border-b border-black text-[#00B0FF]">{student.subject}</td>
-                <td className="p-4 border">
+                {/* Centering Marks and Text */}
+                <td className="p-4 border-l-1 flex flex-col items-center justify-center">
                   <div className="relative w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
                     <div className="absolute top-0 left-0 h-full bg-teal-400" style={{ width: "66%" }}></div>
                   </div>
-                  <span className="block text-sm text-gray-600 mt-1">{student.marks}</span>
+                  <span className="block text-sm text-gray-600 text-center mt-1">{student.marks}</span>
                 </td>
                 <td className="p-4 border text-center">
                   <button

@@ -12,16 +12,27 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 const Sidebar = () => {
-  const [AdminId, setAdminId] = useState("");
+  const [AdminId, setAdminId] = useState(null);
   const pathname = usePathname();
 
   useEffect(() => {
-    const storedAdmin = localStorage.getItem("admin");
-    if (storedAdmin) {
-      const parsedAdmin = JSON.parse(storedAdmin);
-      setAdminId(parsedAdmin.AdminId);
-    } else {
-      console.error("Admin data is not available in localStorage.");
+    if (typeof window !== "undefined") {
+      const storedAdmin = localStorage.getItem("admin");
+
+      if (storedAdmin) {
+        try {
+          const parsedAdmin = JSON.parse(storedAdmin);
+          if (parsedAdmin?.AdminId) {
+            setAdminId(parsedAdmin.AdminId);
+          } else {
+            console.warn("AdminId is missing in admin object.");
+          }
+        } catch (err) {
+          console.error("Failed to parse admin from localStorage:", err);
+        }
+      } else {
+        console.warn("Admin data is not available in localStorage.");
+      }
     }
   }, []);
 
@@ -29,12 +40,7 @@ const Sidebar = () => {
     {
       label: "View Students",
       icon: <AiOutlineEye className="text-xl" />,
-      href: `/viewstudents?addedByAdminId=${AdminId}`,
-    },
-    {
-      label: "Batches",
-      icon: <PiStudent className="text-xl" />,
-      href: `/batches?addedByAdminId=${AdminId}`,
+      href: "/view_student",
     },
     {
       label: "Dashboard",
@@ -74,7 +80,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="hidden md:block fixed top-0 left-0 h-screen bg-[#007AFF] text-white w-1/6 z-50 shadow-md ">
+    <div className="hidden md:block fixed top-0 left-0 h-screen bg-[#007AFF] text-white w-1/6 z-50 shadow-md">
       {/* Logo Section */}
       <div className="pt-4 pr-4 pl-4 flex justify-center items-center">
         <img
@@ -105,6 +111,19 @@ const Sidebar = () => {
             </li>
           );
         })}
+
+        {/* Conditional Rendering: Only show if AdminId exists */}
+        {AdminId && (
+          <li>
+            <Link
+              href={`/batches?addedByAdminId=${AdminId}`}
+              className="flex items-center space-x-3 px-4 py-3 rounded-md text-sm font-medium transition duration-200 hover:bg-gradient-to-r hover:from-white/80 hover:to-white/0 hover:text-white"
+            >
+              <PiStudent className="text-xl" />
+              <span className="text-lg">Batches</span>
+            </Link>
+          </li>
+        )}
       </ul>
     </div>
   );
