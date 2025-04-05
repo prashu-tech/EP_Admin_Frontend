@@ -1,6 +1,6 @@
 "use client";
 
-import MobileNavbar from "C:/Users/user/Desktop/EP_Admin_Frontend/src/components/moblieadminnav/nav.jsx";
+//import MobileNavbar from "C:/Users/user/Desktop/EP_Admin_Frontend/src/components/moblieadminnav/nav.jsx";
 
 import React, { useState } from "react";
 
@@ -10,6 +10,7 @@ import Sidebar from "@/components/desktopsidebar/sidebar";
 import DesktopNavbar from "@/components/desktopnav/nav";
 import Schedule_test from "@/components/Schedule_test/Schedule_test";
 import Mobile_schedule_test from "@/components/Moblie/moblie_schedule_test";
+import MobileNavbar from "@/components/Moblieadminnav/nav";
 
 
 const Page = () => {
@@ -37,7 +38,7 @@ const Page = () => {
 
         <main className="hidden md:block">
           
-            <Schedule_test />
+            <Mobile_schedule_test />
           
         </main>
 

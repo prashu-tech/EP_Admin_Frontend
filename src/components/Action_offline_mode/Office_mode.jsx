@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation"; // Import useRouter for navigation
 
 const Home = () => {
   const router = useRouter(); 
+  
   return (
     <div className="relative min-h-screen bg-white">
       <div className="flex items-center justify-center p-4">
@@ -79,7 +80,9 @@ const Home = () => {
 
           {/* Action Buttons with Icons */}
           <div className="flex w-full justify-center gap-6 sm:gap-6 my-6 overflow-x-auto">
-            <button className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 text-[10px] pr-6 rounded flex items-center justify-center gap-2">
+            <button className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 text-[10px] pr-6 rounded flex items-center justify-center gap-2 "
+            onClick={() => router}
+            >
               <FaRegCircleQuestion size={12} /> Generate Question Paper
             </button>
             <button className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-2 text-[10px] pr-6 rounded flex items-center justify-center gap-2">

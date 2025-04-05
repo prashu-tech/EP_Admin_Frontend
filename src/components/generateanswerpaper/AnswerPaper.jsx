@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { FaChevronCircleLeft } from "react-icons/fa";
 import { IoIosArrowBack } from 'react-icons/io';
+import Link from "next/link";
 
 export default function AnswerPaper() {
   return (
@@ -12,9 +13,11 @@ export default function AnswerPaper() {
         <div className="relative left-24">
       {/* Top Left Blue Button */}
       <div className=" top-2 hidden md:block" >
-        <button className="bg-blue-600 hover:bg-blue-600 text-white font-semibold p-3 rounded-full shadow-[0px_2px_8px_rgba(0,0,0,0.5)] flex items-center justify-center">
+      <Link href="/offline_mode"> {/* Replace with your desired route */}
+        <button className="bg-blue-600 hover:bg-blue-600 text-white font-semibold p-3 rounded-full shadow-[0px_2px_6px_0px_rgba(0,0,0,0.26)] flex items-center justify-center">
           <IoIosArrowBack size={15} />
         </button>
+        </Link>
       </div>
     </div>
 

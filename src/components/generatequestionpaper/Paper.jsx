@@ -2,6 +2,7 @@
 import { FaChevronCircleLeft } from "react-icons/fa";
 import { useState } from "react";
 import { IoIosArrowBack } from 'react-icons/io';
+import Link from "next/link";
 
 
 export default function Paper() {
@@ -26,6 +27,8 @@ export default function Paper() {
         setSubmittedData(formData); // Store data to show in Print Preview
     };
 
+    
+
     return (
         <>
             <div className="overflow-hidden">
@@ -39,9 +42,12 @@ export default function Paper() {
                        <div className="relative left-94">
                           {/* Top Left Blue Button */}
                           <div className=" top-4 hidden md:block" >
-                            <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold p-3 rounded-full shadow-[0px_2px_8px_rgba(0,0,0,0.5)] flex items-center justify-center">
-                              <IoIosArrowBack size={15} />
-                            </button>
+                          <Link href="/offline_mode"> {/* Replace with your desired route */}
+          <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold p-3 rounded-full shadow-[0px_2px_6px_0px_rgba(0,0,0,0.26)] flex items-center justify-center">
+            <IoIosArrowBack size={15} />
+          </button>
+        </Link>
+
                           </div>
                         </div>
                     

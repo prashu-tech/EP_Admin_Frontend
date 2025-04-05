@@ -1,15 +1,16 @@
 "use client";
 
-import MobileNavbar from "C:/Users/user/Desktop/EP_Admin_Frontend/src/components/moblieadminnav/nav.jsx";
+//import MobileNavbar from "C:/Users/user/Desktop/EP_Admin_Frontend/src/components/moblieadminnav/nav.jsx";
 
 import React, { useState } from "react";
-import Mobile_Office_mode from "@/components/Moblie/moblie_offline_mode";
+//import Mobile_Office_mode from "@/components/Moblie/moblie_offline_mode";
 
 import MobilebottomNavbar from "@/components/mobilenav/MobileBottomNavbar";
 import Sidebar from "@/components/desktopsidebar/sidebar";
 import DesktopNavbar from "@/components/desktopnav/nav";
 import TestPreview from "@/components/Action_test_preview/Test_preview";
 import Moblie_test_Preview from "@/components/Moblie/moblie_test_preview";
+import MobileNavbar from "@/components/mobilenav/mobilenav";
 
 const Page = () => {
   const [selectedMode, setSelectedMode] = useState("Practice"); // State to track selected mode

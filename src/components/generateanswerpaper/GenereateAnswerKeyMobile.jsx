@@ -87,7 +87,7 @@ const GenerateAnswerKeyMobile = () => {
         {/* Print Preview Section */}
         <div className="mt-8 text-center">
           <h3 className="font-semibold italic text-left text-xl">Print Preview</h3>
-          <div className="border-6 border-gray-300 border-dashed h-54 mt-1 rounded-md bg-emerald-400"></div>
+          <div className="border-6 border-gray-300 border-dashed h-54 mt-1 rounded-md bg-gray-100"></div>
           <button className="bg-red-500 text-white w-full py-1 mt-4 rounded-md cursor-pointer transition duration-300 hover:bg-red-600 text-2xl">
             Print
           </button>

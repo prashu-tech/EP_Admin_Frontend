@@ -1,6 +1,6 @@
 "use client";
 
-import MobileNavbar from "C:/Users/user/Desktop/EP_Admin_Frontend/src/components/moblieadminnav/nav.jsx";
+//import MobileNavbar from "C:/Users/user/Desktop/EP_Admin_Frontend/src/components/moblieadminnav/nav.jsx";
 
 import React, { useState } from "react";
 
@@ -10,6 +10,7 @@ import Sidebar from "@/components/desktopsidebar/sidebar";
 import DesktopNavbar from "@/components/desktopnav/nav";
 import Desktop_student from "@/components/student/view_student";
 import Mobile_desktop_student from "@/components/Moblie/mobile_view_student";
+import MobileNavbar from "@/components/mobilenav/mobilenav";
 
 
 const Page = () => {
