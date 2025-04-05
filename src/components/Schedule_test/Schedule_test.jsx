@@ -165,7 +165,7 @@ const Schedule_test = () => {
       <div className="relative">
         <div className="absolute top-4 left-4 z-50 hidden md:block">
           <button
-            onClick={() => router.push("/dashboard")}
+            onClick={() => router.back()} // Navigates to the previous page
             className="bg-blue-500 hover:bg-blue-600 text-white font-semibold p-3 rounded-full shadow-lg flex items-center justify-center"
           >
             <IoIosArrowBack size={20} />

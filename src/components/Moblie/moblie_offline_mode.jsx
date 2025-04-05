@@ -4,11 +4,11 @@ import { MdOutlineSchedule } from "react-icons/md";
 import { CiPen } from "react-icons/ci";
 import { LuBookCheck } from "react-icons/lu";
 import { FaRegCircleQuestion } from "react-icons/fa6";
-import { FaEye, FaQuestionCircle } from "react-icons/fa";
+import { FaEye, FaQuestionCircle, FaSearch } from "react-icons/fa";
 import { IoIosArrowBack } from "react-icons/io";
 import { useRouter } from "next/navigation";
 
-const Home = () => {
+const Mobile_offline_mode = () => {
   const router = useRouter();
 
   return (
@@ -19,7 +19,19 @@ const Home = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* Back Button */}
+      {/* Search Bar */}
+  <div className="flex justify-center mt-4">
+    <div className="relative w-full max-w-md">
+      <input
+        type="text"
+        placeholder="Search Tests"
+        className="w-full px-4 py-2 pl-10 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 font-medium "
+      />
+      <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+        <FaSearch className="h-5 w-5 text-gray-400" />
+      </div>
+    </div>
+  </div>
      
 
       {/* Header Section */}
@@ -81,4 +93,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Mobile_offline_mode;

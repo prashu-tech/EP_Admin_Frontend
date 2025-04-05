@@ -30,7 +30,9 @@ const TestPreview = () => {
       <div className="relative">
         {/* Top Left Blue Button */}
         <div className="absolute top-4 left-4 z-50 ">
-          <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold p-3 rounded-full shadow-lg flex items-center justify-center">
+          <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold p-3 rounded-full shadow-lg flex items-center justify-center"
+           onClick={() => router.back()} // Navigates to the previous page
+          >
             <IoIosArrowBack size={20} />
           </button>
         </div>

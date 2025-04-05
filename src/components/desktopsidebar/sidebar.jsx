@@ -40,7 +40,7 @@ const Sidebar = () => {
     {
       label: "View Students",
       icon: <AiOutlineEye className="text-xl" />,
-      href: "/desktop_view",
+      href: "/view_student",
     },
     {
       label: "Dashboard",
