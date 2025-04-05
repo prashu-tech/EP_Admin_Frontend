@@ -106,7 +106,7 @@ const MobileNavbar = () => {
             {isDropdownOpen && (
               <div className="ml-8 flex flex-col gap-2">
                 <button
-                  onClick={() => handleNavigation("/tests")}
+                  onClick={() => handleNavigation("/generatetest")}
                   className="flex items-center gap-3 p-2 rounded-lg group transition-all"
                 >
                   <File className="w-5 h-5 text-gray-700 group-hover:text-white" />

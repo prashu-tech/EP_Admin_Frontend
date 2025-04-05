@@ -70,7 +70,7 @@ const Sidebar = () => {
     {
       label: "Generate Test",
       icon: <LuFileInput className="text-xl" />,
-      href: "/papergenerator",
+      href: "/generatetest",
     },
     {
       label: "Result Page",
