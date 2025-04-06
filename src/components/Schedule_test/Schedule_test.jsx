@@ -195,7 +195,7 @@ const Schedule_test = () => {
               <FaEye size={20} /> Test Preview
             </button>
             <button
-              onClick={() => router.push("./office_mode")}
+              onClick={() => router.push("./offline_mode")}
               style={{ backgroundColor: "#FFBB38" }}
               className="text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 hover:bg-yellow-600"
             >

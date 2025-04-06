@@ -8,6 +8,7 @@ import { FaEye, FaQuestionCircle, FaSearch } from "react-icons/fa";
 import { IoIosArrowBack } from "react-icons/io";
 import { useRouter } from "next/navigation";
 
+
 const Mobile_offline_mode = () => {
   const router = useRouter();
 
@@ -48,7 +49,7 @@ const Mobile_offline_mode = () => {
           <FaEye size={20} /> Test Preview
         </button>
         <button
-          onClick={() => router.push("/office_mode")}
+          onClick={() => router.push("/offline_mode")}
           className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg flex items-center gap-2 w-4/5 justify-center"
         >
           <FaQuestionCircle size={20} /> Offline Mode
@@ -72,10 +73,14 @@ const Mobile_offline_mode = () => {
 
       {/* Action Buttons */}
       <div className="flex flex-col space-y-3 items-center my-4">
-        <button className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded flex items-center gap-2 w-4/5 justify-center">
+        <button 
+         onClick={() => router.push("/generatequestionpaper")}
+        className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded flex items-center gap-2 w-4/5 justify-center">
           <FaRegCircleQuestion size={15} /> Generate Question Paper
         </button>
-        <button className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded flex items-center gap-2 w-4/5 justify-center">
+        <button 
+         onClick={() => router.push("/generateanswerpaper")}
+        className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded flex items-center gap-2 w-4/5 justify-center">
           <CiPen size={15} /> Generate Answer Key
         </button>
         <button className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded flex items-center gap-2 w-4/5 justify-center">

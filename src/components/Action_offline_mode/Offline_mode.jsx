@@ -7,7 +7,7 @@ import { FaRegCircleQuestion } from "react-icons/fa6";
 import { FaEye, FaQuestionCircle } from "react-icons/fa";
 import { IoIosArrowBack } from "react-icons/io";
 import { useRouter } from "next/navigation"; // Import useRouter for navigation
-import Link from "next/link"; // Import Link for navigation
+
 
 const Home = () => {
   const router = useRouter(); 
@@ -56,7 +56,7 @@ const Home = () => {
               <FaEye size={20} /> Test Preview
             </button>
             <button
-              onClick={() => router.push("/office_mode")} // Navigate to offline mode page
+              onClick={() => router.push("/offline_mode")} // Navigate to offline mode page
               className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2"
             >
               <FaQuestionCircle size={20} /> Offline Mode
@@ -80,20 +80,20 @@ const Home = () => {
 
           {/* Action Buttons with Icons */}
           <div className="flex w-full justify-center gap-6 sm:gap-6 my-6 overflow-x-auto">
-            <Link 
-              href="/generatequestionpaper"
-            >
-              <button className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-2 text-[10px] pr-6 rounded flex items-center justify-center gap-2">
+         
+              <button
+               onClick={() => router.push("/generatequestionpaper")}
+              className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-2 text-[10px] pr-6 rounded flex items-center justify-center gap-2">
                 <FaRegCircleQuestion size={12} /> Generate Question Paper
               </button>
-            </Link>
-            <Link
-              href="/generateanswerpaper"
-            >
-              <button className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-2 text-[10px] pr-6 rounded flex items-center justify-center gap-2">
+          
+          
+              <button 
+               onClick={() => router.push("/generateanswerpaper")}
+              className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-2 text-[10px] pr-6 rounded flex items-center justify-center gap-2">
                 <CiPen size={15} /> Generate Answer Key
               </button>
-            </Link>
+        
             <button className="bg-red-500 hover:bg-red-600 text-white font-[500] py-2 px-2 text-[10px] pr-6 rounded flex items-center justify-center gap-2">
               <LuBookCheck size={15} /> Generate OMR
             </button>

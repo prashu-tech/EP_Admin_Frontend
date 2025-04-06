@@ -38,7 +38,7 @@ const Page = () => {
 
         <main className="hidden md:block">
           
-            <Mobile_schedule_test />
+            <Schedule_test/>
           
         </main>
 
