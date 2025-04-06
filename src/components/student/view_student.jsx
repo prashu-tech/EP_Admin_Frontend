@@ -12,7 +12,7 @@ const Desktop_student = () => {
   const importButtonRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  const maxStudents = 80; // Maximum number of students allowed
+  const maxStudents = 80;
 
   const [students, setStudents] = useState([
     { id: 1, name: "Ayaan Raje", email: "ayaan@gmail.com", phone: "8246578567", gender: "Male", dob: "07/07/2000", status: "Active" },
@@ -25,7 +25,6 @@ const Desktop_student = () => {
     { id: 8, name: "Sandesh Dagade", email: "sandesh@gmail.com", phone: "8246578567", gender: "Male", dob: "07/07/2000", status: "Active" },
   ]);
 
-  // Function to get the next available ID
   const getNextId = () => {
     const maxId = students.length > 0 ? Math.max(...students.map(student => student.id)) : 0;
     return maxId + 1;
@@ -61,7 +60,7 @@ const Desktop_student = () => {
 
     const formData = new FormData(e.target);
     const newStudent = {
-      id: getNextId(), // Use the next available ID
+      id: getNextId(),
       name: formData.get("name"),
       email: formData.get("email"),
       phone: formData.get("phone"),
@@ -108,7 +107,7 @@ const Desktop_student = () => {
 
       const data = rows.slice(1).map((row) => {
         return {
-          id: getNextId(), // Generate a new ID for each imported student
+          id: getNextId(),
           name: row[1] || "",
           email: row[2] || "",
           phone: row[3] || "",
@@ -141,7 +140,7 @@ const Desktop_student = () => {
       <div className="flex justify-center mb-4">
         <button
           onClick={() => {/* Add navigation logic here */}}
-          className="bg-white justify-center shadow-[0_4px_6px_rgba(0,0,0,0.2)] h-14 w-35 mx-17 border border-gray-300 rounded-lg text-gray-400 text-sm py-3 px-6 font-['Segoe_UI']"
+          className="bg-white justify-center shadow-[0_4px_6px_rgba(0,0,0,0.2)] h-14 w-35 mx-17 border border-gray-300 rounded-lg text-gray-400 text-sm py-3 px-6 font-['Segoe_UI'] cursor-pointer"
         >
           Student
         </button>
@@ -151,13 +150,16 @@ const Desktop_student = () => {
         <main className="max-w-6xl mx-auto">
           <div className="flex justify-end pt-6 -mx-6 items-center mb-4">
             <div className="space-x-3 relative">
-              <button onClick={openAddStudentModal} className="bg-yellow-500 text-white w-V2 w-50 py-2 px-4 rounded-lg hover:bg-yellow-600">
+              <button 
+                onClick={openAddStudentModal} 
+                className="bg-yellow-500 text-white w-V2 w-50 py-2 px-4 rounded-lg hover:bg-yellow-600 cursor-pointer"
+              >
                 Add Student
               </button>
               <button 
                 ref={importButtonRef} 
                 onClick={openModal} 
-                className="text-white py-2 w-50 px-4 rounded-lg hover:bg-[#3DAF6B]" 
+                className="text-white py-2 w-50 px-4 rounded-lg hover:bg-[#3DAF6B] cursor-pointer" 
                 style={{ backgroundColor: "#47BE7D" }}
               >
                 Import Excel
@@ -191,7 +193,7 @@ const Desktop_student = () => {
                       <span className="text-black truncate">{student.status}</span>
                       <button 
                         onClick={() => openViewModal(student)}
-                        className="bg-yellow-400 text-white px-4 rounded-sm hover:bg-yellow-500 whitespace-nowrap text-xs"
+                        className="bg-yellow-400 text-white px-4 rounded-sm hover:bg-yellow-500 whitespace-nowrap text-xs cursor-pointer"
                       >
                         View
                       </button>
@@ -206,7 +208,7 @@ const Desktop_student = () => {
 
       {/* Import Excel Modal */}
       {isModalOpen && (
-        <div className="absolute top-20 right-3  mt-30 bg-white p-6  rounded-lg shadow-lg w-50 z-50">
+        <div className="absolute top-20 right-3 mt-30 bg-white p-6 rounded-lg shadow-lg w-50 z-50">
           <div className="flex flex-col items-center">
             <label className="bg-[#7ADC8CC4] text-gray-700 py-4 px-4 rounded-lg mb-4 flex flex-col items-center space-y-1 border border-gray-300 hover:bg-[#7ADC8C] cursor-pointer">
               <IoDownloadOutline className="h-6 w-6 text-gray-700" />
@@ -220,10 +222,16 @@ const Desktop_student = () => {
             </label>
             <div className="w-50 border border-gray-300 border-t my-4"></div>
             <div className="flex space-x-4 mx-6 justify-end">
-              <button onClick={closeModal} className="bg-gray-300 text-gray-700 text-xs py-2 px-3 rounded-lg hover:bg-gray-400">
+              <button 
+                onClick={closeModal} 
+                className="bg-gray-300 text-gray-700 text-xs py-2 px-3 rounded-lg hover:bg-gray-400 cursor-pointer"
+              >
                 Cancel
               </button>
-              <button onClick={handleFileUpload} className="bg-red-500 text-white text-xs py-2 px-3 rounded-lg hover:bg-red-600">
+              <button 
+                onClick={handleFileUpload} 
+                className="bg-red-500 text-white text-xs py-2 px-3 rounded-lg hover:bg-red-600 cursor-pointer"
+              >
                 Upload
               </button>
             </div>
@@ -247,7 +255,7 @@ const Desktop_student = () => {
             </div>
             <button 
               onClick={closeViewModal}
-              className="mt-4 w-full bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400"
+              className="mt-4 w-full bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 cursor-pointer"
             >
               Close
             </button>
@@ -364,13 +372,13 @@ const Desktop_student = () => {
                 <button
                   type="button"
                   onClick={closeAddStudentModal}
-                  className="w-full bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                  className="w-full bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer"
                   style={{ backgroundColor: "#007AFF" }}
                 >
                   Submit
@@ -391,7 +399,7 @@ const Desktop_student = () => {
             </p>
             <button
               onClick={closeLimitExceededModal}
-              className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+              className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 cursor-pointer"
             >
               OK
             </button>

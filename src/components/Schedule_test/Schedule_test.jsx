@@ -9,9 +9,8 @@ import { useRouter } from "next/navigation";
 
 const Schedule_test = () => {
   const router = useRouter();
-  const currentDate = "2025-04-03"; // Current date as per system instruction (April 03, 2025)
+  const currentDate = "2025-04-03";
 
-  // State for form inputs
   const [formData, setFormData] = useState({
     testName1: "",
     testName2: "",
@@ -21,7 +20,6 @@ const Schedule_test = () => {
     selectBatch: "",
   });
 
-  // State for table data
   const [tableData, setTableData] = useState([
     {
       id: 1,
@@ -70,7 +68,6 @@ const Schedule_test = () => {
     },
   ]);
 
-  // State for popup
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [editFormData, setEditFormData] = useState({
@@ -78,7 +75,6 @@ const Schedule_test = () => {
     endsAt: "",
   });
 
-  // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -87,7 +83,6 @@ const Schedule_test = () => {
     }));
   };
 
-  // Handler for form submission
   const handleScheduleTestSubmit = (e) => {
     e.preventDefault();
     console.log("Form submitted!");
@@ -116,7 +111,6 @@ const Schedule_test = () => {
     });
   };
 
-  // Open popup and set selected row data
   const handleEditClick = (row) => {
     setSelectedRow(row);
     setEditFormData({
@@ -126,7 +120,6 @@ const Schedule_test = () => {
     setIsPopupOpen(true);
   };
 
-  // Handle edit form input changes
   const handleEditInputChange = (e) => {
     const { name, value } = e.target;
     setEditFormData((prev) => ({
@@ -135,7 +128,6 @@ const Schedule_test = () => {
     }));
   };
 
-  // Save changes and update table
   const handleSaveChanges = () => {
     if (selectedRow) {
       const updatedTableData = tableData.map((row) =>
@@ -148,7 +140,6 @@ const Schedule_test = () => {
     }
   };
 
-  // Close popup
   const handleClosePopup = () => {
     setIsPopupOpen(false);
     setSelectedRow(null);
@@ -165,8 +156,8 @@ const Schedule_test = () => {
       <div className="relative">
         <div className="absolute top-4 left-4 z-50 hidden md:block">
           <button
-            onClick={() => router.back()} // Navigates to the previous page
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold p-3 rounded-full shadow-lg flex items-center justify-center"
+            onClick={() => router.back()}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold p-3 rounded-full shadow-lg flex items-center justify-center cursor-pointer"
           >
             <IoIosArrowBack size={20} />
           </button>
@@ -179,7 +170,7 @@ const Schedule_test = () => {
             <div className="flex justify-center hidden md:block mb-4 pt-0">
               <button
                 onClick={() => router.push("/generate-test")}
-                className="bg-white shadow-[0_4px_6px_rgba(0,0,0,0.2)] h-14 border border-gray-300 rounded-lg text-gray-400 text-sm py-3 px-6 font-['Segoe_UI']"
+                className="bg-white shadow-[0_4px_6px_rgba(0,0,0,0.2)] h-14 border border-gray-300 rounded-lg text-gray-400 text-sm py-3 px-6 font-['Segoe_UI'] cursor-pointer"
               >
                 Generate Test
               </button>
@@ -190,20 +181,20 @@ const Schedule_test = () => {
             <button
               onClick={() => router.push("./test_preview")}
               style={{ backgroundColor: "#FFBB38" }}
-              className="text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 hover:bg-yellow-600"
+              className="text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 hover:bg-yellow-600 cursor-pointer"
             >
               <FaEye size={20} /> Test Preview
             </button>
             <button
               onClick={() => router.push("./offline_mode")}
               style={{ backgroundColor: "#FFBB38" }}
-              className="text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 hover:bg-yellow-600"
+              className="text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 hover:bg-yellow-600 cursor-pointer"
             >
               <FaQuestionCircle size={20} /> Offline Mode
             </button>
             <button
               onClick={() => router.push("/schedule_test")}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2"
+              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 cursor-pointer"
             >
               <MdOutlineSchedule size={20} /> Schedule Test
             </button>
@@ -217,13 +208,13 @@ const Schedule_test = () => {
               <div className="flex space-x-4 mb-4">
                 <button
                   style={{ backgroundColor: "#007AFF80" }}
-                  className="bg-blue-100 text-sm text-white px-1 py-1 rounded-sm"
+                  className="bg-blue-100 text-sm text-white px-1 py-1 rounded-sm cursor-pointer"
                 >
                   Total Question:16
                 </button>
                 <button
                   style={{ backgroundColor: "#007AFF80" }}
-                  className="bg-blue-100 -mx-3 text-sm text-white px-1 py-1 rounded-sm"
+                  className="bg-blue-100 -mx-3 text-sm text-white px-1 py-1 rounded-sm cursor-pointer"
                 >
                   Question Count:4
                 </button>
@@ -314,7 +305,7 @@ const Schedule_test = () => {
 
             <button
               onClick={handleScheduleTestSubmit}
-              className="mt-4 bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600"
+              className="mt-4 bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 cursor-pointer"
             >
               SCHEDULE TEST
             </button>
@@ -351,7 +342,7 @@ const Schedule_test = () => {
                           <td className="py-4 px-2 w-28 font-roboto">
                             <button
                               onClick={() => handleEditClick(row)}
-                              className="border w-20 text-black px-4 rounded-sm hover:bg-gray-300 whitespace-nowrap text-xs"
+                              className="border w-20 text-black px-4 rounded-sm hover:bg-gray-300 whitespace-nowrap text-xs cursor-pointer"
                             >
                               Edit
                             </button>
@@ -368,9 +359,9 @@ const Schedule_test = () => {
 
         {/* Popup Modal */}
         {isPopupOpen && (
-          <div className="fixed inset-0  bg-opacity-0 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="bg-white  rounded-lg shadow-lg w-full max-w-md">
-              <div style={{ backgroundColor: "#007AFF" }} className="py-2 px-4 ">
+          <div className="fixed inset-0 bg-opacity-0 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg shadow-lg w-full max-w-md">
+              <div style={{ backgroundColor: "#007AFF" }} className="py-2 px-4">
                 <h2 className="text-lg font-semibold text-white">Edit Schedule Detail</h2>
               </div>
               <div className="grid p4 grid-cols-2 gap-4 mt-4">
@@ -382,7 +373,7 @@ const Schedule_test = () => {
                     value={editFormData.scheduledAt}
                     onChange={handleEditInputChange}
                     min={currentDate}
-                    className="mt-1 block w-[190px] ml-4 p-1 border border-gray-300 rounded-sm "
+                    className="mt-1 block w-[190px] ml-4 p-1 border border-gray-300 rounded-sm"
                   />
                 </div>
                 <div className="flex flex-col">
@@ -397,16 +388,17 @@ const Schedule_test = () => {
                   />
                 </div>
               </div>
-              <div className="flex justify-end mt-12   bg-gray-100  p-4  space-x-4">
+              <div className="flex justify-end mt-12 bg-gray-100 p-4 space-x-4">
                 <button
                   onClick={handleClosePopup}
-                  className="bg-gray-300 text-black px-8 py-2 rounded-md"style={{ backgroundColor: "#D9D9D9" }}
+                  className="bg-gray-300 text-black px-8 py-2 rounded-md cursor-pointer"
+                  style={{ backgroundColor: "#D9D9D9" }}
                 >
                   Close
                 </button>
                 <button
                   onClick={handleSaveChanges}
-                  className="bg-red-500 text-white px-4 mr-6  py-2 rounded-md hover:bg-red-600"
+                  className="bg-red-500 text-white px-4 mr-6 py-2 rounded-md hover:bg-red-600 cursor-pointer"
                 >
                   Save Changes
                 </button>

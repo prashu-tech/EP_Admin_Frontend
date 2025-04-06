@@ -10,12 +10,11 @@ import {
 import { MdOutlineSchedule } from "react-icons/md";
 import Image from "next/image";
 import React from "react";
-import { IoIosArrowBack } from "react-icons/io"; // Back arrow icon
-import { useRouter } from "next/navigation"; // Import useRouter for navigation
-
+import { IoIosArrowBack } from "react-icons/io";
+import { useRouter } from "next/navigation";
 
 const TestPreview = () => {
-  const router = useRouter(); // Initialize the router
+  const router = useRouter();
   return (
     <>
       <Head>
@@ -29,9 +28,10 @@ const TestPreview = () => {
 
       <div className="relative">
         {/* Top Left Blue Button */}
-        <div className="absolute top-4 left-4 z-50 ">
-          <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold p-3 rounded-full shadow-lg flex items-center justify-center"
-           onClick={() => router.back()} // Navigates to the previous page
+        <div className="absolute top-4 left-4 z-50">
+          <button 
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold p-3 rounded-full shadow-lg flex items-center justify-center cursor-pointer"
+            onClick={() => router.back()}
           >
             <IoIosArrowBack size={20} />
           </button>
@@ -43,7 +43,7 @@ const TestPreview = () => {
           {/* Header Section */}
           <div className="flex justify-center mb-4">
             <div className="flex justify-center hidden md:block mb-4 pt-0">
-              <button className="bg-white shadow-[0_4px_6px_rgba(0,0,0,0.2)] h-14 border border-gray-300 rounded-lg text-gray-400 text-sm py-3 px-6 font-['Segoe_UI']">
+              <button className="bg-white shadow-[0_4px_6px_rgba(0,0,0,0.2)] h-14 border border-gray-300 rounded-lg text-gray-400 text-sm py-3 px-6 font-['Segoe_UI'] cursor-pointer">
                 Generate Test
               </button>
             </div>
@@ -52,29 +52,30 @@ const TestPreview = () => {
           {/* Main Options with React Icons */}
           <div className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-8 my-4">
             <button 
-            onClick={() => router.push("./test_preview")} 
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2">
+              onClick={() => router.push("./test_preview")} 
+              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 cursor-pointer"
+            >
               <FaEye size={20} /> Test Preview
             </button>
             <button
-            onClick={() => router.push("./offline_mode")} 
+              onClick={() => router.push("./offline_mode")} 
               style={{ backgroundColor: "#FFBB38" }}
-              className="text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 hover:bg-yellow-600"
+              className="text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 hover:bg-yellow-600 cursor-pointer"
             >
               <FaQuestionCircle size={20} /> Offline Mode
             </button>
             <button
-            onClick={() => router.push("./schedule_test")} 
+              onClick={() => router.push("./schedule_test")} 
               style={{ backgroundColor: "#FFBB38" }}
-              className="text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 hover:bg-yellow-600"
+              className="text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 hover:bg-yellow-600 cursor-pointer"
             >
               <MdOutlineSchedule size={20} /> Schedule Test
             </button>
           </div>
 
           {/* Test Details Heading */}
-          <div className="flex justify-center  mb-4 pt-6">
-            <h2 className="text-xl  hidden md:block font-semibold">
+          <div className="flex justify-center mb-4 pt-6">
+            <h2 className="text-xl hidden md:block font-semibold">
               Test Details
             </h2>
           </div>
@@ -222,13 +223,13 @@ const TestPreview = () => {
                     <div className="flex space-x-2">
                       <button
                         style={{ backgroundColor: "#007AFF80" }}
-                        className="text-white w-fit text-[10px] font-medium px-3 py-1 rounded-md hover:bg-[#007AFF] transition"
+                        className="text-white w-fit text-[10px] font-medium px-3 py-1 rounded-md hover:bg-[#007AFF] transition cursor-pointer"
                       >
                         Total Questions: 11
                       </button>
                       <button
                         style={{ backgroundColor: "#007AFF80" }}
-                        className="text-white w-fit text-[10px] font-medium px-3 py-1 rounded-md hover:bg-[#007AFF] transition"
+                        className="text-white w-fit text-[10px] font-medium px-3 py-1 rounded-md hover:bg-[#007AFF] transition cursor-pointer"
                       >
                         Total Marks: 44
                       </button>
@@ -295,13 +296,13 @@ const TestPreview = () => {
                     <div className="flex space-x-2">
                       <button
                         style={{ backgroundColor: "#007AFF80" }}
-                        className="text-white w-fit text-[10px] font-medium px-3 py-1 rounded-md hover:bg-[#007AFF] transition"
+                        className="text-white w-fit text-[10px] font-medium px-3 py-1 rounded-md hover:bg-[#007AFF] transition cursor-pointer"
                       >
                         Total Questions: 11
                       </button>
                       <button
                         style={{ backgroundColor: "#007AFF80" }}
-                        className="text-white w-fit text-[10px] font-medium px-3 py-1 rounded-md hover:bg-[#007AFF] transition"
+                        className="text-white w-fit text-[10px] font-medium px-3 py-1 rounded-md hover:bg-[#007AFF] transition cursor-pointer"
                       >
                         Total Marks: 44
                       </button>
