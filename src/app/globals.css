@@ -1,5 +1,4 @@
 @import "tailwindcss";
-
 @layer utilities {
   /* Custom Transparent Scrollbar */
   .transparent-scrollbar::-webkit-scrollbar {
@@ -19,6 +18,14 @@
 
   .transparent-scrollbar::-webkit-scrollbar-thumb:hover {
     background: transparent;
+  }
+}
+
+@layer utilities{
+  hello::placeholder{
+    color:red;
+    font-weight: bold;
+    
   }
 }
 

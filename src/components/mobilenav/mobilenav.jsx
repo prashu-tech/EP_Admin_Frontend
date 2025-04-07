@@ -1,7 +1,21 @@
 "use client";
 
 import React, { useState } from "react";
-import { Menu, ChevronLeft, FileText, Edit, Layers, Settings, User, LogOut, ChevronDown, ChevronUp, File, Archive } from "lucide-react";
+import { useRouter } from "next/navigation";
+import {
+  Menu,
+  ChevronLeft,
+  FileText,
+  Edit,
+  Layers,
+  Settings,
+  User,
+  LogOut,
+  ChevronDown,
+  ChevronUp,
+  File,
+  Archive,
+} from "lucide-react";
 
 /* -------------------------------------------
    MOBILE SIDEBAR NAV
@@ -9,9 +23,15 @@ import { Menu, ChevronLeft, FileText, Edit, Layers, Settings, User, LogOut, Chev
 const MobileNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const router = useRouter();
+
+  const handleNavigation = (path) => {
+    router.push(path);
+    setIsOpen(false);
+  };
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full block sm:hidden md:hidden lg:hidden xl:hidden">
       {/* Top Navbar */}
       <div className="flex justify-between items-center p-4 bg-white shadow-md">
         <button onClick={() => setIsOpen(!isOpen)}>
@@ -20,8 +40,9 @@ const MobileNavbar = () => {
         <h1 className="text-lg font-bold text-blue-700">Dashboard</h1>
         <img
           src="/mobilenavprofile.png"
-          alt="Logo"
-          className="w-10 h-10 rounded-full shadow-md"
+          alt="Profile"
+          className="w-10 h-10 rounded-full shadow-md cursor-pointer"
+          onClick={() => handleNavigation("/profile")}
         />
       </div>
 
@@ -42,31 +63,38 @@ const MobileNavbar = () => {
         <div className="flex flex-col justify-center items-center p-4 mt-10">
           <img
             src="/mobilenavprofile.png"
-            alt="Nexcore Logo"
+            alt="Profile"
             className="w-16 h-16 rounded-full drop-shadow-lg"
           />
           <h2 className="text-xl font-bold mt-2">Nexcore</h2>
         </div>
 
         <nav className="flex flex-col gap-2 px-4">
-          <button className="flex items-center gap-3 p-2 rounded-lg hover:text-yellow-700 hover:bg-yellow-700 font-semibold transition-all">
-            <FileText className="w-5 h-5" />
-            Practise Test
+          <button
+            onClick={() => handleNavigation("/Practisetest")}
+            className="flex items-center gap-3 p-2 rounded-lg group transition-all"
+          >
+            <FileText className="w-5 h-5 text-gray-700 group-hover:text-white" />
+            <span className="text-gray-900 group-hover:text-white">Practise Test</span>
           </button>
-          <button className="flex items-center gap-3 p-2 rounded-lg hover:text-yellow-700 hover:bg-yellow-700 font-semibold transition-all">
-            <Edit className="w-5 h-5" />
-            Customized Test
+
+          <button
+            onClick={() => handleNavigation("/Customize")}
+            className="flex items-center gap-3 p-2 rounded-lg group transition-all"
+          >
+            <Edit className="w-5 h-5 text-gray-700 group-hover:text-white" />
+            <span className="text-gray-900 group-hover:text-white">Customized Test</span>
           </button>
 
           {/* Paper Generator Dropdown */}
           <div className="flex flex-col">
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center justify-between gap-3 p-2 rounded-lg hover:text-yellow-700 hover:bg-yellow-700 font-semibold transition-all"
+              className="flex items-center justify-between gap-3 p-2 rounded-lg group transition-all"
             >
               <div className="flex items-center gap-3">
-                <Layers className="w-5 h-5" />
-                Paper Generator
+                <Layers className="w-5 h-5 text-gray-700 group-hover:text-white" />
+                <span className="text-gray-900 group-hover:text-white">Paper Generator</span>
               </div>
               {isDropdownOpen ? (
                 <ChevronUp className="w-5 h-5" />
@@ -77,29 +105,49 @@ const MobileNavbar = () => {
 
             {isDropdownOpen && (
               <div className="ml-8 flex flex-col gap-2">
-                <button className="flex items-center gap-3 p-2 rounded-lg hover:text-yellow-700 hover:bg-yellow-100 transition-all">
-                  <File className="w-5 h-5" />
-                  Tests
+                <button
+                  onClick={() => handleNavigation("/generatetest")}
+                  className="flex items-center gap-3 p-2 rounded-lg group transition-all"
+                >
+                  <File className="w-5 h-5 text-gray-700 group-hover:text-white" />
+                  <span className="text-gray-900 group-hover:text-white">Tests</span>
                 </button>
-                <button className="flex items-center gap-3 p-2 rounded-lg hover:text-yellow-700 hover:bg-yellow-100 transition-all">
-                  <Archive className="w-5 h-5" />
-                  Batches
+                <button
+                  onClick={() => handleNavigation("/batches")}
+                  className="flex items-center gap-3 p-2 rounded-lg group transition-all"
+                >
+                  <Archive className="w-5 h-5 text-gray-700 group-hover:text-white" />
+                  <span className="text-gray-900 group-hover:text-white">Batches</span>
                 </button>
               </div>
             )}
           </div>
 
-          <button className="flex items-center gap-3 p-2 rounded-lg hover:text-yellow-700 hover:bg-yellow-700 font-semibold transition-all">
-            <Settings className="w-5 h-5" />
-            Settings
+          <button
+            onClick={() => handleNavigation("/paper_candidate_field")}
+            className="flex items-center gap-3 p-2 rounded-lg group transition-all"
+          >
+            <Settings className="w-5 h-5 text-gray-700 group-hover:text-white" />
+            <span className="text-gray-900 group-hover:text-white">Settings</span>
           </button>
-          <button className="flex items-center gap-3 p-2 rounded-lg hover:text-yellow-700 hover:bg-yellow-700 font-semibold transition-all">
-            <User className="w-5 h-5" />
-            Profile
+
+          <button
+            onClick={() => handleNavigation("/profile")}
+            className="flex items-center gap-3 p-2 rounded-lg group transition-all"
+          >
+            <User className="w-5 h-5 text-gray-700 group-hover:text-white" />
+            <span className="text-gray-900 group-hover:text-white">Profile</span>
           </button>
-          <button className="flex items-center gap-3 p-2 rounded-lg text-red-600 hover:text-zinc-900 hover:bg-red-700 font-semibold transition-all">
-            <LogOut className="w-5 h-5" />
-            Logout
+
+          <button
+            onClick={() => {
+              localStorage.clear();
+              handleNavigation("/");
+            }}
+            className="flex items-center gap-3 p-2 rounded-lg group transition-all"
+          >
+            <LogOut className="w-5 h-5 text-red-600 group-hover:text-white" />
+            <span className="text-red-600 group-hover:text-white">Logout</span>
           </button>
         </nav>
       </div>
