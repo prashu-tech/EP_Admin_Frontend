@@ -1,101 +1,12 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { FaSignOutAlt, FaUserAlt, FaTachometerAlt, FaClipboardList } from "react-icons/fa";
-import { PiStudentFill } from "react-icons/pi";
-import {
-  Menu,
-  ChevronLeft,
-  FileText,
-  Edit,
-  Layers,
-  Settings,
-  User,
-  LogOut,
-  ChevronDown,
-  ChevronUp,
-  File,
-  Archive,
-} from "lucide-react";
-
-/* -------------------------------------------
-   DESKTOP NAVBAR
--------------------------------------------- */
-const Nav = () => {
-  const router = useRouter();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
-
-  const handleProfileClick = () => {
-    router.push("/profile");
-  };
-
-  const handleLogoutClick = () => {
-    localStorage.clear(); 
-    router.push("/"); 
-  };
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  return (
-    <div className="hidden md:flex h-[90px] bg-gradient-to-r from-blue-200 to-yellow-100 p-4 items-center justify-end relative">
-      {/* Right Section with Profile Image */}
-      <div className="flex items-center space-x-4 mr-4">
-        <img
-          src="/profilphoto.png"
-          alt="Profile"
-          className="w-16 h-16 rounded-2xl border border-gray-300 cursor-pointer"
-          onClick={toggleDropdown}
-        />
-        {isDropdownOpen && (
-          <div
-            ref={dropdownRef}
-            className="absolute right-4 top-24 bg-white shadow-lg rounded-lg w-48 py-2 z-50"
-          >
-            <ul className="text-gray-700">
-              <li
-                className="px-4 py-2 hover:bg-gray-100 text-[#007AFF] cursor-pointer flex items-center space-x-2"
-                onClick={handleProfileClick}
-              >
-                <FaUserAlt />
-                <span>Profile</span>
-              </li>
-              <li
-                className="px-4 py-2 hover:bg-gray-100 text-[#F02222] cursor-pointer flex items-center space-x-2"
-                onClick={handleLogoutClick}
-              >
-                <FaSignOutAlt />
-                <span>Logout</span>
-              </li>
-            </ul>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+import React, { useState } from "react";
+import { Menu, ChevronLeft, FileText, Edit, Layers, Settings, User, LogOut, ChevronDown, ChevronUp, File, Archive } from "lucide-react";
 
 /* -------------------------------------------
    MOBILE SIDEBAR NAV
 -------------------------------------------- */
-function MobileNavbar() {
+const MobileNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -202,33 +113,6 @@ function MobileNavbar() {
       )}
     </div>
   );
-}
+};
 
-/* -------------------------------------------
-   MOBILE BOTTOM NAVBAR
--------------------------------------------- */
-function MobilebottomNavbar() {
-  return (
-    <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-10 sm:hidden">
-      <div className="flex justify-around py-2">
-        <a href="/dashboard" className="flex flex-col items-center text-gray-700 hover:text-blue-500">
-          <FaTachometerAlt className="text-2xl text-black hover:text-black" />
-          <span className="text-xs">Dashboard</span>
-        </a>
-
-        <a href="/batches" className="flex flex-col items-center text-gray-700 hover:text-blue-500">
-          <PiStudentFill className="text-2xl text-black hover:text-black" />
-          <span className="text-xs">View Students</span>
-        </a>
-
-        <a href="/papergenerator" className="flex flex-col items-center text-gray-700 hover:text-blue-500">
-          <FaClipboardList className="text-2xl text-black hover:text-black" />
-          <span className="text-xs">Test</span>
-        </a>
-      </div>
-    </div>
-  );
-}
-
-export default Nav;
-export { MobileNavbar, MobilebottomNavbar };
+export default MobileNavbar;

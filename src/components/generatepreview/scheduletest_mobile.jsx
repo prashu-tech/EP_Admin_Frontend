@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
-function Scheduletest() {
+function Scheduletest_mobile() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => {
@@ -21,10 +21,10 @@ function Scheduletest() {
   };
 
   return (
-    <div className="relative overflow-hidden mb-2">
+    <div className="relative h-auto overflow-hidden mb-2">
       {/* Back and Create Buttons */}
-      <div className="flex justify-between items-center sm:mx-8 mt-0 p-0">
-        <button className="flex items-center px-8 py-2 bg-[#FFBB38] text-white rounded-full hover:bg-[#FFBB38] transition">
+      <div className="flex flex-row sm:flex-row justify-between items-center sm:mx-8 mt-4 p-4 sm:p-0">
+        <button className="flex items-center px-8 py-2 bg-[#FFBB38] text-white rounded-full hover:bg-[#FFBB38] transition mb-4 sm:mb-0">
           <FaArrowLeft className="mr-2 font-bold" /> Back
         </button>
         <button
@@ -37,7 +37,7 @@ function Scheduletest() {
 
       {/* Modal (Schedule Test for Batch) */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-centerew ">
           {/* Full-screen blur backdrop */}
           <div
             className="fixed inset-0 backdrop-blur-sm"
@@ -45,36 +45,35 @@ function Scheduletest() {
           ></div>
 
           {/* Modal content */}
-          <div className="relative bg-white p-6 border-[#848080] rounded-xl shadow-lg max-w-screen-sm sm:max-w-lg md:max-w-4xl w-full mx-4 sm:mx-8 overflow-hidden">
+          <div className="relative bg-white p-3 border-[#848080] rounded-xl shadow-lg max-w-screen-sm sm:max-w-lg md:max-w-2xl w-full mx-3 sm:mx-6 overflow-hidden">
             {/* Modal Header */}
-            <h2 className="text-2xl font-semibold mb-4 mt-1">Schedule test for Batch</h2>
+            <h2 className="text-2xl font-semibold mb-5 mt-0">Schedule test for Batch</h2>
 
             {/* Border below the title */}
             <div className="border-b border-gray-300 mb-3"></div>
 
             {/* Total Marks and Question Count */}
-            <div className="flex space-x-4 mb-4 ml-2">
+            <div className="flex  sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-4 ml-2 gap-4">
               <button
                 style={{ backgroundColor: "#007AFF80" }}
-                className="bg-blue-100 text-sm text-white px-2 py-2 rounded-sm"
+                className="bg-blue-100 text-sm text-white px-1 py-2 rounded-sm h-9 sm:w-7"
               >
                 Total Question: 16
               </button>
               <button
                 style={{ backgroundColor: "#007AFF80" }}
-                className="bg-blue-50 -mx-2 text-sm text-white px-1 py-1 rounded-sm"
+                className="bg-blue-50 -mx-2 text-sm text-white px-1 py-1 rounded-sm h-9 sm:w-7"
               >
                 Question Count: 4
               </button>
             </div>
-
             {/* First Row: Test Duration and Scheduled at Ends at */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-2">
-              <div className="flex flex-col">
-                <label className="text-[#535353] font-medium">Test Duration (in Minutes):</label>
+            <div className="sm:flex-row gap-1 mt-2">
+              <div className="flex flex-col ">
+                <label className="text-[#535353] font-medium text-sm ">Test Duration (in Minutes):</label>
                 <input
                   type="text"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-sm"
+                  className="mt-1 block w-35 h-5 p-2 border border-gray-300 rounded-sm"
                   style={{ backgroundColor: "#D9D9D9" }}
                 />
               </div>
@@ -83,7 +82,7 @@ function Scheduletest() {
                 <label className="text-[#535353] font-medium">Scheduled at:</label>
                 <input
                   type="date"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-sm text-gray-500"
+                  className="mt-1 block w-35 h-5 p-2 border border-gray-300 rounded-sm text-gray-500"
                   style={{ backgroundColor: "#D9D9D9" }}
                 />
               </div>
@@ -97,6 +96,8 @@ function Scheduletest() {
                 />
               </div>
             </div>
+
+
 
             {/* Second Row: Show Test Results Instantly, Select Batch */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
@@ -119,11 +120,23 @@ function Scheduletest() {
               </div>
             </div>
 
+
+
+
+            
+
+
+
+
+
+
+      
+
             {/* Modal Footer with Cancel and Create Test Buttons */}
-            <div className="flex justify-end space-x-4 mt-6 ">
+            <div className="flex flex-col sm:flex-row justify-end space-x-0 sm:space-x-4 mt-6">
               <button
                 onClick={closeModal}
-                className="bg-[#CEDFFC] text-[#000000] py-2 px-9 rounded-full"
+                className="bg-[#CEDFFC] text-[#000000] py-2 px-9 rounded-full mb-4 sm:mb-0"
               >
                 Cancel
               </button>
@@ -141,4 +154,4 @@ function Scheduletest() {
   );
 }
 
-export default Scheduletest;
+export default Scheduletest_mobile;
