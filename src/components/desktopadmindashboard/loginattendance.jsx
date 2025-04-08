@@ -52,7 +52,7 @@ const LoginAttendance = () => {
   const currentData = chartDataMap[subBatch] || [];
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-6 w-[38rem] ">
+    <div className="bg-white rounded-2xl p-6 w-[38rem] pb-20 ">
       {/* Top Controls */}
       <div className="flex justify-between items-center mb-6">
         {/* Search Input */}

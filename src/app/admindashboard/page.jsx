@@ -15,6 +15,12 @@ import MobileNavbar from "@/components/mobilenav/mobilenav";
 import MobilebottomNavbar from "@/components/mobilenav/MobileBottomNavbar";
 import Sidebar from "@/components/desktopsidebar/sidebar";
 import DesktopNavbar from "@/components/desktopnav/nav";
+import ModeSwitchermobile from "@/components/mobileadmindashboard/modeswitcher";
+import StatsCardsmobile from "@/components/mobileadmindashboard/statscards";
+import TopPerformersTablemobile from "@/components/mobileadmindashboard/TopPerformersTable";
+import SpotlightOnImprovementTablemobile from "@/components/desktopadmindashboard/spotlightonImprovementtable";
+import TestResultDownloadmobile from "@/components/mobileadmindashboard/testresultdownload";
+import StudentActivityCardmobile from "@/components/mobileadmindashboard/studentLoginStatus";
 
 // Import the rest of your components
 
@@ -72,9 +78,20 @@ export default function Page() {
         <MobileNavbar />
 
         {/* Mobile Navs */}  
+        
         <MobilebottomNavbar />
+       
 
         {/* Page Content */}
+
+        < ModeSwitchermobile selectedMode={selectedMode} setSelectedMode={setSelectedMode} />    
+        < StatsCardsmobile />
+        < TopPerformersTablemobile selectedMode={selectedMode} />
+        < SpotlightOnImprovementTablemobile selectedMode={selectedMode} />
+        < StudentActivityCardmobile />
+        < TestResultDownloadmobile />
+    
+
      
 
         </main>

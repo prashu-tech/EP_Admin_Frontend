@@ -26,15 +26,15 @@ const TestResultDownload = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md w-80">
-    <div className='flex justify-between'>
-      <h2 className="text-xl font-bold mb-4">Last Test Result</h2>
-      <button
-        onClick={downloadExcel}
-        className="mb-4 bg-white text-blue-500 py-2 px-4 rounded-md border border-blue-500 hover:bg-blue-500 hover:text-white"
-      >
-        Download
-      </button>
+    <div className="bg-white p-6 rounded-lg shadow-md w-[310px] h-[350px]">
+      <div className='flex justify-between'>
+        <h2 className="text-xl font-bold mb-4">Last Test Result</h2>
+        <button
+          onClick={downloadExcel}
+          className="mb-4 bg-white text-blue-500 py-2 px-4 rounded-md border border-blue-500 hover:bg-blue-500 hover:text-white"
+        >
+          Download
+        </button>
       </div>
       <div className="space-y-4">
         {testResults.map((result, index) => (
@@ -52,3 +52,4 @@ const TestResultDownload = () => {
 };
 
 export default TestResultDownload;
+  
