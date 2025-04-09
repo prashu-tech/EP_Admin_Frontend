@@ -25,13 +25,13 @@ function Scheduletest() {
       {/* Back and Create Buttons */}
       <div className="flex justify-between items-center sm:mx-8 mt-0 p-0">
         <button className="flex items-center px-8 py-2 bg-[#FFBB38] text-white rounded-full hover:bg-[#FFBB38] transition">
-          <FaArrowLeft className="mr-2 font-bold" /> Back
+          <FaArrowLeft className="mr-2 font-bold my-2" /> Back
         </button>
         <button
           onClick={openModal}
           className="flex items-center px-8 py-2 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 transition"
         >
-          Create <FaArrowRight className="ml-2 text-bold" />
+          Create <FaArrowRight className="ml-2 text-bold my-2" />
         </button>
       </div>
 

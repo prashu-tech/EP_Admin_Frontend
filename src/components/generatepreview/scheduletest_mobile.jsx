@@ -73,7 +73,7 @@ function Scheduletest_mobile() {
                 <label className="text-[#535353] font-medium text-sm ">Test Duration (in Minutes):</label>
                 <input
                   type="text"
-                  className="mt-1 block w-35 h-5 p-2 border border-gray-300 rounded-sm"
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-sm"
                   style={{ backgroundColor: "#D9D9D9" }}
                 />
               </div>
@@ -82,7 +82,7 @@ function Scheduletest_mobile() {
                 <label className="text-[#535353] font-medium">Scheduled at:</label>
                 <input
                   type="date"
-                  className="mt-1 block w-35 h-5 p-2 border border-gray-300 rounded-sm text-gray-500"
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-sm text-gray-500"
                   style={{ backgroundColor: "#D9D9D9" }}
                 />
               </div>
