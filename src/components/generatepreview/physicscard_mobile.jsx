@@ -70,4 +70,7 @@ const PhysicsCard_mobile = () => {
 };
 
 export default PhysicsCard_mobile;
+<<<<<<< HEAD
 
+=======
+>>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb

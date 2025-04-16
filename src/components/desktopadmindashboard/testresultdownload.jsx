@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
 import axios from 'axios';
@@ -56,10 +57,32 @@ const TestResultDownload = () => {
       Icon: result.icon,  // Include icon here
     }));
 
+=======
+import React from 'react';
+import * as XLSX from 'xlsx';
+
+const TestResultDownload = () => {
+  const testResults = [
+    { name: 'Ayaan Raje', score: '230/240', icon: '🌐' },
+    { name: 'Muskan Shaikh', score: '240/240', icon: '🧑‍🏫' },
+    { name: 'Tanvi Sawant', score: '210/240', icon: '👩‍🏫' },
+    { name: 'Wajiha Jafri', score: '200/240', icon: '💬' },
+  ];
+
+  const downloadExcel = () => {
+    // Prepare data for download
+    const data = testResults.map(result => ({
+      Name: result.name,
+      Score: result.score,
+    }));
+
+    // Create a new workbook and sheet
+>>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Test Results');
 
+<<<<<<< HEAD
     XLSX.writeFile(wb, 'test_results.xlsx');
   };
 
@@ -96,19 +119,42 @@ const TestResultDownload = () => {
         <button
           onClick={downloadExcel}
           className="bg-white text-blue-500 py-2 px-4 rounded-md border border-blue-500 hover:bg-blue-500 hover:text-white"
+=======
+    // Write file
+    XLSX.writeFile(wb, 'test_results.xlsx');
+  };
+
+  return (
+    <div className="bg-white p-6 rounded-lg shadow-md w-[310px] h-[350px]">
+      <div className='flex justify-between'>
+        <h2 className="text-xl font-bold mb-4">Last Test Result</h2>
+        <button
+          onClick={downloadExcel}
+          className="mb-4 bg-white text-blue-500 py-2 px-4 rounded-md border border-blue-500 hover:bg-blue-500 hover:text-white"
+>>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb
         >
           Download
         </button>
       </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb
       <div className="space-y-4">
         {testResults.map((result, index) => (
           <div key={index} className="flex items-center justify-between p-2 bg-gray-100 rounded-md">
             <div className="flex items-center gap-2">
+<<<<<<< HEAD
               <span className="text-xl">{result.icon}</span> {/* Displaying Icon */}
               <span>{result.name}</span> {/* Displaying Full Name */}
             </div>
             <span>{result.score}</span> {/* Displaying Score (Obtained Marks / Total Marks) */}
+=======
+              <span className="text-xl">{result.icon}</span>
+              <span>{result.name}</span>
+            </div>
+            <span>{result.score}</span>
+>>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb
           </div>
         ))}
       </div>
@@ -117,3 +163,7 @@ const TestResultDownload = () => {
 };
 
 export default TestResultDownload;
+<<<<<<< HEAD
+=======
+  
+>>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb

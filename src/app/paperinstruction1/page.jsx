@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb
 "use client";
 import React from "react";
 
@@ -51,4 +54,7 @@ function Page() {
 }
 
 export default Page;
+<<<<<<< HEAD
 
+=======
+>>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb

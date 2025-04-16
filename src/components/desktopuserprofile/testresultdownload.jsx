@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 "use client";
 
 import React, { useEffect, useState } from 'react';
@@ -42,6 +43,24 @@ const TestResultDownload = () => {
       TestName: result.testName,
       MarksObtained: result.marksObtained,
       TotalMarks: result.totalMarks,
+=======
+import React from 'react';
+import * as XLSX from 'xlsx';
+
+const TestResultDownload = () => {
+  const testResults = [
+    { name: 'Ayaan Raje', score: '230/240', icon: '🌐' },
+    { name: 'Muskan Shaikh', score: '240/240', icon: '🧑‍🏫' },
+    { name: 'Tanvi Sawant', score: '210/240', icon: '👩‍🏫' },
+    { name: 'Wajiha Jafri', score: '200/240', icon: '💬' },
+  ];
+
+  const downloadExcel = () => {
+    // Prepare data for download
+    const data = testResults.map(result => ({
+      Name: result.name,
+      Score: result.score,
+>>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb
     }));
 
     // Create a new workbook and sheet
@@ -54,9 +73,15 @@ const TestResultDownload = () => {
   };
 
   return (
+<<<<<<< HEAD
     <div className="bg-white p-6 rounded-lg shadow-md overflow-auto w-[500px] h-[350px]">
       <div className='flex justify-between'>
         <h2 className="text-xl font-bold mb-4">Last Test Results</h2>
+=======
+    <div className="bg-white p-6 rounded-lg shadow-md w-[500px] h-[350px]">
+      <div className='flex justify-between'>
+        <h2 className="text-xl font-bold mb-4">Last Test Result</h2>
+>>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb
         <button
           onClick={downloadExcel}
           className="mb-4 bg-white text-blue-500 py-2 px-4 rounded-md border border-blue-500 hover:bg-blue-500 hover:text-white"
@@ -65,6 +90,7 @@ const TestResultDownload = () => {
         </button>
       </div>
       <div className="space-y-4">
+<<<<<<< HEAD
         {loading ? (
           <p className="text-center text-gray-500">Loading...</p>
         ) : (
@@ -80,9 +106,24 @@ const TestResultDownload = () => {
             </div>
           ))
         )}
+=======
+        {testResults.map((result, index) => (
+          <div key={index} className="flex items-center justify-between p-2 bg-gray-100 rounded-md">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">{result.icon}</span>
+              <span>{result.name}</span>
+            </div>
+            <span>{result.score}</span>
+          </div>
+        ))}
+>>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb
       </div>
     </div>
   );
 };
 
 export default TestResultDownload;
+<<<<<<< HEAD
+=======
+  
+>>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb

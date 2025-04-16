@@ -1,5 +1,6 @@
 "use client";
 
+<<<<<<< HEAD
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -31,18 +32,32 @@ const ProfileCard = () => {
     return value ?? ""; // If value is undefined or null, return an empty string
   };
 
+=======
+import React from "react";
+
+const ProfileCard = () => {
+>>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb
   return (
     <div className="max-w-4xl mx-auto pr-6 pl-6 pb-6 bg-white rounded-lg relative">
       {/* Profile Header */}
       <div className="flex justify-center space-x-6">
         <div className="relative -mt-12">
           {/* Red Background Circle */}
+<<<<<<< HEAD
           <div className="absolute inset-0 border-1 border-gray-100 shadow-lg bg-gray-100 rounded-full transform scale-100 z-0" />
           {/* Profile Image */}
           <img
             src={studentData?.profileImage || "/profilphoto.png"} // Use profileImage from API or fallback to a default image
             alt="Profile Picture"
             className="w-35 h-35 rounded-full object-cover relative z-10 drop-shadow-lg"
+=======
+          <div className="absolute inset-0 bg-[#FE5C73] rounded-full transform scale-100 z-0" />
+          {/* Profile Image */}
+          <img
+            src="/userprofile.svg" // Replace with your image URL
+            alt="Profile Picture"
+            className="w-35 h-35 pr-3 rounded-full object-cover relative z-10 drop-shadow-lg"
+>>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb
           />
         </div>
       </div>
@@ -55,7 +70,11 @@ const ProfileCard = () => {
             <input
               type="text"
               className="mt-1 p-3 w-full border text-white border-gray-300 font-semi italic rounded-md bg-[#007AFF]"
+<<<<<<< HEAD
               value={getValue(studentData?.firstName)} // Fallback to empty string if null/undefined
+=======
+              value="Ayaan"
+>>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb
               readOnly
             />
           </div>
@@ -64,7 +83,11 @@ const ProfileCard = () => {
             <input
               type="text"
               className="mt-1 p-3 w-full italic border text-white font-semi rounded-md bg-[#007AFF]"
+<<<<<<< HEAD
               value={getValue(studentData?.lastName)} // Fallback to empty string if null/undefined
+=======
+              value="Raje"
+>>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb
               readOnly
             />
           </div>
@@ -76,7 +99,11 @@ const ProfileCard = () => {
             <input
               type="email"
               className="mt-1 p-3 w-full border text-white border-gray-300 font-semi italic rounded-md bg-[#007AFF]"
+<<<<<<< HEAD
               value={getValue(studentData?.emailAddress)} // Fallback to empty string if null/undefined
+=======
+              value="ayaanraje25@gmail.com"
+>>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb
               readOnly
             />
           </div>
@@ -88,7 +115,11 @@ const ProfileCard = () => {
             <input
               type="tel"
               className="mt-1 p-3 w-full border text-white border-gray-300 italic font-semi rounded-md bg-[#007AFF]"
+<<<<<<< HEAD
               value={getValue(studentData?.mobileNumber)} // Fallback to empty string if null/undefined
+=======
+              value="+91 9920892689"
+>>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb
               readOnly
             />
           </div>
