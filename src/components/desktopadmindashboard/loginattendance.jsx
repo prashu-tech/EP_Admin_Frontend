@@ -1,58 +1,108 @@
 "use client";
 
-import React, { useState } from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+import React, { useState, useEffect } from "react";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { FaUserGraduate } from "react-icons/fa";
+import axios from "axios";
 
-// Comprehensive chart data for all three sub-batches (B21, B22, B23).
-const chartDataMap = {
-  B21: [
-    { day: "Mon", Active: 3, Inactive: 2, Away: 2 },
-    { day: "Tue", Active: 4, Inactive: 2, Away: 3 },
-    { day: "Wed", Active: 5, Inactive: 1, Away: 2 },
-    { day: "Thu", Active: 6, Inactive: 3, Away: 1 },
-    { day: "Fri", Active: 4, Inactive: 2, Away: 2 },
-    { day: "Sat", Active: 5, Inactive: 3, Away: 2 },
-    { day: "Sun", Active: 3, Inactive: 2, Away: 4 },
-  ],
-  B22: [
-    { day: "Mon", Active: 5, Inactive: 3, Away: 1 },
-    { day: "Tue", Active: 3, Inactive: 3, Away: 2 },
-    { day: "Wed", Active: 4, Inactive: 2, Away: 2 },
-    { day: "Thu", Active: 3, Inactive: 4, Away: 2 },
-    { day: "Fri", Active: 6, Inactive: 2, Away: 2 },
-    { day: "Sat", Active: 4, Inactive: 2, Away: 3 },
-    { day: "Sun", Active: 5, Inactive: 1, Away: 3 },
-  ],
-  B23: [
-    { day: "Mon", Active: 2, Inactive: 3, Away: 3 },
-    { day: "Tue", Active: 6, Inactive: 1, Away: 2 },
-    { day: "Wed", Active: 5, Inactive: 2, Away: 1 },
-    { day: "Thu", Active: 4, Inactive: 2, Away: 3 },
-    { day: "Fri", Active: 5, Inactive: 3, Away: 2 },
-    { day: "Sat", Active: 6, Inactive: 1, Away: 2 },
-    { day: "Sun", Active: 7, Inactive: 2, Away: 1 },
-  ],
+// Helper function to convert a date string into a day name (Mon, Tue, etc.)
+const getDayName = (date) => {
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const dayIndex = new Date(date).getDay();
+  return daysOfWeek[dayIndex];
 };
 
+// LoginAttendance Component
 const LoginAttendance = () => {
-  // Local state for sub-batch & student name
-  const [subBatch, setSubBatch] = useState("B21");
-  const [studentName, setStudentName] = useState("Harsh Koli");
+  const [studentName, setStudentName] = useState(""); // Local state for student name
+  const [testData, setTestData] = useState([]); // Local state to store the fetched test data
+  const [loading, setLoading] = useState(true); // Loading state for API data
+  const [error, setError] = useState(null); // Error state for API data
+  const [filteredData, setFilteredData] = useState([]); // Filtered data based on student name or ID
 
-  // Combine sub-batch to grab the correct data
-  const currentData = chartDataMap[subBatch] || [];
+  // Fetch data when component is mounted
+  useEffect(() => {
+    const fetchTestData = async () => {
+      try {
+        // Correct API URL
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/loginattendance/attendance`);
+
+        setTestData(response.data.results || []); // Set the fetched data
+        setFilteredData(response.data.results || []); // Initialize filtered data
+        setLoading(false); // Set loading to false after data is fetched
+      } catch (err) {
+        setError("Failed to fetch data"); // Handle any errors
+        setLoading(false); // Set loading to false on error
+      }
+    };
+
+    fetchTestData(); // Fetch data when the component mounts
+  }, []); // Empty dependency array ensures it runs only once when the component mounts
+
+  // Handle student name change and filter data based on the search
+  const handleStudentNameChange = (e) => {
+    const searchTerm = e.target.value;
+    setStudentName(searchTerm);
+
+    // Filter data by student name or ID
+    const filtered = testData.filter((item) =>
+      item.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.studentId.toString().includes(searchTerm)
+    );
+    setFilteredData(filtered);
+  };
+
+  // If data is loading, show loading indicator
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  // If there is an error fetching the data, show error message
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  // Format data for chart (just extract the necessary data for the chart from testData)
+  const chartData = filteredData.flatMap((item) => {
+    return item.attendance.map((attendance) => {
+      const dayName = getDayName(attendance.day);  // Convert date into day name (Mon, Tue, etc.)
+      return {
+        day: dayName,  // Convert day to name (Mon, Tue, etc.)
+        FullTest: attendance.FullTest || 0,
+        MeTest: attendance.MeTest || 0,
+        RecommendedTest: attendance.RecommendedTest || 0,
+      };
+    });
+  });
+
+  // Remove duplicate days and aggregate test counts
+  const uniqueDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]; // Fixed order of days
+  const aggregatedData = {};
+
+  // Initialize data for all days with zero values
+  uniqueDays.forEach(day => {
+    aggregatedData[day] = { day, FullTest: 0, MeTest: 0, RecommendedTest: 0 };
+  });
+
+  // Aggregate the data for the filtered test results
+  chartData.forEach((item) => {
+    if (aggregatedData[item.day]) {
+      aggregatedData[item.day].FullTest += item.FullTest;
+      aggregatedData[item.day].MeTest += item.MeTest;
+      aggregatedData[item.day].RecommendedTest += item.RecommendedTest;
+    }
+  });
+
+  // Prepare the final aggregated data for the chart
+  const finalChartData = uniqueDays.map((day) => aggregatedData[day]);
+
+  // Custom tick formatter for the Y-Axis to show values like 1, 2, 4, etc.
+  const formatYAxisTicks = (tickValue) => {
+    return tickValue % 1 === 0 ? tickValue : ''; // Only show whole numbers
+  };
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-6 w-[38rem] ">
+    <div className="bg-white rounded-2xl p-6 w-[38rem] pb-20 ">
       {/* Top Controls */}
       <div className="flex justify-between items-center mb-6">
         {/* Search Input */}
@@ -61,50 +111,39 @@ const LoginAttendance = () => {
           placeholder="Search Students"
           className="border border-blue-400 rounded-lg px-4 py-2 w-1/3 outline-none"
           value={studentName}
-          onChange={(e) => setStudentName(e.target.value)}
+          onChange={handleStudentNameChange}
         />
 
-        {/* Sub-Batch Dropdown */}
-        <select
-          className="border border-blue-400 rounded-lg px-4 py-2 outline-none"
-          value={subBatch}
-          onChange={(e) => setSubBatch(e.target.value)}
-        >
-          <option value="B21">Batch B21</option>
-          <option value="B22">Batch B22</option>
-          <option value="B23">Batch B23</option>
-        </select>
+        <div className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-full gap-2">
+          <FaUserGraduate />
+          <span>{studentName || "Student Name"}</span>
+        </div>
       </div>
 
       {/* Title & Profile */}
       <div className="flex items-center justify-between gap-10">
         <h2 className="text-2xl font-semibold mb-4">Login Attendance</h2>
-        <div className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-full gap-2">
-          <FaUserGraduate />
-          {/* Show typed name or fallback to "Harsh Koli" */}
-          <span>{studentName || "Harsh Koli"}</span>
-        </div>
       </div>
-
-      {/* Warning if no data found */}
-      {currentData.length === 0 && (
-        <div className="text-red-500 font-semibold mb-2">
-          No chart data found for "{subBatch}" sub-batch.
-        </div>
-      )}
 
       {/* Bar Chart */}
       <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={currentData}>
+        <BarChart data={finalChartData}>
           <XAxis dataKey="day" />
-          <YAxis domain={[0, 20]} tickFormatter={(val) => `${val}-0hrs`} />
+          <YAxis tickFormatter={formatYAxisTicks} />
           <Tooltip />
           <Legend />
-          <Bar dataKey="Active" stackId="a" fill="#1E40AF" />
-          <Bar dataKey="Inactive" stackId="a" fill="#EF4444" />
-          <Bar dataKey="Away" stackId="a" fill="#FACC15" />
+          <Bar dataKey="FullTest" stackId="a" fill="#1E40AF" />
+          <Bar dataKey="MeTest" stackId="a" fill="#EF4444" />
+          <Bar dataKey="RecommendedTest" stackId="a" fill="#FACC15" />
         </BarChart>
       </ResponsiveContainer>
+
+      {/* Show total test counts */}
+      <div className="mt-4">
+        <p><strong>Total Full Test:</strong> {finalChartData.reduce((acc, item) => acc + (item.FullTest || 0), 0)}</p>
+        <p><strong>Total Me Test:</strong> {finalChartData.reduce((acc, item) => acc + (item.MeTest || 0), 0)}</p>
+        <p><strong>Total Recommend Test:</strong> {finalChartData.reduce((acc, item) => acc + (item.RecommendedTest || 0), 0)}</p>
+      </div>
     </div>
   );
 };

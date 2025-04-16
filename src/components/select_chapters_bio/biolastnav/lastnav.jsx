@@ -29,7 +29,7 @@ export default function BioLastnavDesktop() {
       if (nextSubject) {
         router.push(`/select_chapters_${nextSubject}`);
       } else {
-        router.push("/test_preview");
+        router.push("/generatepreview");
       }
     };
   

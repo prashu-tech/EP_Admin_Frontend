@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React,{useState} from "react";
 import { FaRegImage } from "react-icons/fa";
 
 const StatsCards = () => {

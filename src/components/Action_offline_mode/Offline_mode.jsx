@@ -93,21 +93,20 @@ const Home = () => {
               <CiPen size={15} /> Generate Answer Key
             </button>
         
-            <button 
-              className="bg-red-500 hover:bg-red-600 text-white font-[500] py-2 px-2 text-[10px] pr-6 rounded flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <LuBookCheck size={15} /> Generate OMR
-            </button>
+           
           </div>
 
           {/* Display Area - Centered */}
           <div className="flex justify-center my-8">
-            <div className="border-3 border-dashed border-gray-400 rounded p-6 text-center h-[300px] w-full max-w-2xl flex items-center justify-center">
-              <p className="text-black font-semibold text-xl italic">
-                Test Paper will be displayed here.
-              </p>
+            <div className="rounded p-4 text-center w-full max-w-1/2 h-auto">
+              <img
+                src="/sample-question-paper.png"
+                alt="Sample Question Paper"
+                className="w-full h-auto rounded shadow-md object-contain"
+              />
             </div>
           </div>
+
         </div>
       </div>
     </div>

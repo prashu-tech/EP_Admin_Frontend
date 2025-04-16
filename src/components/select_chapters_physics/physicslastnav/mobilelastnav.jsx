@@ -32,7 +32,7 @@ export default function PhysicsLastnavmobile() {
     if (nextSubject) {
       router.push(`/select_chapters_${nextSubject}`);
     } else {
-      router.push("/test_preview"); // Navigate to the Test Preview page
+      router.push("/generatepreview"); // Navigate to the Test Preview page
     }
   };
 

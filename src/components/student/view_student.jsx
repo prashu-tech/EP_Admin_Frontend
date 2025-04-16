@@ -1,7 +1,8 @@
 "use client";
 import Head from "next/head";
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { IoDownloadOutline } from "react-icons/io5";
+import axios from 'axios';  // For making API calls
 
 const Desktop_student = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,16 +15,23 @@ const Desktop_student = () => {
 
   const maxStudents = 80;
 
-  const [students, setStudents] = useState([
-    { id: 1, name: "Ayaan Raje", email: "ayaan@gmail.com", phone: "8246578567", gender: "Male", dob: "07/07/2000", status: "Active" },
-    { id: 2, name: "Tanvi Sawant", email: "tanvi@gmail.com", phone: "8246578567", gender: "Female", dob: "07/07/2000", status: "Active" },
-    { id: 3, name: "Wajiha Jafri", email: "wajiha@gmail.com", phone: "8246578567", gender: "Female", dob: "07/07/2000", status: "Active" },
-    { id: 4, name: "Najeeb Sayeed", email: "najeeb@gmail.com", phone: "8246578567", gender: "Male", dob: "07/07/2000", status: "Active" },
-    { id: 5, name: "Saad Shaikh", email: "saad@gmail.com", phone: "8246578567", gender: "Male", dob: "07/07/2000", status: "Active" },
-    { id: 6, name: "Ibrahim Mulla", email: "ibrahim@gmail.com", phone: "8246578567", gender: "Male", dob: "07/07/2000", status: "Active" },
-    { id: 7, name: "Arfat Shaikh", email: "arfat@gmail.com", phone: "8246578567", gender: "Male", dob: "07/07/2000", status: "Active" },
-    { id: 8, name: "Sandesh Dagade", email: "sandesh@gmail.com", phone: "8246578567", gender: "Male", dob: "07/07/2000", status: "Active" },
-  ]);
+  const [students, setStudents] = useState([]); // Empty state to hold the student data
+
+  useEffect(() => {
+    // Fetch student data from the backend
+    const fetchStudentData = async () => {
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/studentdata/info`); // Make sure the backend route is correct
+        if (response.data.studentInfo) {
+          setStudents(response.data.studentInfo); // Update state with fetched student data
+        }
+      } catch (error) {
+        console.error("Error fetching student data:", error);
+      }
+    };
+
+    fetchStudentData(); // Call the function to fetch data
+  }, []); // Empty dependency array means this runs once when the component mounts
 
   const getNextId = () => {
     const maxId = students.length > 0 ? Math.max(...students.map(student => student.id)) : 0;
@@ -50,28 +58,51 @@ const Desktop_student = () => {
     return `${day}/${month}/${year}`;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (students.length >= maxStudents) {
-      openLimitExceededModal();
-      closeAddStudentModal();
+  
+    // Collect form data
+    const formData = new FormData(e.target);
+    const firstName = formData.get("name");
+    const lastName = ""; // If there's no last name field, you can leave it as an empty string
+    const dateOfBirth = formData.get("dob");
+    const email = formData.get("email");
+    const phoneNumber = formData.get("phone");
+    const gender = formData.get("gender");
+  
+    // Validate if all required fields are present
+    if (!email || !firstName || !dateOfBirth || !phoneNumber || !gender) {
+      alert("All fields are required");
       return;
     }
-
-    const formData = new FormData(e.target);
-    const newStudent = {
-      id: getNextId(),
-      name: formData.get("name"),
-      email: formData.get("email"),
-      phone: formData.get("phone"),
-      gender: formData.get("gender"),
-      dob: formatDate(formData.get("dob")),
-      status: "Active",
-    };
-    setStudents([...students, newStudent]);
-    closeAddStudentModal();
+  
+    // Generate password using firstName and birth year
+    const birthYear = new Date(dateOfBirth).getFullYear();
+    const password = `${firstName.charAt(0)}${lastName.charAt(0)}${birthYear}`;
+  
+    try {
+      // Send a POST request to the backend API to save student data
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/studentdata/save`, {
+        email,
+        password, // Auto-generated password
+        firstName,
+        dateOfBirth,
+        phoneNumber,
+        gender
+      });
+  
+      if (response.status === 201) {
+        // Handle success (e.g., update students state or close modal)
+        setStudents((prevStudents) => [...prevStudents, response.data.student]);
+        alert("Student added successfully!");
+        closeAddStudentModal(); // Close the modal after successful submission
+      }
+    } catch (error) {
+      console.error("Error saving student data:", error);
+      alert("Error saving student data");
+    }
   };
-
+  
   const handleExport = () => {
     const headers = ["Sr.No,Student Name,Email,Phone Number,Gender,DOB,Status"];
     const rows = students.map(student => 
@@ -94,40 +125,50 @@ const Desktop_student = () => {
 
   const handleFileUpload = (e) => {
     e.preventDefault();
+    
     const file = fileInputRef.current.files[0];
     if (!file) {
       alert("Please select a file to upload.");
       return;
     }
-
+  
     const reader = new FileReader();
-    reader.onload = (event) => {
+    
+    reader.onload = async (event) => {
       const text = event.target.result;
       const rows = text.split("\n").map(row => row.split(","));
-
-      const data = rows.slice(1).map((row) => {
+  
+      // Assuming the first row contains the header
+      const header = rows[0];
+      const studentData = rows.slice(1).map((row) => {
         return {
-          id: getNextId(),
-          name: row[1] || "",
-          email: row[2] || "",
-          phone: row[3] || "",
-          gender: row[4] || "",
-          dob: row[5]?.trim() || "",
-          status: row[6]?.trim() || "Active",
+          name: row[0]?.trim(),
+          email: row[1]?.trim(),
+          phone: row[2]?.trim(),
+          gender: row[3]?.trim(),
+          dob: row[4]?.trim(),
+          status: row[5]?.trim() || "Active",
         };
-      }).filter(student => student.name && student.email);
-
-      const remainingCapacity = maxStudents - students.length;
-      if (data.length > remainingCapacity) {
-        openLimitExceededModal();
-        setStudents([...students, ...data.slice(0, remainingCapacity)]);
-      } else {
-        setStudents([...students, ...data]);
+      }).filter(student => student.name && student.email); // Filter out rows with missing name or email
+  
+      try {
+        // Send the data to the backend
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/studentdata/bulk-save`, { students: studentData });
+  
+        if (response.status === 201) {
+          setStudents((prevStudents) => [...prevStudents, ...studentData]);
+          alert("Students added successfully!");
+        }
+      } catch (error) {
+        console.error("Error saving student data:", error);
+        alert("Error saving student data");
       }
-      closeModal();
+      closeModal();  // Close modal after upload
     };
+  
     reader.readAsText(file);
   };
+  
 
   return (
     <div className="min-h-screen bg-white p-6 relative">
@@ -146,7 +187,7 @@ const Desktop_student = () => {
         </button>
       </div>
 
-      <div className={`transition-all duration-300 ${isModalOpen || isAddStudentModalOpen || isViewModalOpen || isLimitExceededModalOpen ? "blur-[2px]" : ""}`}>
+      <div className={`transition-all duration-300 ${isModalOpen || isAddStudentModalOpen || isViewModalOpen || isLimitExceededModalOpen ? "" : ""}`}>
         <main className="max-w-6xl mx-auto">
           <div className="flex justify-end pt-6 -mx-6 items-center mb-4">
             <div className="space-x-3 relative">
@@ -181,16 +222,17 @@ const Desktop_student = () => {
                 </tr>
               </thead>
               <tbody className="text-gray-700 text-xs font-light">
-                {students.map((student) => (
+                {students.map((student, index) => (
                   <tr key={student.id} className="border-b text-center border-black hover:bg-gray-100">
-                    <td className="py-4 px-2 text-black border-r-2 w-8">{student.id}</td>
-                    <td className="py-4 px-2 border-r-2 w-24 truncate">{student.name}</td>
-                    <td className="py-4 px-2 border-r-2 w-32 truncate">{student.email}</td>
-                    <td className="py-4 px-2 border-r-2 w-28">{student.phone}</td>
-                    <td className="py-4 px-2 border-r-2 w-20">{student.gender}</td>
-                    <td className="py-4 px-2 border-r-2 w-24">{student.dob}</td>
+                    {/* Displaying the serial number starting from 1 */}
+                    <td className="py-4 px-2 text-black border-r-2 w-8">{index + 1}</td>
+                    <td className="py-4 px-2 border-r-2 w-24 truncate">{student.fullName || "N/A"}</td>
+                    <td className="py-4 px-2 border-r-2 w-32 truncate">{student.email || "N/A"}</td>
+                    <td className="py-4 px-2 border-r-2 w-28">{student.phoneNumber || "N/A"}</td>
+                    <td className="py-4 px-2 border-r-2 w-20">{student.gender || "N/A"}</td>
+                    <td className="py-4 px-2 border-r-2 w-24">{student.dateOfBirth || "N/A"}</td>
                     <td className="py-4 px-2 w-28 flex items-center space-x-2">
-                      <span className="text-black truncate">{student.status}</span>
+                      <span className="text-black truncate">{student.status || "N/A"}</span>
                       <button 
                         onClick={() => openViewModal(student)}
                         className="bg-yellow-400 text-white px-4 rounded-sm hover:bg-yellow-500 whitespace-nowrap text-xs cursor-pointer"
@@ -198,9 +240,35 @@ const Desktop_student = () => {
                         View
                       </button>
                     </td>
+
+                  {isViewModalOpen && selectedStudent && (
+                    <div className="fixed inset-0 flex items-center justify-center z-50">
+                      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+                        <h2 className="text-xl font-semibold text-center mb-4">Student Details</h2>
+                        <div className="space-y-3">
+                          <p><strong>ID:</strong> {selectedStudent.id}</p>
+                          <p><strong>Name:</strong> {selectedStudent.name || "N/A"}</p>
+                          <p><strong>Email:</strong> {selectedStudent.email || "N/A"}</p>
+                          <p><strong>Phone:</strong> {selectedStudent.phone || "N/A"}</p>
+                          <p><strong>Gender:</strong> {selectedStudent.gender || "N/A"}</p>
+                          <p><strong>DOB:</strong> {selectedStudent.dob || "N/A"}</p>
+                          <p><strong>Status:</strong> {selectedStudent.status || "N/A"}</p>
+                        </div>
+                        <button 
+                          onClick={closeViewModal}
+                          className="mt-4 w-full bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 cursor-pointer"
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+
                   </tr>
                 ))}
               </tbody>
+
             </table>
           </div>
         </main>
@@ -246,11 +314,11 @@ const Desktop_student = () => {
             <h2 className="text-xl font-semibold text-center mb-4">Student Details</h2>
             <div className="space-y-3">
               <p><strong>ID:</strong> {selectedStudent.id}</p>
-              <p><strong>Name:</strong> {selectedStudent.name}</p>
+              <p><strong>Name:</strong> {selectedStudent.fullName}</p>
               <p><strong>Email:</strong> {selectedStudent.email}</p>
-              <p><strong>Phone:</strong> {selectedStudent.phone}</p>
+              <p><strong>Phone:</strong> {selectedStudent.phoneNumber}</p>
               <p><strong>Gender:</strong> {selectedStudent.gender}</p>
-              <p><strong>DOB:</strong> {selectedStudent.dob}</p>
+              <p><strong>DOB:</strong> {selectedStudent.dateOfBirth}</p>
               <p><strong>Status:</strong> {selectedStudent.status}</p>
             </div>
             <button 
@@ -408,6 +476,6 @@ const Desktop_student = () => {
       )}
     </div>
   );
-}
+};
 
 export default Desktop_student;

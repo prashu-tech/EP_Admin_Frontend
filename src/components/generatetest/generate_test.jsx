@@ -1,28 +1,40 @@
-import React, { useState } from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import { ArrowRightCircle, Download } from "lucide-react";
 import { CiImageOn } from "react-icons/ci";
 import * as XLSX from "xlsx";
 import { CiSearch } from "react-icons/ci";
 import Link from "next/link";
+import axios from "axios"; // Import axios for making API calls
+import { useRouter } from "next/navigation"; // Import useRouter for programmatic navigation
+
 export default function CenterText() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [testData, setTestData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const router = useRouter(); // Using the Next.js useRouter hook for navigation
 
-  const tableRows = [
-    { srNo: 1, batch: "NEET Morning", marks: "120/180", status: "Scheduled", createdAt: "Mon Jan 20, 2025 11:00 AM", totalQuestions: 50 },
-    { srNo: 2, batch: "JEE Evening", marks: "145/180", status: "Completed", createdAt: "Tue Feb 11, 2025 02:30 PM", totalQuestions: 60 },
-    { srNo: 3, batch: "NEET Evening", marks: "110/180", status: "In Progress", createdAt: "Wed Mar 05, 2025 09:15 AM", totalQuestions: 55 },
-    { srNo: 4, batch: "JEE Morning", marks: "132/180", status: "Scheduled", createdAt: "Thu Apr 10, 2025 01:00 PM", totalQuestions: 52 },
-    { srNo: 5, batch: "Foundation 9th", marks: "90/180", status: "Not Scheduled", createdAt: "Fri May 15, 2025 10:45 AM", totalQuestions: 40 },
-    { srNo: 6, batch: "Foundation 10th", marks: "150/180", status: "Completed", createdAt: "Sat Jun 20, 2025 03:10 PM", totalQuestions: 48 },
-    { srNo: 7, batch: "Crash Course", marks: "105/180", status: "In Progress", createdAt: "Sun Jul 25, 2025 08:00 AM", totalQuestions: 35 },
-    { srNo: 8, batch: "Repeaters Batch", marks: "165/180", status: "Completed", createdAt: "Mon Aug 30, 2025 12:25 PM", totalQuestions: 70 },
-    { srNo: 9, batch: "Test Series", marks: "135/180", status: "Scheduled", createdAt: "Tue Sep 05, 2025 11:50 AM", totalQuestions: 65 },
-  ];
+  // Fetch the test data from the backend
+  useEffect(() => {
+    const fetchTestData = async () => {
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/newadmin/test-data`);
+        setTestData(response.data.tests); // Set the test data to state
+      } catch (err) {
+        setError("Failed to fetch test data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTestData();
+  }, []);
 
   // Filtered data based on search
-  const filteredRows = tableRows.filter(
+  const filteredRows = testData.filter(
     (row) =>
-      row.batch.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.batch_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       row.marks.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -33,27 +45,52 @@ export default function CenterText() {
     XLSX.writeFile(workbook, "test_data.xlsx");
   };
 
+  const handleGenerate = () => {
+    localStorage.removeItem("Biology");
+    localStorage.removeItem("Chemistry");
+    localStorage.removeItem("Physics");
+    localStorage.removeItem("marks");
+    localStorage.removeItem("selectedSubjects");
+    localStorage.removeItem("testName");
+    localStorage.removeItem("ScheduleTest");
+  };
+
+  const handleActionClick = (testId) => {
+    // Store the testId in localStorage
+    localStorage.setItem("testid", testId);
+
+    // Redirect to the test preview page
+    router.push("/test_preview");
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
+
   return (
     <div className="flex flex-col min-h-screen pb-20 items-center w-full pt-[30px]">
+      {/* 🔍 Search Bar */}
+      <div className="flex justify-center mt-6 mb-4">
+        <div className="relative w-[950px]">
+          <CiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 w-6 h-6" />
+          <input
+            type="text"
+            placeholder="Search by Batch ,Marks..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full h-[60px] pl-12 pr-4 border border-[#BBBBBB] rounded-[10px] shadow-[0px_4px_6px_0px_#00000040] focus:outline-none text-gray-700"
+          />
+        </div>
+      </div>
 
-    {/* 🔍 Search Bar */}
-         <div className="flex justify-center mt-6 mb-4">
-     <div className="relative w-[950px]">
-       <CiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 w-6 h-6" />
-       <input
-         type="text"
-         placeholder="Search by Batch ,Marks..."
-         value={searchQuery}
-         onChange={(e) => setSearchQuery(e.target.value)}
-         className="w-full h-[60px] pl-12 pr-4 border border-[#BBBBBB] rounded-[10px] shadow-[0px_4px_6px_0px_#00000040] focus:outline-none text-gray-700"
-       />
-     </div>
-   </div>
-          {/* Generate Test Button */}
-       <div className="w-[171px] mt-2 h-[66px] border-[1px] border-[#BBBBBB] rounded-[10px] 
-                    shadow-[0px_4px_6px_0px_rgba(0,0,0,0.26)] text-[#979797] text-center flex justify-center items-center">
-         Generate Test
-         </div>
+      {/* Generate Test Button */}
+      <div className="w-[171px] mt-2 h-[66px] border-[1px] border-[#BBBBBB] rounded-[10px] shadow-[0px_4px_6px_0px_rgba(0,0,0,0.26)] text-[#979797] text-center flex justify-center items-center">
+        Generate Test
+      </div>
 
       {/* Download Button */}
       <div className="absolute right-19 top-[230px]">
@@ -69,10 +106,13 @@ export default function CenterText() {
 
       {/* Generate Button */}
       <div className="absolute left-[950px] top-[330px]">
-      <Link href="/generate">
-        <button className="w-[238px] h-[43px] px-3 py-3 bg-[#4880FF] text-white rounded-lg shadow-md flex items-center justify-center space-x-2">
-          + Generate
-        </button>
+        <Link href="/subjectselect">
+          <button
+            className="w-[238px] h-[43px] px-3 py-3 bg-[#4880FF] text-white rounded-lg shadow-md flex items-center justify-center space-x-2"
+            onClick={handleGenerate}
+          >
+            + Generate
+          </button>
         </Link>
       </div>
 
@@ -100,6 +140,8 @@ export default function CenterText() {
             <thead className="bg-white text-black border-b border-black">
               <tr className="rounded-t-[20px]">
                 <th className="py-3 px-4 border border-white rounded-tl-[20px]">SR.NO</th>
+                <th className="py-3 px-4 border border-white">Test ID</th>
+                <th className="py-3 px-4 border border-white">Test Name</th>
                 <th className="py-3 px-4 border border-white">BATCHES</th>
                 <th className="py-3 px-4 border border-white">MARKS</th>
                 <th className="py-3 px-4 border border-white">STATUS</th>
@@ -111,23 +153,23 @@ export default function CenterText() {
             <tbody>
               {filteredRows.map((row, index) => (
                 <tr key={index} className="hover:bg-gray-100">
-                  <td className="py-3 px-4 border-2 border-black font-semibold">{row.srNo}</td>
-                  <td className="py-3 px-4 border-2 border-black">{row.batch}</td>
+                  <td className="py-3 px-4 border-2 border-black font-semibold">{index + 1}</td>
+                  <td className="py-3 px-4 border-2 border-black">{row.id}</td> {/* Test ID */}
+                  <td className="py-3 px-4 border-2 border-black">{row.testname}</td> {/* Test Name */}
+                  <td className="py-3 px-4 border-2 border-black">{row.batch_name}</td>
                   <td className="py-3 px-4 border-2 border-black">{row.marks}</td>
                   <td className="py-3 px-4 border-2 border-black text-black">{row.status}</td>
                   <td className="py-3 px-4 border-2 border-black">
-                    {row.createdAt.split(" ").slice(0, 3).join(" ")} <br />
-                    {row.createdAt.split(" ").slice(3).join(" ")}
+                    {new Date(row.createdAt).toLocaleString()}
                   </td>
-                  <td className="py-3 px-4 border-2 border-black">{row.totalQuestions}</td>
+                  <td className="py-3 px-4 border-2 border-black">{row.no_of_questions}</td>
                   <td className="py-3 px-4 border-2 border-black">
-                  <Link href="/action">
-                   <button className="text-black hover:text-black font-bold">
-                   <ArrowRightCircle size={24} strokeWidth={3.5} />
-                  </button>
-                </Link>
-
-                    
+                    <button
+                      onClick={() => handleActionClick(row.id)} // Trigger action with the testId
+                      className="text-black hover:text-black font-bold"
+                    >
+                      <ArrowRightCircle size={24} strokeWidth={3.5} />
+                    </button>
                   </td>
                 </tr>
               ))}

@@ -1,12 +1,50 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import axios from "axios";
 
 export default function BiologyChapterList() {
-  const [chapters, setChapters] = useState([
-    { id: 1, name: "Cell Biology", unit: "Unit 1", isChecked: false, numQuestions: 0, rows: [] },
-    { id: 2, name: "Genetics", unit: "Unit 2", isChecked: false, numQuestions: 0, rows: [] },
-  ]);
+  const [chapters, setChapters] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // ✅ Fetch & group biology questions by unique chapter name
+  useEffect(() => {
+    const fetchBiologyChapters = async () => {
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/admintest/biology-questions`);
+        const { questions } = response.data;
+
+        const chapterMap = {};
+        questions.forEach((q) => {
+          if (!chapterMap[q.chapter_name]) {
+            chapterMap[q.chapter_name] = {
+              id: Object.keys(chapterMap).length + 1,
+              name: q.chapter_name,
+              unit: q.unit || "Unit I",
+              isChecked: false,
+              numQuestions: 0,
+              rows: [],
+              questions: [],
+            };
+          }
+
+          chapterMap[q.chapter_name].questions.push({
+            id: q.id, // ✅ actual question ID from backend
+            subject: "Biology",
+            question: q.question_text,
+          });
+        });
+
+        setChapters(Object.values(chapterMap));
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching biology questions:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchBiologyChapters();
+  }, []);
 
   const handleCheckboxChange = (id) => {
     setChapters((prev) =>
@@ -18,22 +56,54 @@ export default function BiologyChapterList() {
 
   const handleQuestionChange = (id, e) => {
     const value = parseInt(e.target.value) || 0;
-    setChapters((prev) =>
-      prev.map((chapter) =>
-        chapter.id === id
+
+    const updatedChapters = chapters.map((chapter) =>
+      chapter.id === id
+        ? {
+            ...chapter,
+            numQuestions: value,
+            rows: chapter.questions.slice(0, value).map((q) => ({
+              id: q.id,
+              subject: "Biology",
+              question: q.question,
+            })),
+          }
+        : chapter
+    );
+
+    setChapters(updatedChapters);
+
+    const selectedChapters = updatedChapters
+      .filter((chapter) => chapter.isChecked)
+      .map((chapter) => ({
+        chapterName: chapter.name,
+        unit: chapter.unit,
+        numQuestions: chapter.numQuestions,
+        totalMarks: chapter.numQuestions * 4,
+        questions: chapter.rows,
+      }));
+
+    localStorage.setItem("Biology", JSON.stringify(selectedChapters));
+  };
+
+  useEffect(() => {
+    const savedChapters = JSON.parse(localStorage.getItem("Biology")) || [];
+    setChapters((prevChapters) =>
+      prevChapters.map((chapter) => {
+        const saved = savedChapters.find((sc) => sc.chapterName === chapter.name);
+        return saved
           ? {
               ...chapter,
-              numQuestions: value,
-              rows: Array.from({ length: value }, (_, index) => ({
-                id: index + 1,
-                subject: "Biology",
-                question: "What is the role of enzymes in metabolic reactions?",
-              })),
+              isChecked: true,
+              numQuestions: saved.numQuestions,
+              rows: saved.questions,
             }
-          : chapter
-      )
+          : chapter;
+      })
     );
-  };
+  }, []);
+
+  if (loading) return <p className="text-center mt-10">Loading questions...</p>;
 
   return (
     <div className="flex justify-center mt-4 px-2">
@@ -86,6 +156,8 @@ export default function BiologyChapterList() {
                       </div>
                     </td>
                   </tr>
+
+                  {/* Show questions if selected */}
                   {chapter.isChecked && (
                     <tr>
                       <td colSpan="7" className="p-3">
@@ -103,7 +175,7 @@ export default function BiologyChapterList() {
                             <tbody>
                               {chapter.rows.map((row, index) => (
                                 <tr key={row.id} className={`hover:bg-gray-50 transition ${index === chapter.rows.length - 1 ? "border-none" : "border-b border-[#E1CFFF]"}`}>
-                                  <td className="py-3 px-6 text-center font-Mulish font-bold">{row.id}</td>
+                                  <td className="py-3 px-6 text-center font-Mulish font-bold">{index + 1}</td>
                                   <td className="py-3 px-6 text-center font-Mulish font-semibold flex items-center justify-center space-x-1">
                                     <Image src="/bio.jpeg" alt="biology" width={20} height={20} className="w-5 h-5" />
                                     <div className="text-sm font-semibold">Biology</div>

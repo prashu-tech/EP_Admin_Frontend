@@ -12,7 +12,7 @@ const ModeSwitcher = ({ selectedMode, setSelectedMode }) => {
       >
         Practice
       </button>
-      
+
       <button
         className={`px-6 py-2 rounded-md text-white ${
           selectedMode === "Customized" ? "bg-blue-500" : "bg-gray-300"
