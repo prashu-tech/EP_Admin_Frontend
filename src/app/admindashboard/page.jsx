@@ -1,12 +1,8 @@
-<<<<<<< HEAD
 "use client";
 
 import React, { useState } from "react";
 
 // Import your nav components
-=======
-import React, { useState } from "react";// Import your nav components
->>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb
 import ModeSwitcher from "@/components/desktopadmindashboard/modeswitcher";
 import StatsCards from "@/components/desktopadmindashboard/statscards";
 import TopPerformersTable from "@/components/desktopadmindashboard/TopPerformersTable";

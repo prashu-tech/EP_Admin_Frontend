@@ -222,23 +222,22 @@ const Desktop_student = () => {
                 </tr>
               </thead>
               <tbody className="text-gray-700 text-xs font-light">
-                {students.map((student, index) => (
-                  <tr key={student.id} className="border-b text-center border-black hover:bg-gray-100">
-                    {/* Displaying the serial number starting from 1 */}
-                    <td className="py-4 px-2 text-black border-r-2 w-8">{index + 1}</td>
-                    <td className="py-4 px-2 border-r-2 w-24 truncate">{student.fullName || "N/A"}</td>
-                    <td className="py-4 px-2 border-r-2 w-32 truncate">{student.email || "N/A"}</td>
-                    <td className="py-4 px-2 border-r-2 w-28">{student.phoneNumber || "N/A"}</td>
-                    <td className="py-4 px-2 border-r-2 w-20">{student.gender || "N/A"}</td>
-                    <td className="py-4 px-2 border-r-2 w-24">{student.dateOfBirth || "N/A"}</td>
-                    <td className="py-4 px-2 w-28 flex items-center space-x-2">
-                      <span className="text-black truncate">{student.status || "N/A"}</span>
-                      <button 
-                        onClick={() => openViewModal(student)}
-                        className="bg-yellow-400 text-white px-4 rounded-sm hover:bg-yellow-500 whitespace-nowrap text-xs cursor-pointer"
-                      >
-                        View
-                      </button>
+              {students.map((student, index) => (
+                <tr key={student.id || index} className="border-b text-center border-black hover:bg-gray-100">
+                  <td className="py-4 px-2 text-black border-r-2 w-8">{index + 1}</td>
+                  <td className="py-4 px-2 border-r-2 w-24 truncate">{student.fullName || "N/A"}</td>
+                  <td className="py-4 px-2 border-r-2 w-32 truncate">{student.email || "N/A"}</td>
+                  <td className="py-4 px-2 border-r-2 w-28">{student.phoneNumber || "N/A"}</td>
+                  <td className="py-4 px-2 border-r-2 w-20">{student.gender || "N/A"}</td>
+                  <td className="py-4 px-2 border-r-2 w-24">{student.dateOfBirth || "N/A"}</td>
+                  <td className="py-4 px-2 w-28 flex items-center space-x-2">
+                    <span className="text-black truncate">{student.status || "N/A"}</span>
+                    <button
+                      onClick={() => openViewModal(student)}
+                      className="bg-yellow-400 text-white px-4 rounded-sm hover:bg-yellow-500 whitespace-nowrap text-xs cursor-pointer"
+                    >
+                      View
+                    </button>
                     </td>
 
                   {isViewModalOpen && selectedStudent && (

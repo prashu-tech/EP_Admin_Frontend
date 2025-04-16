@@ -1,4 +1,3 @@
-'use client';
 import { CiSearch } from "react-icons/ci";
 import { BsDownload } from "react-icons/bs";
 import { FiFilter } from "react-icons/fi";
@@ -28,6 +27,7 @@ export default function StudentTestTable() {
   });
   const [sortOrder, setSortOrder] = useState('ascending');  // Sorting order (ascending or descending)
   const [sortType, setSortType] = useState('score'); // Sort by 'score' or 'id'
+  const[totalTest, setTotalTest] = useState(0);
   const router = useRouter(); // Router for navigation
 
   // Fetch overall summary and student data from API
@@ -78,6 +78,11 @@ export default function StudentTestTable() {
       String(student.studentId).toLowerCase().includes(searchLower) // Filter by student ID
     );
   });
+
+  // Set totalTest dynamically whenever the student list changes
+  useEffect(() => {
+    setTotalTest(filteredStudents.length);
+  }, [filteredStudents]);  // This effect will run whenever filteredStudents changes
 
   // Function to download student data as CSV
   const downloadCSV = () => {
@@ -181,7 +186,7 @@ export default function StudentTestTable() {
       {/* Filter Bar with Boxed Stats */}
       <div className="lg:flex grid grid-cols-2 lg:flex-wrap gap-2 mb-6 p-3 bg-white rounded-lg drop-shadow hover:bg-white-100 w-full max-w-6xl mx-auto lg:justify-between">
         {[ 
-          `Total Tests: ${overallSummary.totalCount}`,
+          `Total Tests: ${totalTest}`,
           `Highest Marks: ${stats.highestMarks}`, // Replaced Average Marks with Highest Marks
           `Physics Tests: ${overallSummary.totalPhysicsTests}`,
           `Chemistry Tests: ${overallSummary.totalChemistryTests}`,
@@ -212,19 +217,19 @@ export default function StudentTestTable() {
               onClick={() => handleFilterSelection('ascending-descending')}
               className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
             >
-              Ascending-Descending By Score
+              Show Low Performers
             </button>
             <button
               onClick={() => handleFilterSelection('descending-ascending')}
               className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
             >
-              Descending-Ascending By Score
+              Show Top Performers
             </button>
             <button
               onClick={() => handleFilterSelection('by-id')}
               className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
             >
-              By ID wise
+              Show All
             </button>
           </div>
         )}
