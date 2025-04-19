@@ -12,27 +12,36 @@ export default function Practisetest() {
   const [searchQuery, setSearchQuery] = useState(""); // State for search query
   const router = useRouter(); // Initialize the useRouter hook from Next.js (next/navigation)
 
-  // Fetch data from the API
+  // Fetch data from the API once and store it in localStorage to persist it across refreshes
   useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/practicetest/practice`); // Corrected URL for fetching data
-        setStudents(response.data.results); // Set the students data
-      } catch (error) {
-        console.error('Error fetching student data:', error);
-      }
-    };
+    // Check if students data exists in localStorage
+    const storedStudents = localStorage.getItem('studentsData');
 
-    fetchStudents();
-  }, []);
+    if (storedStudents) {
+      // If data exists in localStorage, set it to state
+      setStudents(JSON.parse(storedStudents));
+    } else {
+      // If no data in localStorage, make an API request to fetch students
+      const fetchStudents = async () => {
+        try {
+          const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/practicetest/practice`);
+          const fetchedData = response.data.results;
+          setStudents(fetchedData);
+
+          // Store the fetched data in localStorage for subsequent page refreshes
+          localStorage.setItem('studentsData', JSON.stringify(fetchedData));
+        } catch (error) {
+          console.error('Error fetching student data:', error);
+        }
+      };
+
+      fetchStudents();
+    }
+  }, []); // Empty dependency array ensures this runs only once when the component mounts
 
   // Handling student name click to route to the student details page
   const handleStudentClick = (studentId) => {
-    // Save the studentId to localStorage
-    localStorage.setItem('studentId', studentId);
-
-    // Route to the /desktopuserprofile page
-    router.push(`/desktopuserprofile`);
+    router.push(`/student/${studentId}`);
   };
 
   // Function to download the student data as CSV
@@ -65,12 +74,13 @@ export default function Practisetest() {
   };
 
   // Filtered students based on search query
-  const filteredStudents = students.filter(student => {
-    return (
-      student.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      student.studentId.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  });
+ // Filtered students based on search query
+const filteredStudents = students.filter(student => {
+  return (
+    student.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    String(student.studentId).toLowerCase().includes(searchQuery.toLowerCase()) // Convert studentId to string before using toLowerCase
+  );
+});
 
   return (
     <div className="p-4 w-full max-w-6xl mx-auto">
@@ -120,14 +130,7 @@ export default function Practisetest() {
             {filteredStudents.map((student, index) => (
               <tr key={`${student.studentId}-${student.testName}`} className="border-b border-black hover:bg-gray-50">
                 <td className="p-4 border-2 border-black text-center font-bold">{index + 1}</td>
-                <td className="p-4 border-2 border-black">
-                  <button
-                    className="text-black hover:text-black font-bold hover:underline cursor-pointer"
-                    onClick={() => handleStudentClick(student.studentId)} // Trigger handleStudentClick
-                  >
-                    {student.fullName}
-                  </button>
-                </td>
+                <td className="p-4 border-2 border-black">{student.fullName}</td>
                 <td className="p-4 border-2 border-black">{student.studentId}</td>
                 <td className="p-4 border-2 border-black">{student.testName}</td>
                 <td className="p-4 border-2 border-black text-[#00B0FF] ">{student.subject}</td>
@@ -137,7 +140,7 @@ export default function Practisetest() {
                 <td className="p-4 border-2 border-black text-center">
                   <button
                     className="text-black hover:text-black font-bold"
-                    onClick={() => handleStudentClick(student.studentId)} // Trigger handleStudentClick
+                    onClick={() => handleStudentClick(student.studentId)}
                   >
                     <ArrowRightCircle size={24} strokeWidth={3.5} />
                   </button>

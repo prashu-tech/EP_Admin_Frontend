@@ -1,7 +1,7 @@
 import { CiSearch } from "react-icons/ci";
 import { BsDownload } from "react-icons/bs";
 import { FiFilter } from "react-icons/fi";
-import { useState, useEffect } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // Use next/navigation for App Router
 import { ArrowRightCircle } from 'lucide-react';  // Add this import
 
@@ -68,16 +68,49 @@ export default function StudentTestTable() {
     };
 
     fetchData();
-  }, [searchTerm, filterType]);  // Re-run the fetch data when searchTerm or filterType changes
+  }, []);  // Re-run the fetch data when searchTerm or filterType changes
 
   // Filter students based on search query (ID or Name)
-  const filteredStudents = students.filter((student) => {
-    const searchLower = searchTerm.toLowerCase();
-    return (
-      student.fullName.toLowerCase().includes(searchLower) ||  // Filter by full name
-      String(student.studentId).toLowerCase().includes(searchLower) // Filter by student ID
-    );
-  });
+    // ——————————————————————————————————————————————————————————
+  // 1) Your existing filtered list
+  const filteredStudents = useMemo(() => {
+    return students.filter((student) => {
+      const q = searchTerm.toLowerCase();
+      return (
+        student.fullName.toLowerCase().includes(q) ||
+        String(student.studentId).toLowerCase().includes(q)
+      );
+    });
+  }, [students, searchTerm]);
+  
+  // 2) Now this effect will only fire when students *or* searchTerm change:
+  useEffect(() => {
+    const physicsCount   = filteredStudents.filter(s => (s.subjects||[]).includes('Physics')).length;
+    const chemistryCount = filteredStudents.filter(s => (s.subjects||[]).includes('Chemistry')).length;
+    const biologyCount   = filteredStudents.filter(s => (s.subjects||[]).includes('Biology')).length;
+  
+    setOverallSummary({
+      totalPhysicsTests: physicsCount,
+      totalChemistryTests: chemistryCount,
+      totalBiologyTests: biologyCount,
+      totalCount: physicsCount + chemistryCount + biologyCount
+    });
+  
+    if (filteredStudents.length) {
+      const first = filteredStudents[0];
+      setStats({
+        totalTests: first.totalTests,
+        highestMarks: first.highestScore,
+        physicsCount: first.physicsCount,
+        chemistryCount: first.chemistryCount,
+        biologyCount: first.biologyCount,
+      });
+    } else {
+      setStats({ totalTests:0, highestMarks:0, physicsCount:0, chemistryCount:0, biologyCount:0 });
+    }
+  }, [filteredStudents]);  // now stable
+  // ——————————————————————————————————————————————————————————
+
 
   // Set totalTest dynamically whenever the student list changes
   useEffect(() => {
@@ -153,12 +186,6 @@ export default function StudentTestTable() {
       setSortOrder('ascending');  // Default order for IDs is ascending
     }
     setShowFilterOptions(false); // Close the filter options after selection
-  };
-
-  // Handle student name click to route to the student details page
-  const handleStudentClick = (studentId) => {
-    localStorage.setItem('studentId', studentId); // Store studentId in localStorage
-    router.push(`/desktopuserprofile`); // Route to the student's profile page
   };
 
   return (
