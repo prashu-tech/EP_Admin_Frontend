@@ -155,6 +155,12 @@ export default function StudentTestTable() {
     setShowFilterOptions(false); // Close the filter options after selection
   };
 
+  // Handle student name click to route to the student details page
+  const handleStudentClick = (studentId) => {
+    localStorage.setItem('studentId', studentId); // Store studentId in localStorage
+    router.push(`/desktopuserprofile`); // Route to the student's profile page
+  };
+
   return (
     <div className="py-6 w-full mx-auto px-4 lg:px-6">
       {/* Search & Buttons Section */}

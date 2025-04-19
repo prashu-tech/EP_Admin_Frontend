@@ -2,41 +2,107 @@
 import Head from "next/head";
 import { useState, useEffect, useRef } from "react";
 import { IoDownloadOutline } from "react-icons/io5";
-import axios from 'axios';  // For making API calls
+import axios from 'axios';
+import * as XLSX from "xlsx";
+import { jwtDecode } from "jwt-decode";
+import toast from "react-hot-toast"
+import Link from "next/link";
 
 const Desktop_student = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-  const [isLimitExceededModalOpen, setIsLimitExceededModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const importButtonRef = useRef(null);
   const fileInputRef = useRef(null);
+  const [students, setStudents] = useState([]);
+  const [localAdmin, setLocalAdmin] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const maxStudents = 80;
+  const STUDENT_LIMIT = 100; // Set student limit
 
-  const [students, setStudents] = useState([]); // Empty state to hold the student data
+  const handleExcelUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const data = event.target.result;
+
+      try {
+        const workbook = XLSX.read(data, { type: "binary" });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+
+        const json = XLSX.utils.sheet_to_json(sheet);
+
+        const processedStudents = json.map(student => {
+          const firstName = student["STUDENT NAME"] || "";
+          const dob = student["DOB "] || "";
+          const yearOfBirth = dob ? (dob instanceof Date ? dob.getFullYear() : new Date(dob).getFullYear()) : "";
+
+          const password = `${firstName.charAt(0)}${yearOfBirth}`;
+
+
+
+          return {
+            firstName: firstName,
+            emailAddress: student["EMAIL"] || "",
+            mobileNumber: student["PHONE NUMBER"] || "",
+            gender: student["GENDER"] || "",
+            dateOfBirth: dob || "",
+            password: password, // Auto-generated password
+            addedByAdminId: localAdmin,
+          };
+        });
+
+        console.log(processedStudents);
+        setStudents(processedStudents); 
+
+      } catch (error) {
+        console.error("Error processing the Excel file:", error);
+      }
+    };
+
+    reader.readAsBinaryString(file);
+  };
 
   useEffect(() => {
-    // Fetch student data from the backend
     const fetchStudentData = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/studentdata/info`); // Make sure the backend route is correct
-        if (response.data.studentInfo) {
-          setStudents(response.data.studentInfo); // Update state with fetched student data
+        // Get the admin token from localStorage
+        const token = localStorage.getItem("adminAuthToken");
+  
+        if (!token) {
+          console.error("No token found in localStorage.");
+          return;
         }
+  
+        // Decode the token to extract the admin ID
+        const decodedToken = jwtDecode(token);
+        const addedByAdminId = decodedToken.id;
+        console.log(addedByAdminId)
+        setLocalAdmin(addedByAdminId);
+  
+        // Send the addedByAdminId in the request body
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/studentdata/info`,
+          {
+            addedByAdminId: addedByAdminId, // Send the addedByAdminId in the request body
+          }
+        );
+  
+        if (response.data.studentInfo) {
+          setStudents(response.data.studentInfo);
+        }
+  
       } catch (error) {
         console.error("Error fetching student data:", error);
       }
     };
-
-    fetchStudentData(); // Call the function to fetch data
-  }, []); // Empty dependency array means this runs once when the component mounts
-
-  const getNextId = () => {
-    const maxId = students.length > 0 ? Math.max(...students.map(student => student.id)) : 0;
-    return maxId + 1;
-  };
+  
+    fetchStudentData(); 
+  }, []);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -47,69 +113,129 @@ const Desktop_student = () => {
     setIsViewModalOpen(true);
   };
   const closeViewModal = () => setIsViewModalOpen(false);
-  const openLimitExceededModal = () => setIsLimitExceededModalOpen(true);
-  const closeLimitExceededModal = () => setIsLimitExceededModalOpen(false);
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+  //to send the admin to the userprofile page
+  const handleStudentClick = (studentId) => {
+    // Save the student ID to localStorage
+    localStorage.setItem('studentId', studentId);
+  
+    // Redirect to the desktopuserprofile page
+    window.location.href = '/desktopuserprofile';  // This will navigate the user to the profile page
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    // Collect form data
+    setIsSubmitting(true);
+
     const formData = new FormData(e.target);
     const firstName = formData.get("name");
-    const lastName = ""; // If there's no last name field, you can leave it as an empty string
-    const dateOfBirth = formData.get("dob");
     const email = formData.get("email");
+    const dateOfBirth = formData.get("dob");
     const phoneNumber = formData.get("phone");
     const gender = formData.get("gender");
   
+    // Get the JWT token from localStorage
+    const token = localStorage.getItem("adminAuthToken");
+  
+    // Decode the token to extract the admin ID
+    let addedByAdminId = null;
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        addedByAdminId = decodedToken.id;
+         // Assuming the admin ID is stored in the "id" field of the token
+      } catch (error) {
+        console.error("Error decoding token:", error);
+        toast.error("Invalid token",{
+          duration: 5000
+        });
+        return;
+      }
+    }
+  
     // Validate if all required fields are present
     if (!email || !firstName || !dateOfBirth || !phoneNumber || !gender) {
-      alert("All fields are required");
+      toast.error("All fields are required",{
+        duration: 5000
+      });
       return;
     }
   
-    // Generate password using firstName and birth year
+    // Prevent adding more students if the limit is reached
+    if (students.length >= STUDENT_LIMIT) {
+      toast.error("Student limit of 100 has been reached. Cannot add more students.",{
+        duration: 5000
+      });
+      return;
+    }
+  
+    // Validate email format
+    const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Invalid email format",{
+        duration: 5000
+      });
+      return;
+    }
+  
     const birthYear = new Date(dateOfBirth).getFullYear();
-    const password = `${firstName.charAt(0)}${lastName.charAt(0)}${birthYear}`;
+    const password = `${firstName.charAt(0)}${birthYear}`;
   
     try {
-      // Send a POST request to the backend API to save student data
       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/studentdata/save`, {
         email,
-        password, // Auto-generated password
+        password, 
         firstName,
         dateOfBirth,
         phoneNumber,
-        gender
+        gender,
+        addedByAdminId,  // Send the decoded admin ID
       });
+
+      setIsSubmitting(false);
   
       if (response.status === 201) {
-        // Handle success (e.g., update students state or close modal)
+        await sendEmail(email, password);
         setStudents((prevStudents) => [...prevStudents, response.data.student]);
-        alert("Student added successfully!");
-        closeAddStudentModal(); // Close the modal after successful submission
+        toast.success("Student added successfully and email sent!",{
+          duration: 5000
+        });
+        
+        closeAddStudentModal();
       }
     } catch (error) {
       console.error("Error saving student data:", error);
-      alert("Error saving student data");
+      setIsSubmitting(false);
+      toast.error("Error saving student data",{
+        duration: 5000
+      });
     }
   };
   
+
+  const sendEmail = async (email, password) => {
+    try {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/email`, {
+        to: email,
+        subject: 'Congratulations, you were added to the Exam Portal',
+        text: `Hello, \n\nCongratulations! You have been successfully added to the Exam Portal.\nYour login credentials are:\n\nEmail: ${email}\nPassword: ${password}\n\nBest regards,\nThe Exam Portal Team`
+      });
+
+      if (response.status === 200) {
+        console.log('Email sent successfully');
+      }
+    } catch (error) {
+      console.error('Error sending email:', error);
+    }
+  };
+
   const handleExport = () => {
     const headers = ["Sr.No,Student Name,Email,Phone Number,Gender,DOB,Status"];
-    const rows = students.map(student => 
+    const rows = students.map(student =>
       `${student.id},${student.name},${student.email},${student.phone},${student.gender},${student.dob},${student.status}`
     );
     const csvContent = [...headers, ...rows].join("\n");
-    
+
     const blob = new Blob([csvContent], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -119,57 +245,64 @@ const Desktop_student = () => {
     link.click();
     document.body.removeChild(link);
     window.URL.revokeObjectURL(url);
-    
+
     closeModal();
   };
 
-  const handleFileUpload = (e) => {
+  const handleFileUpload = async (e) => {
     e.preventDefault();
-    
-    const file = fileInputRef.current.files[0];
-    if (!file) {
-      alert("Please select a file to upload.");
-      return;
-    }
   
-    const reader = new FileReader();
-    
-    reader.onload = async (event) => {
-      const text = event.target.result;
-      const rows = text.split("\n").map(row => row.split(","));
+    try {
+      const currentCount = students.length;
+      const spaceLeft = STUDENT_LIMIT - currentCount;
   
-      // Assuming the first row contains the header
-      const header = rows[0];
-      const studentData = rows.slice(1).map((row) => {
-        return {
-          name: row[0]?.trim(),
-          email: row[1]?.trim(),
-          phone: row[2]?.trim(),
-          gender: row[3]?.trim(),
-          dob: row[4]?.trim(),
-          status: row[5]?.trim() || "Active",
-        };
-      }).filter(student => student.name && student.email); // Filter out rows with missing name or email
-  
-      try {
-        // Send the data to the backend
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/studentdata/bulk-save`, { students: studentData });
-  
-        if (response.status === 201) {
-          setStudents((prevStudents) => [...prevStudents, ...studentData]);
-          alert("Students added successfully!");
-        }
-      } catch (error) {
-        console.error("Error saving student data:", error);
-        alert("Error saving student data");
+      if (spaceLeft <= 0) {
+        toast.error("Student limit of 100 has been reached. Cannot upload more students.", {
+          duration: 5000,
+        });
+        return;
       }
-      closeModal();  // Close modal after upload
-    };
   
-    reader.readAsText(file);
+      let studentsToAdd = students.slice(0, spaceLeft);
+  
+      if (students.length > spaceLeft) {
+        toast.success(`Only ${spaceLeft} students were added. Student limit of 100 reached.`, {
+          duration: 5000,
+        });
+      }
+  
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/studentdata/bulk-save`,
+        { students: studentsToAdd }
+      );
+  
+      const existingEmails = response.data.existingEmails || [];
+  
+      // If there are existing emails, display them in the toast message
+      if (existingEmails.length > 0) {
+        toast.error(
+          `Some students were not added due to existing emails: ${existingEmails.join(', ')}`,
+          {
+            duration: 10000,
+          }
+        );
+      } else {
+        toast.success("Students added successfully!", {
+          duration: 5000,
+        });
+      }
+  
+      setStudents((prev) => [...prev, ...studentsToAdd]); // Update state
+      console.log("Backend Response:", response.data);
+  
+    } catch (error) {
+      console.error("Error submitting data:", error);
+      toast.error("Error occurred while uploading students.", {
+        duration: 5000,
+      });
+    }
   };
   
-
   return (
     <div className="min-h-screen bg-white p-6 relative">
       <Head>
@@ -187,145 +320,96 @@ const Desktop_student = () => {
         </button>
       </div>
 
-      <div className={`transition-all duration-300 ${isModalOpen || isAddStudentModalOpen || isViewModalOpen || isLimitExceededModalOpen ? "" : ""}`}>
-        <main className="max-w-6xl mx-auto">
-          <div className="flex justify-end pt-6 -mx-6 items-center mb-4">
-            <div className="space-x-3 relative">
-              <button 
-                onClick={openAddStudentModal} 
-                className="bg-yellow-500 text-white w-V2 w-50 py-2 px-4 rounded-lg hover:bg-yellow-600 cursor-pointer"
-              >
-                Add Student
-              </button>
-              <button 
-                ref={importButtonRef} 
-                onClick={openModal} 
-                className="text-white py-2 w-50 px-4 rounded-lg hover:bg-[#3DAF6B] cursor-pointer" 
-                style={{ backgroundColor: "#47BE7D" }}
-              >
-                Import Excel
-              </button>
-            </div>
+      <main className="max-w-6xl mx-auto">
+        <div className="flex justify-end pt-6 mb-4">
+          <div className="space-x-3 relative">
+            <button
+              onClick={openAddStudentModal}
+              disabled={students.length >= STUDENT_LIMIT || isSubmitting}
+              className={`bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600 cursor-pointer ${
+                students.length >= STUDENT_LIMIT ? "bg-gray-400 cursor-not-allowed" : ""
+              }`}
+            >
+              Add Student
+            </button>
+            <button
+              ref={importButtonRef}
+              onClick={openModal}
+              disabled={students.length >= STUDENT_LIMIT}
+              className={`text-white py-2 px-4 rounded-lg ${students.length >= STUDENT_LIMIT ? "bg-gray-400 cursor-not-allowed" : "bg-green-500"}`}
+            >
+              Import Excel
+            </button>
           </div>
+        </div>
 
-          <div className="bg-white mt-16 ml-0 mr-34 shadow-md border rounded-lg overflow-hidden w-full max-w-3xl">
-            <table className="w-full table-auto">
-              <thead>
-                <tr className="bg-white text-gray-600 -mx-12 text-center border-b-2 uppercase text-xs leading-tight">
-                  <th className="py-4 px-2 w-8">Sr.No</th>
-                  <th className="py-4 px-2 w-24">Student Name</th>
-                  <th className="py-4 px-2 w-32">Email</th>
-                  <th className="py-4 px-2 w-28">Phone Number</th>
-                  <th className="py-4 px-2 w-20">Gender</th>
-                  <th className="py-4 px-2 w-24">DOB</th>
-                  <th className="py-4 px-2 w-28">Status</th>
-                </tr>
-              </thead>
-              <tbody className="text-gray-700 text-xs font-light">
-              {students.map((student, index) => (
-                <tr key={student.id || index} className="border-b text-center border-black hover:bg-gray-100">
-                  <td className="py-4 px-2 text-black border-r-2 w-8">{index + 1}</td>
-                  <td className="py-4 px-2 border-r-2 w-24 truncate">{student.fullName || "N/A"}</td>
-                  <td className="py-4 px-2 border-r-2 w-32 truncate">{student.email || "N/A"}</td>
-                  <td className="py-4 px-2 border-r-2 w-28">{student.phoneNumber || "N/A"}</td>
-                  <td className="py-4 px-2 border-r-2 w-20">{student.gender || "N/A"}</td>
-                  <td className="py-4 px-2 border-r-2 w-24">{student.dateOfBirth || "N/A"}</td>
-                  <td className="py-4 px-2 w-28 flex items-center space-x-2">
-                    <span className="text-black truncate">{student.status || "N/A"}</span>
-                    <button
-                      onClick={() => openViewModal(student)}
-                      className="bg-yellow-400 text-white px-4 rounded-sm hover:bg-yellow-500 whitespace-nowrap text-xs cursor-pointer"
-                    >
-                      View
-                    </button>
-                    </td>
+        <div>
+          <p className="font-bold text-xl text-red-400">Warning!</p>
+          <p className="text-sm text-gray-500">The excel file should contain STUDENT NAME, EMAIL, PHONE NUMBER, GENDER, DOB</p>
+        </div>
 
-                  {isViewModalOpen && selectedStudent && (
-                    <div className="fixed inset-0 flex items-center justify-center z-50">
-                      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-                        <h2 className="text-xl font-semibold text-center mb-4">Student Details</h2>
-                        <div className="space-y-3">
-                          <p><strong>ID:</strong> {selectedStudent.id}</p>
-                          <p><strong>Name:</strong> {selectedStudent.name || "N/A"}</p>
-                          <p><strong>Email:</strong> {selectedStudent.email || "N/A"}</p>
-                          <p><strong>Phone:</strong> {selectedStudent.phone || "N/A"}</p>
-                          <p><strong>Gender:</strong> {selectedStudent.gender || "N/A"}</p>
-                          <p><strong>DOB:</strong> {selectedStudent.dob || "N/A"}</p>
-                          <p><strong>Status:</strong> {selectedStudent.status || "N/A"}</p>
-                        </div>
-                        <button 
-                          onClick={closeViewModal}
-                          className="mt-4 w-full bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 cursor-pointer"
-                        >
-                          Close
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-
-                  </tr>
-                ))}
-              </tbody>
-
-            </table>
-          </div>
-        </main>
-      </div>
+        <div className="bg-white mt-16 shadow-md border rounded-lg overflow-hidden">
+          <table className="w-full table-auto">
+            <thead>
+              <tr className="bg-white text-gray-600 text-center border-b-2 uppercase text-xs leading-tight">
+                <th className="py-4 px-2">Sr.No</th>
+                <th className="py-4 px-2">Student Name</th>
+                <th className="py-4 px-2">Email</th>
+                <th className="py-4 px-2">Phone Number</th>
+                <th className="py-4 px-2">Gender</th>
+                <th className="py-4 px-2">DOB</th>
+                <th className="py-4 px-2">Status</th>
+              </tr>
+            </thead>
+            <tbody className="text-gray-700 text-xs font-light">
+            {students.map((student, index) => (
+              <tr key={student.id || index} className="border-b text-center hover:bg-gray-100">
+                <td className="py-4 px-2 text-black border-r-2">{index + 1}</td>
+                <td
+                  className="py-4 px-2 border-r-2 cursor-pointer text-blue-500"
+                  onClick={() => handleStudentClick(student.id)} // Adding the click handler here
+                >
+                  {student.fullName || "N/A"}
+                </td>
+                <td className="py-4 px-2 border-r-2">{student.email || "N/A"}</td>
+                <td className="py-4 px-2 border-r-2">{student.phoneNumber || "N/A"}</td>
+                <td className="py-4 px-2 border-r-2">{student.gender || "N/A"}</td>
+                <td className="py-4 px-2 border-r-2">{student.dateOfBirth || "N/A"}</td>
+                <td className="py-4 px-2 flex items-center">
+                  <span>{student.status || "N/A"}</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+          </table>
+        </div>
+      </main>
 
       {/* Import Excel Modal */}
       {isModalOpen && (
-        <div className="absolute top-20 right-3 mt-30 bg-white p-6 rounded-lg shadow-lg w-50 z-50">
+        <div className="absolute top-20 right-3 mt-30 bg-white p-6 rounded-lg shadow-lg z-50">
           <div className="flex flex-col items-center">
-            <label className="bg-[#7ADC8CC4] text-gray-700 py-4 px-4 rounded-lg mb-4 flex flex-col items-center space-y-1 border border-gray-300 hover:bg-[#7ADC8C] cursor-pointer">
+            <label className="bg-[#7ADC8CC4] text-gray-700 py-4 px-4 rounded-lg mb-4 flex flex-col items-center space-y-1">
               <IoDownloadOutline className="h-6 w-6 text-gray-700" />
               <span className="text-base font-semibold">Import File</span>
               <input
-                type="file"
+                id="importFileInput"
                 ref={fileInputRef}
+                type="file"
                 accept=".csv"
-                className="hidden"
+                onChange={handleExcelUpload}
+                style={{ display: 'none' }}
               />
             </label>
-            <div className="w-50 border border-gray-300 border-t my-4"></div>
+            <div className="w-full border border-gray-300 border-t my-4"></div>
             <div className="flex space-x-4 mx-6 justify-end">
-              <button 
-                onClick={closeModal} 
-                className="bg-gray-300 text-gray-700 text-xs py-2 px-3 rounded-lg hover:bg-gray-400 cursor-pointer"
-              >
+              <button onClick={closeModal} className="bg-gray-300 text-gray-700 text-xs py-2 px-3 rounded-lg hover:bg-gray-400">
                 Cancel
               </button>
-              <button 
-                onClick={handleFileUpload} 
-                className="bg-red-500 text-white text-xs py-2 px-3 rounded-lg hover:bg-red-600 cursor-pointer"
-              >
+              <button onClick={handleFileUpload} className="bg-red-500 text-white text-xs py-2 px-3 rounded-lg hover:bg-red-600">
                 Upload
               </button>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* View Student Modal */}
-      {isViewModalOpen && selectedStudent && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h2 className="text-xl font-semibold text-center mb-4">Student Details</h2>
-            <div className="space-y-3">
-              <p><strong>ID:</strong> {selectedStudent.id}</p>
-              <p><strong>Name:</strong> {selectedStudent.fullName}</p>
-              <p><strong>Email:</strong> {selectedStudent.email}</p>
-              <p><strong>Phone:</strong> {selectedStudent.phoneNumber}</p>
-              <p><strong>Gender:</strong> {selectedStudent.gender}</p>
-              <p><strong>DOB:</strong> {selectedStudent.dateOfBirth}</p>
-              <p><strong>Status:</strong> {selectedStudent.status}</p>
-            </div>
-            <button 
-              onClick={closeViewModal}
-              className="mt-4 w-full bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 cursor-pointer"
-            >
-              Close
-            </button>
           </div>
         </div>
       )}
@@ -334,142 +418,53 @@ const Desktop_student = () => {
       {isAddStudentModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
-            <h2
-              className="text-xl font-semibold text-center py-2"
-              style={{
-                background: "linear-gradient(to right, #FFF9E5, #E5F0FF)",
-                width: "200px",
-                margin: "0 auto",
-              }}
-            >
+            <h2 className="text-xl font-semibold text-center py-2" style={{ background: "linear-gradient(to right, #FFF9E5, #E5F0FF)" }}>
               Add Student
             </h2>
             <form onSubmit={handleSubmit} className="mt-4 space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-semibold text-black">
-                  Name:
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  placeholder="Enter your name"
-                  className="mt-1 block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  required
-                />
+                <label htmlFor="name" className="block text-sm font-semibold text-black">Name:</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name" required className="w-full px-3 py-2 border border-gray-400 rounded-md" />
               </div>
-
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-black">
-                  Email:
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="Enter your email"
-                  className="mt-1 block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  required
-                />
+                <label htmlFor="email" className="block text-sm font-semibold text-black">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required className="w-full px-3 py-2 border border-gray-400 rounded-md" />
               </div>
-
               <div>
-                <label htmlFor="dob" className="block text-sm font-semibold text-black">
-                  Date of Birth:
-                </label>
-                <input
-                  type="date"
-                  id="dob"
-                  name="dob"
-                  placeholder="mm/dd/yyyy"
-                  className="mt-1 block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  required
-                />
+                <label htmlFor="dob" className="block text-sm font-semibold text-black">Date of Birth:</label>
+                <input type="date" id="dob" name="dob" required className="w-full px-3 py-2 border border-gray-400 rounded-md" />
               </div>
-
               <div>
-                <label htmlFor="phone" className="block text-sm font-semibold text-black">
-                  Phone Number:
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  placeholder="Enter your Phone Number"
-                  className="mt-1 block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  required
-                />
+                <label htmlFor="phone" className="block text-sm font-semibold text-black">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" placeholder="Enter your Phone Number" required className="w-full px-3 py-2 border border-gray-400 rounded-md" />
               </div>
-
               <div>
                 <label className="block text-sm font-semibold text-black">Gender:</label>
-                <div className="mt-1 flex space-x-4">
+                <div className="flex space-x-4 mt-1">
                   <label className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      name="gender"
-                      value="Male"
-                      className="form-radio h-4 w-4 text-blue-600"
-                      required
-                    />
-                    <span className="ml-2 text-sm text-black">Male</span>
+                    <input type="radio" name="gender" value="Male" className="form-radio" required />
+                    <span className="ml-2">Male</span>
                   </label>
                   <label className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      name="gender"
-                      value="Female"
-                      className="form-radio h-4 w-4 text-blue-600"
-                    />
-                    <span className="ml-2 text-sm text-black">Female</span>
+                    <input type="radio" name="gender" value="Female" className="form-radio" />
+                    <span className="ml-2">Female</span>
                   </label>
                   <label className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      name="gender"
-                      value="Other"
-                      className="form-radio h-4 w-4 text-blue-600"
-                    />
-                    <span className="ml-2 text-sm text-black">Other</span>
+                    <input type="radio" name="gender" value="Other" className="form-radio" />
+                    <span className="ml-2">Other</span>
                   </label>
                 </div>
               </div>
 
               <div className="flex space-x-4">
-                <button
-                  type="button"
-                  onClick={closeAddStudentModal}
-                  className="w-full bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 cursor-pointer"
-                >
+                <button type="button" onClick={closeAddStudentModal} className="w-full bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400">
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer"
-                  style={{ backgroundColor: "#007AFF" }}
-                >
+                <button type="submit" disabled={isSubmitting} className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">
                   Submit
                 </button>
               </div>
             </form>
-          </div>
-        </div>
-      )}
-
-      {/* Limit Exceeded Modal */}
-      {isLimitExceededModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h2 className="text-xl font-semibold text-center mb-4 text-red-600">Limit Exceeded</h2>
-            <p className="text-center text-gray-700 mb-6">
-              The maximum limit of {maxStudents} students has been reached. You cannot add more students at this time.
-            </p>
-            <button
-              onClick={closeLimitExceededModal}
-              className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 cursor-pointer"
-            >
-              OK
-            </button>
           </div>
         </div>
       )}

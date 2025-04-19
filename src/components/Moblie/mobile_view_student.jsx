@@ -1,6 +1,7 @@
 "use client";
 import Head from "next/head";
 import { useState, useRef } from "react";
+import toast from "react-hot-toast";
 import { IoDownloadOutline } from "react-icons/io5";
 
 const Mobile_desktop_student = () => {
@@ -97,7 +98,9 @@ const Mobile_desktop_student = () => {
     e.preventDefault();
     const file = fileInputRef.current.files[0];
     if (!file) {
-      alert("Please select a file to upload.");
+      toast.error("Please select a file to upload.",{
+        duration: 5000
+      });
       return;
     }
 

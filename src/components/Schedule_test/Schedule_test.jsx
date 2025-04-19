@@ -7,6 +7,7 @@ import { FaEye } from "react-icons/fa6";
 import { FaQuestionCircle } from "react-icons/fa";
 import axios from "axios"; // Import axios for making API calls
 import { useRouter } from "next/navigation"; // Import useRouter for programmatic navigation
+import toast from "react-hot-toast";
 
 const Schedule_test = () => {
   const router = useRouter();
@@ -96,12 +97,16 @@ console.log(row)
       // Handle the response accordingly
       if (response.status === 200) {
         // Success: Handle the success response
-        alert("Test updated successfully");
+        toast.success("Test updated successfully",{
+          duration: 5000
+        });
         // You may want to update the testData in the state or navigate elsewhere
       }
     } catch (error) {
       console.error("Failed to update test", error);
-      alert("Error updating test");
+      toast.error("Error updating test",{
+        duration: 5000
+      });
     }
   };
   

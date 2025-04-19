@@ -6,6 +6,7 @@ import { GiFruitBowl } from "react-icons/gi";
 import { MdScience } from "react-icons/md";
 import { FaSearch } from "react-icons/fa";  // Import the search icon
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const SubjectSelectMobile = () => {
   const [difficulty, setDifficulty] = useState("Medium");
@@ -41,7 +42,9 @@ const handleContinueClick = () => {
     const subject = selectedSubjects[0].toLowerCase(); // Get the first selected subject and convert it to lowercase
     router.push(`/select_chapters_${subject}`); // Route to the first selected subject's page
   } else {
-    alert("Please select at least one subject!");
+    toast.error("Please select at least one subject!",{
+      duration: 5000
+    });
   }
 };
 

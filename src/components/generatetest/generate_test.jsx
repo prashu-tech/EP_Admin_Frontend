@@ -170,7 +170,7 @@ export default function CenterText() {
                     >
                       <ArrowRightCircle size={24} strokeWidth={3.5} />
                     </button>
-                  </td>
+                  </td> 
                 </tr>
               ))}
             </tbody>

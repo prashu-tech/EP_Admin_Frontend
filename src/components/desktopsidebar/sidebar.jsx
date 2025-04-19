@@ -50,15 +50,10 @@ const Sidebar = () => {
     {
       label: "Dashboard",
       icon: <BiSolidDashboard className="text-xl" />,
-      href: "/dashboard",
+      href: "/admindashboard",
     },
     {
-      label: "Student Test",
-      icon: <MdOutlineQuiz className="text-xl" />,
-      href: "/studenttest",
-    },
-    {
-      label: "Practise Test",
+      label: "Practice Test",
       icon: <AiOutlineFileText className="text-xl" />,
       href: "/Practisetest",
     },
@@ -71,11 +66,6 @@ const Sidebar = () => {
       label: "Generate Test",
       icon: <LuFileInput className="text-xl" />,
       href: "/generatetest",
-    },
-    {
-      label: "Result Page",
-      icon: <FaTachometerAlt className="text-xl" />,
-      href: "/resultpage",
     },
     {
       label: "Settings",

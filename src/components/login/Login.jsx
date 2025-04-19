@@ -4,10 +4,11 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import toast from "react-hot-toast";
 
 const AdminLogin = () => {
   const [formData, setFormData] = useState({
-    Email: "",
+    AdminId: "", // Changed from Email to AdminId
     PassKey: "",
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -26,15 +27,20 @@ const AdminLogin = () => {
 
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/newadmin/login`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/newadmin/login`, // Adjust backend endpoint if necessary
         {
-          Email: formData.Email,
+          AdminId: formData.AdminId, // Send AdminId instead of Email
           PassKey: formData.PassKey,
         }
       );
 
+      // Assuming backend sends token upon successful login
       localStorage.setItem("adminAuthToken", response.data.token);
+      
       router.push("/admindashboard");
+      toast.success("Login Successfull!",{
+        duration: 5000
+      })
     } catch (err) {
       setError(err.response?.data?.message || "Failed to login.");
     } finally {
@@ -59,7 +65,7 @@ const AdminLogin = () => {
       <div className="flex flex-col items-center justify-center w-full md:w-[60%] bg-white p-6 md:rounded-l-3xl">
         <div className="md:hidden flex justify-center mb-6">
           <Image
-            src="/nexcore-logo-pc.jpg"
+            src="/nexcore-logo-pc.png"
             alt="Nexcore Logo"
             width={160}
             height={40}
@@ -77,20 +83,20 @@ const AdminLogin = () => {
         <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-md">
           <div>
             <label
-              htmlFor="Email"
+              htmlFor="AdminId"
               className="block text-sm font-semibold text-[#53ADD3] mb-2"
             >
-              Email
+              Admin ID
             </label>
             <input
-              type="email"
-              name="Email"
-              id="Email"
-              value={formData.Email}
+              type="text"
+              name="AdminId" // Changed to AdminId from Email
+              id="AdminId"
+              value={formData.AdminId}
               onChange={handleChange}
               required
               className="appearance-none rounded-md block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              placeholder="admin@example.com"
+              placeholder="admin123"
             />
           </div>
 

@@ -21,26 +21,15 @@ function Scheduletest_mobile() {
   };
 
   return (
-<<<<<<< HEAD
     <div className="relative h-auto overflow-hidden justify-between mb-0">
       {/* Back and Create Buttons */}
       <div className="flex flex-row sm:flex-row justify-between items-center sm:mx-8 mb-17 mt-2 p-4 sm:p-0">
         <button className="flex items-center px-8 py-2 bg-[#FFBB38] text-white rounded-full hover:bg-[#FFBB38] transition mb-2 sm:mb-2">
-=======
-    <div className="relative h-auto overflow-hidden mb-2">
-      {/* Back and Create Buttons */}
-      <div className="flex flex-row sm:flex-row justify-between items-center sm:mx-8 mt-4 p-4 sm:p-0">
-        <button className="flex items-center px-8 py-2 bg-[#FFBB38] text-white rounded-full hover:bg-[#FFBB38] transition mb-4 sm:mb-0">
->>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb
           <FaArrowLeft className="mr-2 font-bold" /> Back
         </button>
         <button
           onClick={openModal}
-<<<<<<< HEAD
           className="flex items-center px-8 py-2 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 transition "
-=======
-          className="flex items-center px-8 py-2 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 transition"
->>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb
         >
           Create <FaArrowRight className="ml-2 text-bold" />
         </button>
@@ -131,21 +120,6 @@ function Scheduletest_mobile() {
               </div>
             </div>
 
-<<<<<<< HEAD
-=======
-
-
-
-            
-
-
-
-
-
-
-      
-
->>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb
             {/* Modal Footer with Cancel and Create Test Buttons */}
             <div className="flex flex-col sm:flex-row justify-end space-x-0 sm:space-x-4 mt-6">
               <button

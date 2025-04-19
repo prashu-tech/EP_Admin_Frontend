@@ -58,7 +58,6 @@ const PaperInstruction1_mobile = () => {
     <div className="flex flex-col items-center mt-8 w-full bg-white rounded-lg p-2">
 
             {/* Search Bar */}
-<<<<<<< HEAD
         <div className="flex justify-center ">
           <div className="relative w-full max-w-md">
             <input
@@ -72,22 +71,6 @@ const PaperInstruction1_mobile = () => {
           </div>
         </div>
 
-=======
-  <div className="flex justify-center ">
-    <div className="relative w-full max-w-md">
-      <input
-        type="text"
-        placeholder="Search Tests"
-        className="w-full px-4 py-2 pl-10 rounded-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white  font-medium "
-      />
-      <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-        <FaSearch className="h-5 w-5 text-gray-400" />
-      </div>
-    </div>
-  </div>
-
-        
->>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb
       {/* Tab Container */}
       <div className="flex w-full border-b border-gray-300 mb-4 mt-8">
         <button
@@ -152,8 +135,4 @@ const PaperInstruction1_mobile = () => {
   );
 };
 
-<<<<<<< HEAD
 export default PaperInstruction1_mobile;
-=======
-export default PaperInstruction1_mobile;
->>>>>>> d853b2cede67c6e209a6dc53592ca0d8bb4354eb

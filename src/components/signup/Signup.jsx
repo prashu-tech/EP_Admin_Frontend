@@ -3,6 +3,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import toast from "react-hot-toast";
 
 const AdminSignUp = () => {
   const [formData, setFormData] = useState({
@@ -38,7 +39,9 @@ const AdminSignUp = () => {
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/newadmin/signup`,
         formData
       );
-      alert("Registration successful! Please check your email.");
+      toast.success("Registration successful! Please check your email.",{
+        duration: 5000
+      });
       router.push("/admin/login"); // Redirect to login page
     } catch (err) {
       setError(err.response?.data?.message || "Failed to register.");

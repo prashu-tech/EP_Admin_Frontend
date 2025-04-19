@@ -69,13 +69,7 @@ const Home = () => {
             </button>
           </div>
 
-          <div className="mb-4 mx-auto my-8" style={{ width: "90%" }}>
-            <input
-              type="text"
-              placeholder="Search question..."
-              className="w-full border shadow-[0_4px_6px_rgba(0,0,0,0.2)] rounded-lg p-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+            
 
           {/* Action Buttons with Icons */}
           <div className="flex w-full justify-center gap-6 sm:gap-6 my-6 overflow-x-auto">

@@ -28,7 +28,11 @@ export default function Practisetest() {
 
   // Handling student name click to route to the student details page
   const handleStudentClick = (studentId) => {
-    router.push(`/student/${studentId}`);
+    // Save the studentId to localStorage
+    localStorage.setItem('studentId', studentId);
+
+    // Route to the /desktopuserprofile page
+    router.push(`/desktopuserprofile`);
   };
 
   // Function to download the student data as CSV
@@ -113,10 +117,17 @@ export default function Practisetest() {
           </thead>
 
           <tbody className="text-center">
-            {students.map((student, index) => (
+            {filteredStudents.map((student, index) => (
               <tr key={`${student.studentId}-${student.testName}`} className="border-b border-black hover:bg-gray-50">
                 <td className="p-4 border-2 border-black text-center font-bold">{index + 1}</td>
-                <td className="p-4 border-2 border-black">{student.fullName}</td>
+                <td className="p-4 border-2 border-black">
+                  <button
+                    className="text-black hover:text-black font-bold hover:underline cursor-pointer"
+                    onClick={() => handleStudentClick(student.studentId)} // Trigger handleStudentClick
+                  >
+                    {student.fullName}
+                  </button>
+                </td>
                 <td className="p-4 border-2 border-black">{student.studentId}</td>
                 <td className="p-4 border-2 border-black">{student.testName}</td>
                 <td className="p-4 border-2 border-black text-[#00B0FF] ">{student.subject}</td>
@@ -126,7 +137,7 @@ export default function Practisetest() {
                 <td className="p-4 border-2 border-black text-center">
                   <button
                     className="text-black hover:text-black font-bold"
-                    onClick={() => handleStudentClick(student.studentId)}
+                    onClick={() => handleStudentClick(student.studentId)} // Trigger handleStudentClick
                   >
                     <ArrowRightCircle size={24} strokeWidth={3.5} />
                   </button>
