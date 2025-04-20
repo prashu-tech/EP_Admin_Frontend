@@ -47,10 +47,10 @@ export default function StudentTestTable() {
           totalPhysicsTests: overallSummary.totalPhysicsTests,
           totalChemistryTests: overallSummary.totalChemistryTests,
           totalBiologyTests: overallSummary.totalBiologyTests,
-          totalCount: totalCount  // Add totalCount here
+          totalCount: totalCount  
         });
 
-        setStudents(response.data.results); // Set the student data
+        setStudents(response.data.results);
         // Update stats accordingly
         if (response.data.results.length > 0) {
           const studentStats = response.data.results[0]; // Assuming stats are for the first student, modify accordingly
@@ -78,10 +78,15 @@ export default function StudentTestTable() {
       const q = searchTerm.toLowerCase();
       return (
         student.fullName.toLowerCase().includes(q) ||
-        String(student.studentId).toLowerCase().includes(q)
+        String(student.studentId).toLowerCase().includes(q) ||
+        (student.testName || "").toLowerCase().includes(q) ||
+        (student.subjects || []).some(subject =>
+          subject.toLowerCase().includes(q)
+        )
       );
     });
   }, [students, searchTerm]);
+  
   
   // 2) Now this effect will only fire when students *or* searchTerm change:
   useEffect(() => {
@@ -269,31 +274,31 @@ export default function StudentTestTable() {
       </div>
 
       {/* Table Section */}
-      <div className="border-2 overflow-x-auto rounded-xl lg:rounded-4xl w-full mx-auto">
-        <table className="w-full border border-black shadow-md overflow-hidden">
+      <div className="border-1 overflow-x-auto rounded-xl lg:rounded-4xl w-full mx-auto">
+        <table className="w-full shadow-md overflow-hidden">
           <thead className="bg-white-100 border-b rounded-xl">
-            <tr className="text-center text-sm font-bold text-[2B313E]">
-              <th className="p-4 border border-r-white rounded-tl-lg">SR.NO</th>
-              <th className="p-4 border border-r-white">STUDENT NAME</th>
-              <th className="p-4 border border-r-white">STUDENT ID</th>
-              <th className="p-4 border border-r-white">TEST NAME</th>
-              <th className="p-4 border border-r-white">SUBJECTS</th>
-              <th className="p-4 border border-r-white">SCORE</th>
-              <th className="p-4 border border-r-white">TOTAL MARKS</th>
-              <th className="p-4 border border-r-white">ACTIONS</th>
+            <tr className="text-center text-sm font-bold  text-[2B313E]">
+              <th className="p-4 border border-l-white border-t-white border-r-white rounded-tl-lg">SR.NO</th>
+              <th className="p-4 border border-r-white border-t-white">STUDENT NAME</th>
+              <th className="p-4 border border-r-white border-t-white">STUDENT ID</th>
+              <th className="p-4 border border-r-white border-t-white">TEST NAME</th>
+              <th className="p-4 border border-r-white border-t-white">SUBJECTS</th>
+              <th className="p-4 border border-r-white border-t-white">SCORE</th>
+              <th className="p-4 border border-r-white border-t-white">TOTAL MARKS</th>
+              <th className="p-4 border border-r-white border-t-white">ACTIONS</th>
             </tr>
           </thead>
           <tbody className="text-center"> 
             {sortedStudents.map((student, index) => (
               <tr key={`${student.studentId}-${student.testName}`} className="border-b hover:bg-gray-50">
-                <td className="p-4 border text-left font-bold">{index + 1}</td>
+                <td className="p-4 border text-left font-bold border-l-white">{index + 1}</td>
                 <td className="p-4 border">{student.fullName}</td>
                 <td className="p-4 border">{student.studentId}</td>
                 <td className="p-4 border">{student.testName}</td>
                 <td className="p-4 border-b border-black text-[#00B0FF]">{(student.subjects || []).join(", ")}</td>
                 <td className="p-4 border-l-1">{student.score}</td>
                 <td className="p-4 border-l-1">{student.totalMarks}</td>
-                <td className="p-4 border text-center">
+                <td className="p-4 border text-center border-r-white">
                   <button
                     className="text-black hover:text-black font-bold"
                     onClick={() => handleStudentClick(student.studentId)}  

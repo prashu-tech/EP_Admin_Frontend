@@ -37,7 +37,7 @@ export default function Practisetest() {
 
       fetchStudents();
     }
-  }, []); // Empty dependency array ensures this runs only once when the component mounts
+  }, []); 
 
   // Handling student name click to route to the student details page
   const handleStudentClick = (studentId) => {
@@ -75,12 +75,16 @@ export default function Practisetest() {
 
   // Filtered students based on search query
  // Filtered students based on search query
-const filteredStudents = students.filter(student => {
+ const filteredStudents = students.filter(student => {
+  const q = searchQuery.toLowerCase();
   return (
-    student.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    String(student.studentId).toLowerCase().includes(searchQuery.toLowerCase()) // Convert studentId to string before using toLowerCase
+    student.fullName.toLowerCase().includes(q) ||
+    String(student.studentId).toLowerCase().includes(q) ||
+    (student.testName || "").toLowerCase().includes(q) ||
+    (student.subject || "").toLowerCase().includes(q)
   );
 });
+
 
   return (
     <div className="p-4 w-full max-w-6xl mx-auto">
@@ -112,32 +116,32 @@ const filteredStudents = students.filter(student => {
         </div>
       </div>
 
-      <div className="border-2 overflow-x-auto rounded-xl lg:rounded-4xl w-full mx-auto">
-        <table className="w-full border border-black shadow-amber-100 overflow-hidden">
-          <thead className="bg-white-100 border-b border-black">
+      <div className="border-1 overflow-x-auto rounded-xl lg:rounded-4xl w-full mx-auto">
+        <table className="w-full shadow-amber-100 overflow-hidden">
+          <thead className="bg-white-100 border-black">
             <tr className="text-center text-sm font-bold text-[2B313E]">
-              <th className="p-4 border-2 border-black rounded-tl-lg border-r-white">SR.NO</th>
-              <th className="p-4 border-2 border-black border-r-white">STUDENT NAME</th>
-              <th className="p-4 border-2 border-black border-r-white">STUDENT ID</th>
-              <th className="p-4 border-2 border-black border-r-white">TEST NAME</th>
-              <th className="p-4 border-2 border-black border-r-white">SUBJECT</th>
-              <th className="p-4 border-2 border-black border-r-white">TOTAL MARKS</th>
-              <th className="p-4 border-2 border-black rounded-tr-lg">ACTIONS</th>
+              <th className="p-4 border-1 border-black rounded-tl-lg border-t-white border-r-white border-l-white">SR.NO</th>
+              <th className="p-4 border-1 border-black border-t-white border-r-white">STUDENT NAME</th>
+              <th className="p-4 border-1 border-black border-t-white border-r-white">STUDENT ID</th>
+              <th className="p-4 border-1 border-black border-r-white border-t-white">TEST NAME</th>
+              <th className="p-4 border-1 border-black border-r-white border-t-white">SUBJECT</th>
+              <th className="p-4 border-1 border-black border-r-white border-t-white">TOTAL MARKS</th>
+              <th className="p-4 border-1 border-black rounded-tr-lg border-t-white border-r-white">ACTIONS</th>
             </tr>
           </thead>
 
           <tbody className="text-center">
             {filteredStudents.map((student, index) => (
               <tr key={`${student.studentId}-${student.testName}`} className="border-b border-black hover:bg-gray-50">
-                <td className="p-4 border-2 border-black text-center font-bold">{index + 1}</td>
-                <td className="p-4 border-2 border-black">{student.fullName}</td>
-                <td className="p-4 border-2 border-black">{student.studentId}</td>
-                <td className="p-4 border-2 border-black">{student.testName}</td>
-                <td className="p-4 border-2 border-black text-[#00B0FF] ">{student.subject}</td>
-                <td className="p-4 border-2 border-black">
+                <td className="p-4 text-center font-bold">{index + 1}</td>
+                <td className="p-4 border-1 border-black">{student.fullName}</td>
+                <td className="p-4 border-1 border-black">{student.studentId}</td>
+                <td className="p-4 border-1 border-black">{student.testName}</td>
+                <td className="p-4 border-1 border-black text-[#00B0FF] ">{student.subject}</td>
+                <td className="p-4 border-1 border-black">
                   <span className="block text-sm text-gray-600 mt-1 w-full">{student.marksObtained} / {student.totalMarks}</span>
                 </td>
-                <td className="p-4 border-2 border-black text-center">
+                <td className="p-4 border-1 border-black border-r-white text-center">
                   <button
                     className="text-black hover:text-black font-bold"
                     onClick={() => handleStudentClick(student.studentId)}
