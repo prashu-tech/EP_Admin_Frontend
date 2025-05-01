@@ -32,143 +32,289 @@ export default function AnswerPaper() {
     fetchQuestions();
   };
 
-  // Pagination logic
-  const PAGE_HEIGHT = 1000; // approximate height of one page (in px)
-  const QUESTION_HEIGHT = 150; // estimated height for one question + options
-
   const paginateQuestions = () => {
     const pages = [];
     let currentPage = [];
     let currentHeight = 0;
+    const MAX_PAGE_HEIGHT = 1000;
+    const QUESTION_BASE_HEIGHT = 50;
+    const OPTION_HEIGHT = 20;
+    const MARGIN_HEIGHT = 30;
 
-    questions.forEach((q, index) => {
-      const block = { ...q, index: index + 1 };
-      if (currentHeight + QUESTION_HEIGHT > PAGE_HEIGHT) {
+    questions.forEach((q) => {
+      const optionsCount = q.options ? Object.keys(q.options).length : 0;
+      const questionHeight = 
+        QUESTION_BASE_HEIGHT + 
+        (optionsCount * OPTION_HEIGHT) + 
+        (showSolutions ? 30 : 0) + 
+        (showMarks ? 20 : 0) +
+        MARGIN_HEIGHT;
+
+      if (currentHeight + questionHeight > MAX_PAGE_HEIGHT) {
         pages.push(currentPage);
         currentPage = [];
         currentHeight = 0;
       }
-      currentPage.push(block);
-      currentHeight += QUESTION_HEIGHT;
+
+      currentPage.push(q);
+      currentHeight += questionHeight;
     });
 
-    if (currentPage.length > 0) pages.push(currentPage);
+    if (currentPage.length > 0) {
+      pages.push(currentPage);
+    }
+
     return pages;
   };
 
-  const pages = paginateQuestions();
+  const pages = proceedClicked ? paginateQuestions() : [];
+
+  const handlePrint = () => {
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Question Paper</title>
+          <style>
+            @page { size: A4; margin: 15mm; }
+            body { 
+              font-family: Arial, sans-serif; 
+              line-height: 1.5;
+              background-image: url('/sample-question-paper.png');
+              background-size: cover;
+              background-position: center;
+              background-repeat: no-repeat;
+            }
+            .content-wrapper {
+              background-color: rgba(255, 255, 255, 0.9);
+              padding: 20px;
+            }
+            .page { 
+              page-break-after: always; 
+              padding: 20px;
+            }
+            .page:last-child { page-break-after: auto; }
+            .question { margin-bottom: 25px; }
+            .subject { 
+              font-weight: bold; 
+              font-size: 18px; 
+              margin-bottom: 10px;
+              padding-bottom: 5px;
+              border-bottom: 1px solid #eee;
+            }
+            .question-text { 
+              font-weight: bold; 
+              font-size: 16px;
+              margin-bottom: 8px;
+            }
+            .options { margin-left: 20px; }
+            .option { margin-bottom: 5px; }
+            .marks { 
+              color: red; 
+              font-size: 14px; 
+              margin-top: 5px;
+              font-style: italic;
+            }
+            .solution { 
+              background: #f8f8f8; 
+              padding: 10px; 
+              margin-top: 10px; 
+              border-radius: 4px;
+              border-left: 3px solid #4CAF50;
+            }
+            .watermark {
+              position: fixed;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%) rotate(-30deg);
+              font-size: 80px;
+              color: rgba(0,0,0,0.08);
+              font-weight: bold;
+              z-index: 0;
+              pointer-events: none;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="content-wrapper">
+            ${pages.map((page, pageIndex) => `
+              <div class="page">
+                ${page.map((q, qIndex) => {
+                  const questionNumber = pages.slice(0, pageIndex).reduce(
+                    (acc, currPage) => acc + currPage.length, 0
+                  ) + qIndex + 1;
+                  
+                  return `
+                    <div class="question">
+                      ${showSubjects ? `<div class="subject">Subject: ${q.subject}</div>` : ''}
+                      <div class="question-text">Q${questionNumber}. ${q.question_text}</div>
+                      ${q.options ? `
+                        <div class="options">
+                          ${Object.entries(q.options).map(([key, value]) => `
+                            <div class="option">${key.toUpperCase()}. ${value}</div>
+                          `).join('')}
+                        </div>
+                      ` : ''}
+                      ${showMarks ? `<div class="marks">[4 Marks]</div>` : ''}
+                      ${showSolutions ? `
+                        <div class="solution">
+                          <strong>Correct Answer:</strong> ${q.correctanswer}
+                          ${q.solution ? `<div><strong>Solution:</strong> ${q.solution}</div>` : ''}
+                        </div>
+                      ` : ''}
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            `).join('')}
+            ${showWatermark ? '<div class="watermark">SAMPLE</div>' : ''}
+          </div>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    setTimeout(() => {
+      printWindow.print();
+    }, 500);
+  };
 
   return (
-    <div className="flex justify-center items-start min-h-screen pt-2">
-      <div className="w-[1000px] bg-white rounded-lg p-6">
-        {/* Top Bar */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="relative left-24">
-            <div className="top-2 hidden md:block">
-              <Link href="/offline_mode">
-                <button className="bg-blue-600 text-white p-3 rounded-full shadow flex items-center justify-center">
-                  <IoIosArrowBack size={15} />
-                </button>
-              </Link>
+    <div className="flex min-h-screen bg-gray-100">
+      {/* Main Content Area */}
+      <div className="flex-1 flex justify-center p-4">
+        {/* White Box Container */}
+        <div className="w-full max-w-6xl bg-white rounded-lg p-6 shadow-lg">
+          {/* Top Bar */}
+          <div className="flex items-center justify-between mb-6">
+            <Link href="/offline_mode">
+              <button className="bg-blue-600 text-white p-3 rounded-full shadow hover:bg-blue-700 transition">
+                <IoIosArrowBack size={15} />
+              </button>
+            </Link>
+            <h1 className="text-xl font-bold text-gray-800">Answer Paper Generator</h1>
+            <div className="w-10"></div> {/* Spacer for balance */}
+          </div>
+
+          {/* Options Section */}
+          <div className="border border-gray-200 shadow-sm p-6 rounded-lg mb-6">
+            <h2 className="text-lg font-semibold mb-4">Display Options</h2>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  className="h-5 w-5 text-blue-600 rounded"
+                  checked={showWatermark}
+                  onChange={(e) => setShowWatermark(e.target.checked)}
+                />
+                <span>Show Watermark</span>
+              </label>
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  className="h-5 w-5 text-blue-600 rounded"
+                  checked={showSubjects}
+                  onChange={(e) => setShowSubjects(e.target.checked)}
+                />
+                <span>Show Subject</span>
+              </label>
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  className="h-5 w-5 text-blue-600 rounded"
+                  checked={showSolutions}
+                  onChange={(e) => setShowSolutions(e.target.checked)}
+                />
+                <span>Show Solutions</span>
+              </label>
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  className="h-5 w-5 text-blue-600 rounded"
+                  checked={showMarks}
+                  onChange={(e) => setShowMarks(e.target.checked)}
+                />
+                <span>Show Marks</span>
+              </label>
+            </div>
+            <div className="flex justify-center gap-6 mt-6">
+              <button
+                onClick={handleProceed}
+                className="bg-blue-500 text-white px-8 py-2 rounded-md hover:bg-blue-600 transition"
+              >
+                Generate Preview
+              </button>
+              <button className="bg-gray-500 text-white px-8 py-2 rounded-md hover:bg-gray-600 transition">
+                Cancel
+              </button>
             </div>
           </div>
-          <div className="flex-1 flex justify-center">
-            <button className="px-6 py-4 rounded-md text-gray-500 ml-16 border shadow">
-              Generate Test
-            </button>
-          </div>
-        </div>
 
-        {/* Options Section */}
-        <div className="border border-gray-400 shadow p-6 rounded-lg w-[970px] md:h-[240px]">
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                className="mr-2"
-                onChange={(e) => setShowWatermark(e.target.checked)}
-              />{" "}
-              Show Watermark
-            </label>
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                className="mr-2"
-                onChange={(e) => setShowSubjects(e.target.checked)}
-              />{" "}
-              Show Subject
-            </label>
-            <label className="flex items-center mt-5">
-              <input
-                type="checkbox"
-                className="mr-2"
-                onChange={(e) => setShowSolutions(e.target.checked)}
-              />{" "}
-              Show Solutions
-            </label>
-            <label className="flex items-center mt-5">
-              <input
-                type="checkbox"
-                className="mr-2"
-                onChange={(e) => setShowMarks(e.target.checked)}
-              />{" "}
-              Show Marks
-            </label>
-          </div>
-          <div className="flex gap-8 md:ml-54 mt-15">
-            <button
-              onClick={handleProceed}
-              className="bg-blue-500 text-white px-16 py-2 rounded-md hover:bg-blue-600"
-            >
-              Proceed
-            </button>
-            <button className="bg-red-500 text-white px-16 py-1 rounded-md hover:bg-red-600">
-              Close
-            </button>
-          </div>
-        </div>
-
-        {/* Print Preview */}
-        <div className="mt-8 md:ml-46">
-          <h3 className="font-semibold italic text-2xl">Print Preview</h3>
-          <div className="relative border-4 border-gray-300 border-dashed h-auto w-[96%] mt-1 rounded-md bg-white p-4">
-            {proceedClicked && (
-              <div className="relative">
+          {/* Preview Section */}
+          {proceedClicked && (
+            <div className="mt-8">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-gray-800">Preview</h2>
+                <button
+                  onClick={handlePrint}
+                  className="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 transition"
+                >
+                  Print Paper
+                </button>
+              </div>
+              
+              {/* Preview Content with Background Image */}
+              <div className="relative border-4 border-gray-300 border-dashed h-auto w-full mt-1 rounded-md overflow-hidden">
                 <img
                   src="/sample-question-paper.png"
                   alt="Sample Background"
-                  className="w-full rounded shadow"
+                  className="w-full h-full object-cover absolute"
                 />
                 {showWatermark && (
                   <p className="absolute top-1/2 left-1/2 text-gray-300 text-6xl font-bold opacity-20 -translate-x-1/2 -translate-y-1/2">
                     WATERMARK
                   </p>
                 )}
-                <div className="absolute top-0 left-0 p-10 text-black w-full">
+                <div className="relative p-10 text-black bg-white bg-opacity-90">
                   {pages.map((page, pageIndex) => (
                     <div key={pageIndex}>
-                      {page.map((q, idx) => {
-                        let subjectDisplayed = false; // Track if subject is already displayed
+                      {page.map((q, qIndex) => {
+                        const questionNumber = pages.slice(0, pageIndex).reduce(
+                          (acc, currPage) => acc + currPage.length, 0
+                        ) + qIndex + 1;
+                        
                         return (
-                          <div key={idx} className="mb-6">
-                            {/* Display the subject once for each subject block */}
-                            {showSubjects && !subjectDisplayed && (
-                              <p className="font-semibold text-lg">
+                          <div key={`${pageIndex}-${qIndex}`} className="mb-6">
+                            {showSubjects && (
+                              <p className="font-semibold text-lg mb-2 text-blue-600">
                                 Subject: {q.subject}
                               </p>
                             )}
-                            {/* Mark the subject as displayed after it's shown once */}
-                            {subjectDisplayed = true}
-                            <p className="font-semibold">
-                              Q{idx + 1}. {q.question_text}
+                            <p className="font-semibold text-lg">
+                              Q{questionNumber}. {q.question_text}
                             </p>
+                            {q.options && (
+                              <ul className="mt-2 ml-6 space-y-1">
+                                {Object.entries(q.options).map(([key, value]) => (
+                                  <li key={key} className="text-base">
+                                    {key.toUpperCase()}. {value}
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
                             {showMarks && (
-                              <p className="text-sm text-red-600">4 Marks</p>
+                              <p className="text-sm text-red-600 mt-1">[4 Marks]</p>
                             )}
                             {showSolutions && (
-                              <p className="text-sm mt-1 ml-4 text-green-700">
-                                Correct Answer: {q.correctanswer}
-                              </p>
+                              <div className="mt-2 p-2 bg-green-50 rounded">
+                                <p className="text-sm font-medium text-green-700">
+                                  <span className="font-bold">Correct Answer:</span> {q.correctanswer}
+                                </p>
+                                {q.solution && (
+                                  <p className="text-sm text-green-700 mt-1">
+                                    <span className="font-bold">Solution:</span> {q.solution}
+                                  </p>
+                                )}
+                              </div>
                             )}
                           </div>
                         );
@@ -177,14 +323,8 @@ export default function AnswerPaper() {
                   ))}
                 </div>
               </div>
-            )}
-          </div>
-          <button
-            onClick={() => window.print()}
-            className="bg-red-500 text-white w-[96%] py-2 mt-4 rounded-md hover:bg-red-600 shadow"
-          >
-            Print
-          </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
