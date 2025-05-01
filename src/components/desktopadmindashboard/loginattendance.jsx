@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { FaUserGraduate } from "react-icons/fa";
 import axios from "axios";
+import Loading from "../Loading/Loading";
 
 // Helper function to convert a date string into a day name (Mon, Tue, etc.)
 const getDayName = (date) => {
@@ -54,7 +55,9 @@ const LoginAttendance = () => {
 
   // If data is loading, show loading indicator
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="absolute top-[50%] left-[50%]">
+    <Loading/>
+  </div>; ;
   }
 
   // If there is an error fetching the data, show error message

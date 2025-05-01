@@ -1,136 +1,137 @@
+'use client';
+
 import { CiSearch } from "react-icons/ci";
 import { BsDownload } from "react-icons/bs";
 import { FiFilter } from "react-icons/fi";
 import { useMemo, useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // Use next/navigation for App Router
-import { ArrowRightCircle } from 'lucide-react';  // Add this import
-
-import axios from 'axios';  // Axios for fetching data
+import { useRouter } from 'next/navigation';
+import { ArrowRightCircle } from 'lucide-react';
+import axios from 'axios';
 
 export default function StudentTestTable() {
-  const [students, setStudents] = useState([]); // State to store student data
+  const [students, setStudents] = useState([]);
   const [overallSummary, setOverallSummary] = useState({
     totalPhysicsTests: 0,
     totalChemistryTests: 0,
     totalBiologyTests: 0,
-    totalCount: 0  // Add totalCount to overall summary
-  }); // State for overall summary
-  const [searchTerm, setSearchTerm] = useState(""); // State for search query
-  const [filterType, setFilterType] = useState(""); // State for filter type
-  const [showFilterOptions, setShowFilterOptions] = useState(false); // State to show/hide filter options
+    totalCount: 0
+  });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("");
+  const [showFilterOptions, setShowFilterOptions] = useState(false);
   const [stats, setStats] = useState({
     totalTests: 0,
-    highestMarks: 0, // Updated from averageMarks to highestMarks
-    physicsCount: 0,  // Physics Count
-    chemistryCount: 0,  // Chemistry Count
-    biologyCount: 0,    // Biology Count
+    highestMarks: 0,
+    physicsCount: 0,
+    chemistryCount: 0,
+    biologyCount: 0,
   });
-  const [sortOrder, setSortOrder] = useState('ascending');  // Sorting order (ascending or descending)
-  const [sortType, setSortType] = useState('score'); // Sort by 'score' or 'id'
-  const[totalTest, setTotalTest] = useState(0);
-  const router = useRouter(); // Router for navigation
+  const [sortOrder, setSortOrder] = useState('ascending');
+  const [sortType, setSortType] = useState('score');
+  const [totalTest, setTotalTest] = useState(0);
+  const router = useRouter();
 
-  // Fetch overall summary and student data from API
+  // Fetch data with localStorage caching
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/generatetest/customize`, {
-          params: { filterType, studentId: searchTerm }  // Pass the searchTerm as studentId if it's a valid ID
-        });
+    const storedStudents = localStorage.getItem('customTestStudentsData');
+    
+    if (storedStudents) {
+      const parsedData = JSON.parse(storedStudents);
+      setStudents(parsedData);
+      updateStats(parsedData);
+    } else {
+      fetchData();
+    }
+  }, [filterType]);
 
-        // Set the overall summary (total tests by subject)
-        const overallSummary = response.data.overallSummary;  // Assuming the API returns this part
-        // Calculate totalCount
-        const totalCount = overallSummary.totalPhysicsTests + overallSummary.totalChemistryTests + overallSummary.totalBiologyTests;
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/generatetest/customize`, {
+        params: { filterType, studentId: searchTerm }
+      });
 
-        setOverallSummary({
-          totalPhysicsTests: overallSummary.totalPhysicsTests,
-          totalChemistryTests: overallSummary.totalChemistryTests,
-          totalBiologyTests: overallSummary.totalBiologyTests,
-          totalCount: totalCount  
-        });
+      const fetchedStudents = response.data.results;
+      setStudents(fetchedStudents);
+      localStorage.setItem('customTestStudentsData', JSON.stringify(fetchedStudents));
+      updateStats(fetchedStudents);
+    } catch (error) {
+      console.error('Error fetching student data:', error);
+    }
+  };
 
-        setStudents(response.data.results);
-        // Update stats accordingly
-        if (response.data.results.length > 0) {
-          const studentStats = response.data.results[0]; // Assuming stats are for the first student, modify accordingly
-          setStats({
-            totalTests: studentStats.totalTests,
-            highestMarks: studentStats.highestScore, // Use highestScore for the stats
-            physicsCount: studentStats.physicsCount,  // Physics Count
-            chemistryCount: studentStats.chemistryCount,  // Chemistry Count
-            biologyCount: studentStats.biologyCount,    // Biology Count
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching student data:', error);
-      }
-    };
+  const updateStats = (studentsData) => {
+    const physicsCount = studentsData.filter(s => 
+      (s.subjects || []).includes('Physics') || s.subject === 'Physics'
+    ).length;
+    
+    const chemistryCount = studentsData.filter(s => 
+      (s.subjects || []).includes('Chemistry') || s.subject === 'Chemistry'
+    ).length;
+    
+    const biologyCount = studentsData.filter(s => 
+      (s.subjects || []).includes('Biology') || s.subject === 'Biology'
+    ).length;
 
-    fetchData();
-  }, []);  // Re-run the fetch data when searchTerm or filterType changes
+    const totalCount = physicsCount + chemistryCount + biologyCount;
+    const highestScore = studentsData.length > 0 
+      ? Math.max(...studentsData.map(s => s.score || 0))
+      : 0;
 
-  // Filter students based on search query (ID or Name)
-    // ——————————————————————————————————————————————————————————
-  // 1) Your existing filtered list
-  const filteredStudents = useMemo(() => {
-    return students.filter((student) => {
-      const q = searchTerm.toLowerCase();
-      return (
-        student.fullName.toLowerCase().includes(q) ||
-        String(student.studentId).toLowerCase().includes(q) ||
-        (student.testName || "").toLowerCase().includes(q) ||
-        (student.subjects || []).some(subject =>
-          subject.toLowerCase().includes(q)
-        )
-      );
-    });
-  }, [students, searchTerm]);
-  
-  
-  // 2) Now this effect will only fire when students *or* searchTerm change:
-  useEffect(() => {
-    const physicsCount   = filteredStudents.filter(s => (s.subjects||[]).includes('Physics')).length;
-    const chemistryCount = filteredStudents.filter(s => (s.subjects||[]).includes('Chemistry')).length;
-    const biologyCount   = filteredStudents.filter(s => (s.subjects||[]).includes('Biology')).length;
-  
     setOverallSummary({
       totalPhysicsTests: physicsCount,
       totalChemistryTests: chemistryCount,
       totalBiologyTests: biologyCount,
-      totalCount: physicsCount + chemistryCount + biologyCount
+      totalCount
     });
-  
-    if (filteredStudents.length) {
-      const first = filteredStudents[0];
-      setStats({
-        totalTests: first.totalTests,
-        highestMarks: first.highestScore,
-        physicsCount: first.physicsCount,
-        chemistryCount: first.chemistryCount,
-        biologyCount: first.biologyCount,
-      });
-    } else {
-      setStats({ totalTests:0, highestMarks:0, physicsCount:0, chemistryCount:0, biologyCount:0 });
-    }
-  }, [filteredStudents]);  // now stable
-  // ——————————————————————————————————————————————————————————
 
+    setStats({
+      totalTests: studentsData.length,
+      highestMarks: highestScore,
+      physicsCount,
+      chemistryCount,
+      biologyCount,
+    });
 
-  // Set totalTest dynamically whenever the student list changes
+    setTotalTest(studentsData.length);
+  };
+
+  // Filter and sort students
+  const sortedStudents = useMemo(() => {
+    const filtered = students.filter((student) => {
+      const q = searchTerm.toLowerCase();
+      return (
+        student.fullName?.toLowerCase().includes(q) ||
+        String(student.studentId).toLowerCase().includes(q) ||
+        student.testName?.toLowerCase().includes(q) ||
+        student.subject?.toLowerCase().includes(q) ||
+        (student.subjects || []).some(subject => 
+          subject.toLowerCase().includes(q)
+        )
+      );
+    });
+
+    return [...filtered].sort((a, b) => {
+      if (sortType === 'score') {
+        return sortOrder === 'ascending' ? a.score - b.score : b.score - a.score;
+      } else {
+        return sortOrder === 'ascending' ? a.studentId - b.studentId : b.studentId - a.studentId;
+      }
+    });
+  }, [students, searchTerm, sortType, sortOrder]);
+
+  // Update totalTest when sortedStudents changes
   useEffect(() => {
-    setTotalTest(filteredStudents.length);
-  }, [filteredStudents]);  // This effect will run whenever filteredStudents changes
+    setTotalTest(sortedStudents.length);
+  }, [sortedStudents]);
 
-  // Function to download student data as CSV
   const downloadCSV = () => {
-    const headers = ['SR.NO', 'STUDENT NAME', 'STUDENT ID', 'TEST NAME', 'SUBJECTS', 'SCORE', 'TOTAL MARKS'];
-    const rows = students.map((student, index) => [
+    const headers = ['SR.NO', 'STUDENT NAME', 'STUDENT ID', 'TEST NAME', 'SUBJECT', 'SCORE', 'TOTAL MARKS'];
+    const rows = sortedStudents.map((student, index) => [
       index + 1,
       student.fullName,
       student.studentId,
       student.testName,
-      (student.subjects || []).join(", "), // Ensure subjects is an array
+      student.subject || (student.subjects || []).join(", "),
       student.score,
       student.totalMarks
     ]);
@@ -147,50 +148,28 @@ export default function StudentTestTable() {
     link.click();
   };
 
-  // Sorting the students based on the selected filter (score or ID)
-  const sortedStudents = [...filteredStudents].sort((a, b) => {
-    if (sortType === 'score') {
-      // Sort by score
-      if (sortOrder === 'ascending') {
-        return a.score - b.score;
-      } else {
-        return b.score - a.score;
-      }
-    } else {
-      // Sort by student ID
-      if (sortOrder === 'ascending') {
-        return a.studentId - b.studentId;
-      } else {
-        return b.studentId - a.studentId;
-      }
-    }
-  });
-
-  // Toggle sort order between ascending and descending
   const toggleSortOrder = () => {
     setSortOrder(sortOrder === 'ascending' ? 'descending' : 'ascending');
   };
 
-  // Handle toggle for filter options
   const toggleFilterOptions = () => {
     setShowFilterOptions(!showFilterOptions);
   };
 
-  // Handle filter option selection (sorting by score or ID)
   const handleFilterSelection = (filter) => {
-    if (filter === 'ascending-descending') {
+    if (filter === 'ascending-descending' || filter === 'descending-ascending') {
       setSortType('score');
-      toggleSortOrder();  // Toggle between ascending and descending order for scores
+      toggleSortOrder();
+    } else if (filter === 'by-id') {
+      setSortType('id');
+      setSortOrder('ascending');
     }
-    else if (filter === 'descending-ascending') {
-      setSortType('score');
-      toggleSortOrder();  // Toggle between ascending and descending order for scores
-    }
-    else if (filter === 'by-id') {
-      setSortType('id');  // Sort by ID
-      setSortOrder('ascending');  // Default order for IDs is ascending
-    }
-    setShowFilterOptions(false); // Close the filter options after selection
+    setShowFilterOptions(false);
+  };
+
+  const handleStudentClick = (studentId) => {
+    router.push(`/desktopuserprofile`);
+    localStorage.setItem("studentId", studentId);
   };
 
   return (
@@ -201,7 +180,7 @@ export default function StudentTestTable() {
           <input
             type="text"
             placeholder="Search Name, Student ID..."
-            className="lg:w-full w-[400px] pr-7 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-md text-sm placeholder:text-gray-500 pl-19"
+            className="lg:w-full w-[400px] pr-7 py-3 rounded-lg border border-gray-300 outline-none shadow-md text-sm placeholder:text-gray-500 pl-19"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -215,22 +194,21 @@ export default function StudentTestTable() {
           </button>
           <button
             onClick={downloadCSV}
-            className=" w-full lg:px-6 lg:py-3 px-4 py-3 bg-white text-gray-400 border border-gray-300 rounded-lg shadow hover:bg-gray-100 transition flex justify-center active:scale-95"
+            className="w-full lg:px-6 lg:py-3 px-4 py-3 bg-white text-gray-400 border border-gray-300 rounded-lg shadow hover:bg-gray-100 transition flex justify-center active:scale-95"
           >
             Download Test <BsDownload className="ml-2 text-xl" />
           </button>
         </div>
       </div>
+
       {/* Filter Bar with Boxed Stats */}
       <div className="lg:flex grid grid-cols-2 lg:flex-wrap gap-2 mb-6 p-3 bg-white rounded-lg drop-shadow hover:bg-white-100 w-full max-w-6xl mx-auto lg:justify-between">
         {[ 
           `Total Tests: ${totalTest}`,
-          `Highest Marks: ${stats.highestMarks}`, // Replaced Average Marks with Highest Marks
+          `Highest Marks: ${stats.highestMarks}`,
           `Physics Tests: ${overallSummary.totalPhysicsTests}`,
           `Chemistry Tests: ${overallSummary.totalChemistryTests}`,
           `Biology Tests: ${overallSummary.totalBiologyTests}`
-           // Display total count
-
         ].map((item, index) => (
           <div
             key={index}
@@ -277,12 +255,12 @@ export default function StudentTestTable() {
       <div className="border-1 overflow-x-auto rounded-xl lg:rounded-4xl w-full mx-auto">
         <table className="w-full shadow-md overflow-hidden">
           <thead className="bg-white-100 border-b rounded-xl">
-            <tr className="text-center text-sm font-bold  text-[2B313E]">
+            <tr className="text-center text-sm font-bold text-[2B313E]">
               <th className="p-4 border border-l-white border-t-white border-r-white rounded-tl-lg">SR.NO</th>
               <th className="p-4 border border-r-white border-t-white">STUDENT NAME</th>
               <th className="p-4 border border-r-white border-t-white">STUDENT ID</th>
               <th className="p-4 border border-r-white border-t-white">TEST NAME</th>
-              <th className="p-4 border border-r-white border-t-white">SUBJECTS</th>
+              <th className="p-4 border border-r-white border-t-white">SUBJECT</th>
               <th className="p-4 border border-r-white border-t-white">SCORE</th>
               <th className="p-4 border border-r-white border-t-white">TOTAL MARKS</th>
               <th className="p-4 border border-r-white border-t-white">ACTIONS</th>
@@ -290,12 +268,17 @@ export default function StudentTestTable() {
           </thead>
           <tbody className="text-center"> 
             {sortedStudents.map((student, index) => (
-              <tr key={`${student.studentId}-${student.testName}`} className="border-b hover:bg-gray-50">
+              <tr 
+                key={`${student.studentId}-${student.testName}-${student.subject || student.subjects?.join('-')}-${index}`}
+                className="border-b hover:bg-gray-50"
+              >
                 <td className="p-4 border text-left font-bold border-l-white">{index + 1}</td>
                 <td className="p-4 border">{student.fullName}</td>
                 <td className="p-4 border">{student.studentId}</td>
                 <td className="p-4 border">{student.testName}</td>
-                <td className="p-4 border-b border-black text-[#00B0FF]">{(student.subjects || []).join(", ")}</td>
+                <td className="p-4 border-b border-black text-[#00B0FF]">
+                  {student.subject || (student.subjects || []).join(", ")}
+                </td>
                 <td className="p-4 border-l-1">{student.score}</td>
                 <td className="p-4 border-l-1">{student.totalMarks}</td>
                 <td className="p-4 border text-center border-r-white">

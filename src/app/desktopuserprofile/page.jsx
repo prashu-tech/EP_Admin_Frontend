@@ -12,6 +12,7 @@ import MobileNavbar from "@/components/mobilenav/mobilenav";
 import ChapterWisePerformance from "@/components/desktopuserprofile/ChapterWisePerformance";
 import TestResultDownload from "@/components/desktopuserprofile/testresultdownload";
 import axios from "axios";
+import Loading from "@/components/Loading/Loading";
 
 export default function Page() {
   const [selectedMode, setSelectedMode] = useState("Practice");
@@ -48,7 +49,9 @@ export default function Page() {
   };
 
   if (loading) {
-    return <div>Loading...</div>; // Show a loading state while data is being fetched
+    return <div className="absolute top-[50%] left-[50%]">
+      <Loading/>
+    </div>; // Show a loading state while data is being fetched
   }
 
   return (

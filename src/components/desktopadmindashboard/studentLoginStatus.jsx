@@ -39,7 +39,7 @@ const StudentActivityCard = () => {
   ];  // Define additional colors for cycling
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div></div>;
   }
 
   if (error) {

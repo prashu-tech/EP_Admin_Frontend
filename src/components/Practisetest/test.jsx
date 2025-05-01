@@ -41,7 +41,8 @@ export default function Practisetest() {
 
   // Handling student name click to route to the student details page
   const handleStudentClick = (studentId) => {
-    router.push(`/student/${studentId}`);
+    router.push(`/desktopuserprofile`);
+    localStorage.setItem("studentId", studentId)
   };
 
   // Function to download the student data as CSV
@@ -95,7 +96,7 @@ export default function Practisetest() {
             placeholder="Search Name, Student ID..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)} // Update the search query
-            className="w-full pl-19 pr-7 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-md"
+            className="w-full pl-19 pr-7 py-3 rounded-lg outline-none border border-gray-300 shadow-md"
           />
           <span className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-500 text-3xl">
             <CiSearch />

@@ -109,7 +109,7 @@ function BatchTable({ batches }) {
                 <td className="border border-gray-300 px-4 py-2">{batch.batchName}</td>
                 <td className="border border-gray-300 px-4 py-2">{batch.no_of_students}</td>
                 <td className="border border-gray-300 px-4 py-2">
-                  <Link href={`/batches_edit/${batch.batchId}`}>
+                  <Link href={`/batchesedit`}>
                     <button className="bg-[#FBBF24] text-white px-4 py-1 rounded">
                       Edit Batch
                     </button>

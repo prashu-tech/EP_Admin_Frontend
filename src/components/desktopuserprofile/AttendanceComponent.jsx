@@ -1,64 +1,105 @@
 import { useEffect, useState } from "react";
-import { FiFilter } from "react-icons/fi"; // Importing the filter icon
-import axios from "axios"; // Import axios for API calls
+import { FiFilter } from "react-icons/fi";
+import axios from "axios";
 import { FaRegClipboard, FaUserAlt, FaCog } from 'react-icons/fa';
 
-
 const AttendanceComponent = ({ selectedMode }) => {
-  const [attendanceData, setAttendanceData] = useState([]); // Store the attendance data
-  const [loading, setLoading] = useState(true); // Loading state for API call
-  const [error, setError] = useState(null); // Error state for API call
-
-  // Filter state for dropdown options
+  const [attendanceData, setAttendanceData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [showFilterOptions, setShowFilterOptions] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("yearly");
 
-  // Toggle filter dropdown visibility
   const toggleFilterOptions = () => {
     setShowFilterOptions(!showFilterOptions);
   };
 
-  // Handle filter selection
   const handleFilterSelection = (filterType) => {
     setSelectedFilter(filterType);
-    setShowFilterOptions(false); // Close the dropdown after selection
+    setShowFilterOptions(false);
   };
 
-  // Fetch the attendance data when the component is mounted or when filter changes
   useEffect(() => {
-    const studentId = localStorage.getItem("studentId"); // Retrieve studentId from localStorage
-    if (!studentId) {
-      setError("Student ID not found in local storage.");
-      setLoading(false);
-      return;
-    }
-
+    const studentId = localStorage.getItem("studentId");
+    
     const fetchAttendanceData = async () => {
       try {
-        // Ensure the API URL is correct
         const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user/test`, {
-          studentId: Number(studentId), // Send studentId as a parameter
-          filterType: selectedFilter,   // Pass the selected filter to the backend
+          studentId: Number(studentId),
+          filterType: selectedFilter,
         });
 
-        // Update the state with the fetched data
-        setAttendanceData(response.data.results);
-        setLoading(false);
+        // If no data comes, set default empty values
+        const results = response.data.results || [{
+          FullTestCount: 0,
+          accuracyFull: 0,
+          highestMarkFull: 0,
+          totalMarksFull: 0,
+          MeTestCount: 0,
+          accuracyMe: 0,
+          highestMarkMe: 0,
+          totalMarksMe: 0,
+          GenerateTestCount: 0,
+          accuracyGenerate: 0,
+          highestMarkGenerate: 0,
+          totalMarksGenerate: 0,
+          totalAccuracy: 0
+        }];
+        
+        setAttendanceData(results);
       } catch (err) {
-        setError("Failed to fetch data"); // Handle errors if the API call fails
+        // On error, set default empty values instead of showing error
+        setAttendanceData([{
+          FullTestCount: 0,
+          accuracyFull: 0,
+          highestMarkFull: 0,
+          totalMarksFull: 0,
+          MeTestCount: 0,
+          accuracyMe: 0,
+          highestMarkMe: 0,
+          totalMarksMe: 0,
+          GenerateTestCount: 0,
+          accuracyGenerate: 0,
+          highestMarkGenerate: 0,
+          totalMarksGenerate: 0,
+          totalAccuracy: 0
+        }]);
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchAttendanceData();
-  }, [selectedMode, selectedFilter]); // Re-run when selectedMode or selectedFilter changes
+    if (studentId) {
+      fetchAttendanceData();
+    } else {
+      // If no studentId, still show empty data instead of error
+      setAttendanceData([{
+        FullTestCount: 0,
+        accuracyFull: 0,
+        highestMarkFull: 0,
+        totalMarksFull: 0,
+        MeTestCount: 0,
+        accuracyMe: 0,
+        highestMarkMe: 0,
+        totalMarksMe: 0,
+        GenerateTestCount: 0,
+        accuracyGenerate: 0,
+        highestMarkGenerate: 0,
+        totalMarksGenerate: 0,
+        totalAccuracy: 0
+      }]);
+      setLoading(false);
+    }
+  }, [selectedMode, selectedFilter]);
 
   if (loading) {
-    return <div>Loading...</div>; // Show loading message while fetching data
-  }
-
-  if (error) {
-    return <div>{error}</div>; // Show error message if API call fails
+    return (
+      <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg flex justify-center items-center h-64">
+        <div className="flex flex-col items-center">
+          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p>Loading attendance data...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -67,17 +108,14 @@ const AttendanceComponent = ({ selectedMode }) => {
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-5">
           <h2 className="text-xl text-Montserrat font-semibold">Accuracy</h2>
-          {/* Attendance Percentage Circle */}
           <div className="flex justify-center items-center w-20 h-18 shadow-2xl rounded-full bg-blue-500 text-white text-xl font-semibold">
-            {/* Dynamically render percentage here */}
             {attendanceData.length > 0
               ? `${((attendanceData.reduce((acc, data) => acc + data.totalAccuracy, 0) / attendanceData.length).toFixed(2))}%`
               : "0%"}
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          {/* Filter Options Button */}
+        <div className="flex items-center gap-4 relative">
           <button
             onClick={toggleFilterOptions}
             className="px-6 py-2 bg-white border border-gray-300 shadow hover:bg-gray-100 flex items-center justify-center transition active:scale-95"
@@ -85,9 +123,8 @@ const AttendanceComponent = ({ selectedMode }) => {
             <FiFilter className="text-xl text-gray-700" /> <span className="ml-2">Filter</span>
           </button>
 
-          {/* Filter Options Dropdown */}
           {showFilterOptions && (
-            <div className="absolute bg-white shadow-lg rounded-lg mt-2 w-48 p-2 border border-gray-300 right-0">
+            <div className="absolute top-full right-0 mt-2 bg-white shadow-lg rounded-lg w-48 p-2 border border-gray-300 z-10">
               <button
                 onClick={() => handleFilterSelection("yearly")}
                 className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
@@ -113,85 +150,81 @@ const AttendanceComponent = ({ selectedMode }) => {
 
       {/* Dynamic Test Results */}
       <div className="space-y-10 mt-10">
-        {attendanceData.length > 0 &&
-          attendanceData.map((data, index) => (
-            <div key={index} className="space-y-4">
-              {/* Full Test */}
-              <div className="flex gap-15 items-center">
-                <div className="flex items-center">
-                  {/* Full Test Icon */}
-                  <div className="w-16 h-16 flex items-center justify-center">
-                    <FaRegClipboard className="text-blue-500" size={40} />
-                  </div>
+        {attendanceData.map((data, index) => (
+          <div key={index} className="space-y-4">
+            {/* Full Test */}
+            <div className="flex gap-15 items-center">
+              <div className="flex items-center">
+                <div className="w-16 h-16 flex items-center justify-center">
+                  <FaRegClipboard className="text-blue-500" size={40} />
                 </div>
-                <div className="flex-col w-full">
-                  <span className="text-md font-semibold">Full Test: {data?.FullTestCount}</span>
-                  <div className="bg-gray-200 rounded-full h-2 relative">
-                    <div
-                      className="h-full rounded-full"
-                      style={{
-                        width: `${data?.accuracyFull}%`,
-                        backgroundColor: data?.accuracyFull > 80 ? "#16DBCC" : "#FE5C73",
-                      }}
-                    ></div>
-                  </div>
-                </div>
-                <span className="text-sm pl-6 text-gray-500">
-                  {data?.highestMarkFull}/{data?.totalMarksFull}
-                </span>
               </div>
-
-              {/* Me Test */}
-              <div className="flex gap-15 items-center">
-                <div className="flex items-center">
-                  {/* Me Test Icon */}
-                  <div className="w-16 h-16 flex items-center justify-center">
-                    <FaUserAlt className="text-green-500" size={40} />
-                  </div>
+              <div className="flex-col w-full">
+                <span className="text-md font-semibold">Full Test: {data?.FullTestCount || 0}</span>
+                <div className="bg-gray-200 rounded-full h-2 relative">
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${data?.accuracyFull || 0}%`,
+                      backgroundColor: (data?.accuracyFull || 0) > 80 ? "#16DBCC" : "#FE5C73",
+                    }}
+                  ></div>
                 </div>
-                <div className="flex-col w-full">
-                  <span className="text-md font-semibold">Me Test: {data?.MeTestCount}</span>
-                  <div className="bg-gray-200 rounded-full h-2 relative">
-                    <div
-                      className="h-full rounded-full"
-                      style={{
-                        width: `${data?.accuracyMe}%`,
-                        backgroundColor: data?.accuracyMe > 80 ? "#16DBCC" : "#FE5C73",
-                      }}
-                    ></div>
-                  </div>
-                </div>
-                <span className="text-sm pl-6 text-gray-500">
-                  {data?.highestMarkMe}/{data?.totalMarksMe}
-                </span>
               </div>
-
-              {/* Generate Test */}
-              <div className="flex gap-15 items-center">
-                <div className="flex items-center">
-                  {/* Generate Test Icon */}
-                  <div className="w-16 h-16 flex items-center justify-center">
-                    <FaCog className="text-red-500" size={40} />
-                  </div>
-                </div>
-                <div className="flex-col w-full">
-                  <span className="text-md font-semibold">Generate Test: {data?.GenerateTestCount}</span>
-                  <div className="bg-gray-200 rounded-full h-2 relative">
-                    <div
-                      className="h-full rounded-full"
-                      style={{
-                        width: `${data?.accuracyGenerate}%`,
-                        backgroundColor: data?.accuracyGenerate > 80 ? "#16DBCC" : "#FE5C73",
-                      }}
-                    ></div>
-                  </div>
-                </div>
-                <span className="text-sm pl-6 text-gray-500">
-                  {data?.highestMarkGenerate}/{data?.totalMarksGenerate}
-                </span>
-              </div>
+              <span className="text-sm pl-6 text-gray-500">
+                {data?.highestMarkFull || 0}/{data?.totalMarksFull || 0}
+              </span>
             </div>
-          ))}
+
+            {/* Me Test */}
+            <div className="flex gap-15 items-center">
+              <div className="flex items-center">
+                <div className="w-16 h-16 flex items-center justify-center">
+                  <FaUserAlt className="text-green-500" size={40} />
+                </div>
+              </div>
+              <div className="flex-col w-full">
+                <span className="text-md font-semibold">Me Test: {data?.MeTestCount || 0}</span>
+                <div className="bg-gray-200 rounded-full h-2 relative">
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${data?.accuracyMe || 0}%`,
+                      backgroundColor: (data?.accuracyMe || 0) > 80 ? "#16DBCC" : "#FE5C73",
+                    }}
+                  ></div>
+                </div>
+              </div>
+              <span className="text-sm pl-6 text-gray-500">
+                {data?.highestMarkMe || 0}/{data?.totalMarksMe || 0}
+              </span>
+            </div>
+
+            {/* Generate Test */}
+            <div className="flex gap-15 items-center">
+              <div className="flex items-center">
+                <div className="w-16 h-16 flex items-center justify-center">
+                  <FaCog className="text-red-500" size={40} />
+                </div>
+              </div>
+              <div className="flex-col w-full">
+                <span className="text-md font-semibold">Generate Test: {data?.GenerateTestCount || 0}</span>
+                <div className="bg-gray-200 rounded-full h-2 relative">
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${data?.accuracyGenerate || 0}%`,
+                      backgroundColor: (data?.accuracyGenerate || 0) > 80 ? "#16DBCC" : "#FE5C73",
+                    }}
+                  ></div>
+                </div>
+              </div>
+              <span className="text-sm pl-6 text-gray-500">
+                {data?.highestMarkGenerate || 0}/{data?.totalMarksGenerate || 0}
+              </span>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

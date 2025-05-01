@@ -13,6 +13,7 @@ import React, { useState, useEffect } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import { useRouter } from "next/navigation";
 import axios from "axios"; 
+import Loading from "../Loading/Loading";
 
 const TestPreview = () => {
   const router = useRouter();
@@ -48,7 +49,9 @@ const TestPreview = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="absolute top-[50%] left-[50%]">
+    <Loading/>
+  </div>; ;
   }
 
   if (error) {
