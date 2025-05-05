@@ -24,7 +24,6 @@ import StudentActivityCardmobile from "@/components/mobileadmindashboard/student
 // Import the rest of your components
 
 
-
 export default function Page() {
   const [selectedMode, setSelectedMode] = useState("Practice");
 
@@ -32,7 +31,7 @@ export default function Page() {
     <div className="min-h-screen md:flex bg-white">
 
       {/* Desktop Sidebar Section (visible on md+) */}
-      <div className="md:w-1/6 bg-[#007AFF]">
+      <div className="md:w-1/6 absolute">
         <Sidebar />
       </div>
 

@@ -242,7 +242,7 @@ const TestPreview = () => {
                 <div className="flex flex-col justify-between items-center">
                   <Image src="/timer.png" alt="Time" width={30} height={30} />
                   <span className="text-black pt-2 text-center text-lg">
-                    {testData.duration} mins
+                    {testData.duration} mins 
                   </span>
                 </div>
 
