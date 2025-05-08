@@ -60,7 +60,7 @@ const StudentActivityCardmobile = () => {
       </h2>
 
       <div className="flex items-center justify-between">
-        <div className="absolute top-16 mt-10 shadow-lg flex items-center bg-white p-2 rounded-sm translate-y-1/2">
+        <div className="bg-[#007AFF] top-16 mt-10 shadow-lg flex items-center bg-white p-2 rounded-sm translate-y-1/2">
           {profilesToDisplay.map((profile, index) => {
             const randomLetter = initialsSet[index % initialsSet.length]; // Get letter for initials
             const circleColor = circleColors[index % circleColors.length]; // Cycle through colors dynamically
@@ -77,7 +77,7 @@ const StudentActivityCardmobile = () => {
           })}
         </div>
 
-        <div className="absolute right-5 top-24 flex items-center space-x-4 bg-[#E1F0FF] p-4 rounded-lg shadow-md transform translate-y-1/2">
+        <div className="bg-[#007AFF] right-5 top-24 flex items-center space-x-4 bg-[#E1F0FF] p-4 rounded-lg shadow-md transform translate-y-1/2">
           <span className="text-blue-500 text-5xl"><AiOutlineUserAdd /></span>
           <div className="flex flex-col">
             <h3 className="text-3xl font-semibold text-gray-800">{studentData.studentCount}</h3>
@@ -88,7 +88,7 @@ const StudentActivityCardmobile = () => {
 
       {/* Show the "See More" button if there are more than 5 profiles */}
       {studentData.studentProfiles.length > 5 && (
-        <div className="absolute top-48 right-5">
+        <div className="bg-[#007AFF] top-48 right-5">
           <button
             onClick={() => setShowMore(!showMore)}
             className="text-white font-semibold"

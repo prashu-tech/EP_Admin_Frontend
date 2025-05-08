@@ -65,7 +65,7 @@ const PaperInstruction1_mobile = () => {
               placeholder="Search Name,Student_Id... "
               className="w-full shadow-lg px-15 py-2 pl-10 rounded-md border-[1px] border-[#BBBBBB] focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white  font-medium "
             />
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+            <div className="bg-[#007AFF] left-3 top-1/2 transform -translate-y-1/2">
               <FaSearch className="h-5 w-5 text-gray-400" />
             </div>
           </div>

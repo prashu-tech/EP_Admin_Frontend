@@ -23,7 +23,7 @@ const Home = () => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         
-        <div className="absolute top-4 left-4 hidden md:block">
+        <div className="bg-[#007AFF] top-4 left-4 hidden md:block">
           <button 
             className="bg-blue-500 hover:bg-blue-600 text-white font-semibold p-3 rounded-full shadow-lg flex items-center justify-center cursor-pointer"
             onClick={() => router.back()}

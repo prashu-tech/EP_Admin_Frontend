@@ -267,7 +267,7 @@ export default function TestDashboard() {
         <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row">
           <div className="relative flex flex-1 items-center gap-2">
             <div className="relative flex-1">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <div className="pointer-events-none bg-[#007AFF] inset-y-0 left-0 flex items-center pl-3">
                 <Search className="h-5 w-5 text-gray-400" />
               </div>
               <input

@@ -13,7 +13,7 @@ const GenerateTestButton_mobile = () => {
             placeholder="Search Tests"
             className="w-full pl-12 pr-6 py-1 sm:py-3 text-lg font-medium sm:text-2xl bg-transparent focus:outline-none tracking-wider"
           />
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 text-lg sm:text-xl ml-2">
+          <span className="bg-[#007AFF] left-4 top-1/2 -translate-y-1/2 text-gray-600 text-lg sm:text-xl ml-2">
             <BsSearch />
           </span>
         </div>

@@ -587,13 +587,13 @@ const Mobile_desktop_student = () => {
         <div className="fixed inset-0 backdrop-blur-sm bg-black/20 flex items-center justify-center z-50">
           <div className="bg-white p-5 rounded-xl shadow-xl w-11/12 max-w-sm border border-gray-100">
             <div className="relative mb-5">
-              <div className="absolute inset-0 bg-gradient-to-r from-yellow-50 to-blue-50 rounded-lg"></div>
+              <div className="bg-[#007AFF] inset-0 bg-gradient-to-r from-yellow-50 to-blue-50 rounded-lg"></div>
               <h2 className="relative text-lg font-semibold text-center py-3 text-gray-800">
                 Add New Student
               </h2>
               <button 
                 onClick={closeAddStudentModal}
-                className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 p-1"
+                className="bg-[#007AFF] top-2 right-2 text-gray-400 hover:text-gray-600 p-1"
               >
                 <IoCloseOutline className="text-xl" />
               </button>
@@ -605,7 +605,7 @@ const Mobile_desktop_student = () => {
                   Full Name
                 </label>
                 <div className="mt-1 relative rounded-md shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <div className="bg-[#007AFF] inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                     </svg>
@@ -626,7 +626,7 @@ const Mobile_desktop_student = () => {
                   Email Address
                 </label>
                 <div className="mt-1 relative rounded-md shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <div className="bg-[#007AFF] inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                       <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                       <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
@@ -649,7 +649,7 @@ const Mobile_desktop_student = () => {
                     Date of Birth
                   </label>
                   <div className="mt-1 relative rounded-md shadow-sm">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <div className="bg-[#007AFF] inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                       </svg>
@@ -669,7 +669,7 @@ const Mobile_desktop_student = () => {
                     Phone Number
                   </label>
                   <div className="mt-1 relative rounded-md shadow-sm">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <div className="bg-[#007AFF] inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                         <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                       </svg>

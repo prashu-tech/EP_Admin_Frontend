@@ -53,7 +53,7 @@ const MobileNavbar = () => {
         } transition-transform duration-300 ease-in-out`}
       >
         {/* Back Icon */}
-        <div className="absolute top-4 left-4">
+        <div className="bg-[#007AFF] top-4 left-4">
           <button onClick={() => setIsOpen(false)}>
             <ChevronLeft className="w-6 h-6 text-gray-900 font-bold" />
           </button>

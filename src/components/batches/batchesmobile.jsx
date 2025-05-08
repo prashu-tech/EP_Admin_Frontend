@@ -34,7 +34,7 @@ export default function Batches() {
       {/* Search Bar */}
       <div className="flex justify-center mt-6 mb-4">
         <div className="relative w-full sm:flex-1 max-w-xl">
-          <CiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 w-6 h-6" />
+          <CiSearch className="bg-[#007AFF] left-4 top-1/2 transform -translate-y-1/2 text-gray-500 w-6 h-6" />
           <input
             type="text"
             placeholder="Search by Batch ID or Name..."

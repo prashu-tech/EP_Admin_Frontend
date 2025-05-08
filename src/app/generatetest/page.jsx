@@ -21,7 +21,7 @@ export default function page() {
 
 
       {/* Sidebar Section */}
-      <div className="md:w-1/6 absolute">
+      <div className="md:w-1/6 bg-[#007AFF]">
         <Sidebar />
       </div>
 

@@ -103,7 +103,7 @@ const StudentActivityCard = () => {
     <div
       className="relative p-6 shadow-lg w-full sm:w-[30rem] max-w-4xl mx-auto mt-8 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl overflow-hidden"
     >
-      <div className="absolute top-0 right-0 left-0 h-full opacity-10" 
+      <div className="bg-[#007AFF] top-0 right-0 left-0 h-full opacity-10" 
            style={{ backgroundImage: `url('/Vector 1.svg')`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
       </div>
       
@@ -144,7 +144,7 @@ const StudentActivityCard = () => {
                 {!profile.profileImage && randomLetter}
                 
                 {/* Tooltip on hover */}
-                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-max bg-gray-800 text-white text-xs py-1 px-2 rounded hidden group-hover:block z-20">
+                <div className="bg-[#007AFF] bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-max bg-gray-800 text-white text-xs py-1 px-2 rounded hidden group-hover:block z-20">
                   {profile.fullName || "Unknown Student"}
                 </div>
               </div>
@@ -164,7 +164,7 @@ const StudentActivityCard = () => {
       </div>
 
       {/* Total count box */}
-      <div className="absolute right-6 top-24 flex items-center space-x-3 bg-white p-4 rounded-lg shadow-xl transform translate-y-1/2 z-10">
+      <div className="bg-[#007AFF] right-6 top-24 flex items-center space-x-3 bg-white p-4 rounded-lg shadow-xl transform translate-y-1/2 z-10">
         <span className="text-red-500 text-3xl"><AiOutlineUserAdd /></span>
         <div className="flex flex-col">
           <h3 className="text-3xl font-semibold text-gray-800 flex justify-center">{studentData.studentCount}</h3>

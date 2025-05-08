@@ -92,7 +92,7 @@ export default function Page() {
       </div>
 
       {/* Main Content */}
-      <div className="w-full md:w-5/6 md:ml-[16.666667%] bg-gray-50 min-h-screen transition-all duration-300">
+      <div className="w-full md:w-5/6 bg-gray-50 min-h-screen transition-all duration-300">
         {/* Desktop Navbar (hidden on mobile) */}
         <div className="hidden md:block sticky top-0 z-10">
           <DesktopNavbar />

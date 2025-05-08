@@ -75,7 +75,7 @@ const TestPreview = () => {
 
   if (loading) {
     return (
-      <div className="absolute top-[50%] left-[50%]">
+      <div className="bg-[#007AFF] top-[50%] left-[50%]">
         <Loading />
       </div>
     );
@@ -95,7 +95,7 @@ const TestPreview = () => {
 
       <div className="relative">
         {/* Top Left Blue Button */}
-        <div className="absolute top-4 left-4 z-50">
+        <div className="bg-[#007AFF] top-4 left-4 z-50">
           <button
             className="bg-blue-500 hover:bg-blue-600 text-white font-semibold p-3 rounded-full shadow-lg flex items-center justify-center cursor-pointer"
             onClick={() => router.back()}
@@ -237,7 +237,7 @@ const TestPreview = () => {
                 Preview
               </h2>
               {/* Preview Box */}
-              <div className="absolute top-0 right-1 bg-white p-4 rounded-xl drop-shadow-md flex space-x-4">
+              <div className="bg-[#007AFF] top-0 right-1 bg-white p-4 rounded-xl drop-shadow-md flex space-x-4">
                 {/* Timer */}
                 <div className="flex flex-col justify-between items-center">
                   <Image src="/timer.png" alt="Time" width={30} height={30} />

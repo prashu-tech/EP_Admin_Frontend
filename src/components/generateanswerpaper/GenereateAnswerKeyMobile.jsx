@@ -39,7 +39,7 @@ const GenerateAnswerKeyMobile = () => {
                 placeholder="Search Tests"
                 className="w-full px-6 py-3 pl-10 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#F5F7FA] font-medium "
               />
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+              <div className="bg-[#007AFF] left-3 top-1/2 transform -translate-y-1/2">
                 <FaSearch className="h-5 w-4 text-gray-400" />
               </div>
             </div>

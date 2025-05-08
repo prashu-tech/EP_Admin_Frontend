@@ -90,7 +90,7 @@ export default function StudentTestTable() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)} // Update search query
           />
-          <span className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-500 text-4xl">
+          <span className="bg-[#007AFF] left-6 top-1/2 -translate-y-1/2 text-gray-500 text-4xl">
             <CiSearch />
           </span>
         </div>
@@ -128,7 +128,7 @@ export default function StudentTestTable() {
 
         {/* Filter Options Dropdown */}
         {showFilterOptions && (
-          <div className="absolute bg-white shadow-lg rounded-lg mt-2 w-48 p-2 border border-gray-300 right-0">
+          <div className="bg-[#007AFF] bg-white shadow-lg rounded-lg mt-2 w-48 p-2 border border-gray-300 right-0">
             <button
               onClick={() => {/* Add filter logic */}}
               className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"

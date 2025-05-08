@@ -123,7 +123,7 @@ const handleContinueClick = () => {
         placeholder="Search Tests"
         className="w-full px-4 py-3 pl-10 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 font-medium "
       />
-      <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+      <div className="bg-[#007AFF] left-3 top-1/2 transform -translate-y-1/2">
         <FaSearch className="h-5 w-5 text-gray-400" />
       </div>
     </div>
@@ -216,7 +216,7 @@ const handleContinueClick = () => {
             <img
               src="Vector 1.png"  // Replace with the actual path of your arrow image
               alt="Dropdown Arrow"
-              className="absolute top-1/2 right-4 w-4 h-3 pointer-events-none mt-11"
+              className="bg-[#007AFF] top-1/2 right-4 w-4 h-3 pointer-events-none mt-11"
             />
           </div>
 
@@ -317,7 +317,7 @@ const handleContinueClick = () => {
       </div>
 
       {/* Form Section (Hidden on Mobile) */}
-      <div className="hidden lg:block absolute left-[55%] transform -translate-x-[45%] top-[995px] w-[583px] h-fit bg-[#FFBB38] rounded-[38px] p-6 shadow-lg border border-[#FBB03B]">
+      <div className="hidden lg:block bg-[#007AFF] left-[55%] transform -translate-x-[45%] top-[995px] w-[583px] h-fit bg-[#FFBB38] rounded-[38px] p-6 shadow-lg border border-[#FBB03B]">
         <h2 className="text-2xl font-medium text-center text-white">Select Marks per Question</h2>
 
         {/* Positive Marks Input */}

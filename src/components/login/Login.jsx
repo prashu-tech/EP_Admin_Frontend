@@ -119,7 +119,7 @@ const AdminLogin = () => {
             />
             <span
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500 pt-7 pr-1"
+              className="bg-[#007AFF] inset-y-0 right-3 flex items-center cursor-pointer text-gray-500 pt-7 pr-1"
             >
               {showPassword ? (
                 <AiOutlineEye className="text-xl" />

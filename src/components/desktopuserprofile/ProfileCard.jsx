@@ -37,7 +37,7 @@ const ProfileCard = () => {
       <div className="flex justify-center space-x-6">
         <div className="relative -mt-12">
           {/* Red Background Circle */}
-          <div className="absolute inset-0 border-1 border-gray-100 shadow-lg bg-gray-100 rounded-full transform scale-100 z-0" />
+          <div className="bg-[#007AFF] inset-0 border-1 border-gray-100 shadow-lg bg-gray-100 rounded-full transform scale-100 z-0" />
           {/* Profile Image */}
           <img
             src={studentData?.profileImage || "/profilphoto.png"} // Use profileImage from API or fallback to a default image

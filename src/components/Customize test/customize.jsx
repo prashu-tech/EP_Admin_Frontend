@@ -218,7 +218,7 @@ export default function StudentTestTable() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   aria-label="Search students"
                 />
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                <span className="bg-[#007AFF] left-3 top-1/2 -translate-y-1/2 text-gray-400">
                   <CiSearch size={24} />
                 </span>
               </div>
@@ -289,7 +289,7 @@ export default function StudentTestTable() {
             </button>
 
             {showFilterOptions && (
-              <div className="absolute right-0 mt-2 z-10 bg-white rounded-lg shadow-lg border border-gray-200 w-56 py-1 overflow-hidden">
+              <div className="bg-[#007AFF] right-0 mt-2 z-10 bg-white rounded-lg shadow-lg border border-gray-200 w-56 py-1 overflow-hidden">
                 <div className="px-3 py-2 text-xs font-semibold text-gray-500 border-b border-gray-100">SORT BY</div>
                 <button
                   onClick={() => handleFilterSelection('low-performers')}

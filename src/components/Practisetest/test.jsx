@@ -113,7 +113,7 @@ export default function PracticeTest() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             {/* Search Bar */}
             <div className="relative w-full md:w-3/5">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+              <div className="bg-[#007AFF] inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                 <CiSearch className="text-gray-400 text-xl" />
               </div>
               <input

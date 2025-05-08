@@ -167,7 +167,7 @@ export default function Paper() {
             <img
               src="/sample-question-paper.png"
               alt="Sample Background"
-              className="absolute top-0 left-0 w-full h-full z-0"
+              className="bg-[#007AFF] top-0 left-0 w-full h-full z-0"
             />
             <div className="relative z-10 space-y-4">
               <div className="flex justify-between text-lg font-semibold">

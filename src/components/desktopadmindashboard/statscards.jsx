@@ -102,7 +102,7 @@ const StatsCards = () => {
               alt={item.title}
               className="w-full h-full object-cover"
             />
-            <div className={`absolute inset-0 bg-gradient-to-r ${item.color} opacity-20`}></div>
+            <div className={`bg-[#007AFF] inset-0 bg-gradient-to-r ${item.color} opacity-20`}></div>
           </div>
         </div>
       ))}

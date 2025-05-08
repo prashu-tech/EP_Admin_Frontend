@@ -10,7 +10,7 @@ const ProfileCardmobile = () => {
       <div className="flex justify-center space-x-6">
         <div className="relative -mt-12">
           {/* Red Background Circle */}
-          <div className="absolute inset-0 bg-[#FE5C73] rounded-full transform scale-100 z-0" />
+          <div className="bg-[#007AFF] inset-0 bg-[#FE5C73] rounded-full transform scale-100 z-0" />
           {/* Profile Image */}
           <img
             src="/userprofile.svg" // Replace with your image URL

@@ -124,7 +124,7 @@ const AttendanceComponent = ({ selectedMode }) => {
           </button>
 
           {showFilterOptions && (
-            <div className="absolute top-full right-0 mt-2 bg-white shadow-lg rounded-lg w-48 p-2 border border-gray-300 z-10">
+            <div className="bg-[#007AFF] top-full right-0 mt-2 bg-white shadow-lg rounded-lg w-48 p-2 border border-gray-300 z-10">
               <button
                 onClick={() => handleFilterSelection("yearly")}
                 className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"

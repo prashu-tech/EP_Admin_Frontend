@@ -267,10 +267,10 @@ export default function AnswerPaper() {
                 <img
                   src="/sample-question-paper.png"
                   alt="Sample Background"
-                  className="w-full h-full object-cover absolute"
+                  className="w-full h-full object-cover bg-[#007AFF]"
                 />
                 {showWatermark && (
-                  <p className="absolute top-1/2 left-1/2 text-gray-300 text-6xl font-bold opacity-20 -translate-x-1/2 -translate-y-1/2">
+                  <p className="bg-[#007AFF] top-1/2 left-1/2 text-gray-300 text-6xl font-bold opacity-20 -translate-x-1/2 -translate-y-1/2">
                     WATERMARK
                   </p>
                 )}

@@ -49,7 +49,7 @@ export default function Page() {
   };
 
   if (loading) {
-    return <div className="absolute top-[50%] left-[50%]">
+    return <div className="bg-[#007AFF] top-[50%] left-[50%]">
       <Loading/>
     </div>; // Show a loading state while data is being fetched
   }
@@ -57,7 +57,7 @@ export default function Page() {
   return (
     <div className="min-h-screen md:flex bg-white">
       {/* Desktop Sidebar Section (visible on md+) */}
-      <div className="md:w-1/6 absolute">
+      <div className="md:w-1/6 bg-[#007AFF]">
         <Sidebar />
       </div>
 

@@ -12,7 +12,7 @@ const page = () => {
   return (
     <>
        {/* Desktop Sidebar Section (visible on md+) */}
-       <div className="md:w-1/6 absolute">
+       <div className="md:w-1/6 bg-[#007AFF]">
         <Sidebar />
       </div>
       <DesktopNavbar/>
