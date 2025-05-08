@@ -87,7 +87,7 @@ export default function Page() {
   return (
     <div className="min-h-screen md:flex bg-gray-50">
       {/* Desktop Sidebar Section (visible on md+) */}
-      <div className="hidden md:block md:w-1/6 bg-[#007AFF] fixed h-screen overflow-auto">
+      <div className="md:w-1/6 bg-[#007AFF]">
         <Sidebar />
       </div>
 
