@@ -1,49 +1,93 @@
 "use client";
-import React from "react";
-import { BsSearch } from "react-icons/bs";
+import React, { useState } from "react";
+import { BsSearch, BsBook, BsGraphUp } from "react-icons/bs";
+import { FiChevronDown, FiSettings } from "react-icons/fi";
+import { motion } from "framer-motion";
 
-export default function BioFirstPart() {
+export default function PhysicsFirstPart() {
+  const [searchQuery, setSearchQuery] = useState("");
+
   return (
-    <section className="hidden md:block p-4 gap-2 font-['Segoe_UI']">
-      {/* Top Section - Generate Test Button and Title */}
-      <div className="w-full flex flex-row justify-between items-center">
-        <div className="bg-white text-[#979797] px-6 py-4 mt-1  rounded-lg border border-[#BBBBBB] shadow-[0_4px_6px_0_rgba(0,0,0,0.25)]  hover:bg-gray-100 transition cursor-pointer">
+    <section className="font-['Segoe_UI'] bg-gray-50 rounded-xl shadow-sm p-6 mb-6">
+      {/* Top Section with Generate Test Button and Title */}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
+        <motion.button
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+          className="bg-white text-gray-700 px-6 py-3 rounded-lg border border-gray-200 shadow-sm hover:bg-gray-50 transition flex items-center gap-2 font-medium"
+        >
+          <span className="bg-blue-100 p-1.5 rounded-full text-blue-600">
+            <FiSettings className="text-lg" />
+          </span>
           Generate Test
+        </motion.button>
+
+        <motion.h1 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-2xl font-semibold text-gray-800 flex items-center gap-2"
+        >
+          <span className="bg-blue-500 p-1.5 rounded-full text-white shadow-sm">
+            <BsBook className="text-lg" />
+          </span>
+          Select Physics Chapters
+        </motion.h1>
+
+        <div>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </div>
-
-        {/* Centered Heading */}
-        <h1 className="text-2xl font-medium font-SegoeUI whitespace-nowrap mr-36 mt-8">
-          Select Bio Chapters
-        </h1>
-
-        <div className="w-16"></div>
       </div>
 
       {/* Subject-wise Marks Section */}
-      <div className="flex justify-center items-center gap-10 mt-7 flex-wrap ">
-        <h2 className="text-xl font-medium font-SegoeUI">Subject-wise Marks</h2>
-        <div className="bg-[#EEF5FF] text-[#718EBF] text-base font-normal px-6 py-3 rounded-lg">
-          Subject-wise Marks
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="bg-white rounded-xl p-4 mb-6 shadow-sm border border-gray-100"
+      >
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="bg-blue-600 p-2 rounded-lg text-white shadow-sm">
+              <BsGraphUp className="text-xl" />
+            </div>
+            <h2 className="text-lg font-medium text-gray-800">Subject-wise Marks</h2>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <div className="bg-blue-50 text-blue-700 px-4 py-2 rounded-lg border border-blue-100 font-medium flex items-center gap-2">
+              <span className="bg-blue-600 w-3 h-3 rounded-full"></span>
+              Physics
+            </div>
+            <div className="bg-purple-50 text-purple-700 px-4 py-2 rounded-lg border border-purple-100 font-medium flex items-center gap-2">
+              <span className="bg-purple-600 w-3 h-3 rounded-full"></span>
+              Chemistry 
+            </div>
+            <div className="bg-green-50 text-green-700 px-4 py-2 rounded-lg border-2 border-green-600 font-medium flex items-center gap-2">
+              <span className="bg-green-600 w-3 h-3 rounded-full"></span>
+              Biology 
+            </div>
+          </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Select Chapters and Search Bar Section */}
-      <div className="flex items-center justify-between w-full mt-8">
-        {/* Select Chapters */}
-        <div className="flex items-center gap-2 ml-33">
-          <h2 className="text-xl font-medium whitespace-nowrap">Select Chapters</h2>
-        </div>
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="flex flex-col md:flex-row items-center justify-between gap-4"
+      >
+        
 
-        {/* Search Bar */}
-        <div className="flex items-center rounded-full px-4 py-2 bg-[#EEF5FF] text-[#8BA3CB] hover:bg-blue-200 transition w-1/3 mr-15">
-          <BsSearch className="mr-2 text-lg text-[#718EBF]" />
-          <input
-            type="text"
-            placeholder="Search Tests"
-            className="bg-transparent outline-none w-full text-base pr-2"
-          />
-        </div>
-      </div>
+        
+      </motion.div>
+      
+     
+      
     </section>
   );
 }

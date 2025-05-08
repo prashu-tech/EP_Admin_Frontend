@@ -18,7 +18,7 @@ export default function Home() {
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar Section */}
-      <div className="md:w-1/6 bg-[#007AFF]">
+      <div className="md:w-1/6 absolute">
         <Sidebar/>
       </div>
 
