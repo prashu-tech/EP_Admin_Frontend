@@ -7,6 +7,8 @@ import * as XLSX from "xlsx";
 import { jwtDecode } from "jwt-decode";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { CiUser, CiMail, CiPhone, CiCalendar } from "react-icons/ci";
+
 
 const Desktop_student = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -526,158 +528,137 @@ const Desktop_student = () => {
 
       {/* Add Student Modal - with blur background and fixed gender options */}
       {isAddStudentModalOpen && (
-        <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-lg border border-gray-100">
-            <div className="relative mb-6">
-              <div className="bg-[#007AFF] inset-0 bg-gradient-to-r from-yellow-50 to-blue-50 rounded-lg"></div>
-              <h2 className="relative text-xl font-semibold text-center py-4 text-gray-800">
-                Add New Student
-              </h2>
-              <button 
-                onClick={closeAddStudentModal}
-                className="bg-[#007AFF] top-3 right-3 text-gray-400 hover:text-gray-600"
-              >
-                &times;
-              </button>
-            </div>
-            
-            <form onSubmit={handleSubmit} className="mt-6 space-y-5">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div className="space-y-2">
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700">Full Name</label>
-                  <div className="relative">
-                    <input 
-                      type="text" 
-                      id="name" 
-                      name="name" 
-                      placeholder="Enter student's name" 
-                      required 
-                      className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent shadow-sm" 
-                    />
-                    <div className="bg-[#007AFF] left-3 top-3.5 text-gray-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
-                  <div className="relative">
-                    <input 
-                      type="email" 
-                      id="email" 
-                      name="email" 
-                      placeholder="example@email.com" 
-                      required 
-                      className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent shadow-sm" 
-                    />
-                    <div className="bg-[#007AFF] left-3 top-3.5 text-gray-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <label htmlFor="dob" className="block text-sm font-medium text-gray-700">Date of Birth</label>
-                  <div className="relative">
-                    <input 
-                      type="date" 
-                      id="dob" 
-                      name="dob" 
-                      required 
-                      className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent shadow-sm" 
-                    />
-                    <div className="bg-[#007AFF] left-3 top-3.5 text-gray-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone Number</label>
-                  <div className="relative">
-                    <input 
-                      type="tel" 
-                      id="phone" 
-                      name="phone" 
-                      placeholder="Enter phone number" 
-                      required 
-                      className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent shadow-sm" 
-                    />
-                    <div className="bg-[#007AFF] left-3 top-3.5 text-gray-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Gender</label>
-                <div className="flex items-center space-x-6 bg-gray-50 p-3 rounded-lg">
-                  <label className="inline-flex items-center">
-                    <input 
-                      type="radio" 
-                      name="gender" 
-                      value="Male" 
-                      className="form-radio h-4 w-4 text-blue-500 focus:ring-blue-500" 
-                      required 
-                    />
-                    <span className="ml-2 text-gray-700">Male</span>
-                  </label>
-                  <label className="inline-flex items-center">
-                    <input 
-                      type="radio" 
-                      name="gender" 
-                      value="Female" 
-                      className="form-radio h-4 w-4 text-pink-500 focus:ring-pink-500" 
-                    />
-                    <span className="ml-2 text-gray-700">Female</span>
-                  </label>
-                  <label className="inline-flex items-center">
-                    <input 
-                      type="radio" 
-                      name="gender" 
-                      value="Other" 
-                      className="form-radio h-4 w-4 text-purple-500 focus:ring-purple-500" 
-                    />
-                    <span className="ml-2 text-gray-700">Other</span>
-                  </label>
-                </div>
-              </div>
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm px-4">
+    <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-gray-100 p-6 relative">
+      
+      {/* Modal Header */}
+      <div className="mb-6 relative text-center">
+        <h2 className="text-2xl font-semibold text-gray-800">Add New Student</h2>
+        <button
+          onClick={closeAddStudentModal}
+          className="absolute top-0 right-0 text-2xl text-gray-400 hover:text-gray-600 px-3 py-1"
+        >
+          &times;
+        </button>
+      </div>
 
-              <div className="mt-8 flex space-x-4">
-                <button 
-                  type="button" 
-                  onClick={closeAddStudentModal} 
-                  className="w-full py-3 px-4 border border-gray-200 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors shadow-sm"
-                >
-                  Cancel
-                </button>
-                <button 
-                  type="submit" 
-                  disabled={isSubmitting} 
-                  className={`w-full bg-gradient-to-r from-yellow-400 to-yellow-500 text-white py-3 px-4 rounded-lg hover:from-yellow-500 hover:to-yellow-600 transition-all shadow-sm ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
-                >
-                  {isSubmitting ? 'Adding Student...' : 'Add Student'}
-                </button>
-              </div>
-              
-              <div className="mt-4 text-xs text-center text-gray-500">
-                A welcome email with login credentials will be sent to the student
-              </div>
-            </form>
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          
+          {/* Full Name */}
+          <div className="relative">
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              Full Name
+            </label>
+            <CiUser className="absolute left-3 top-10 text-gray-400 text-lg" />
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Enter student's name"
+              required
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:outline-none shadow-sm"
+            />
+          </div>
+
+          {/* Email */}
+          <div className="relative">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              Email Address
+            </label>
+            <CiMail className="absolute left-3 top-10 text-gray-400 text-lg" />
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="example@email.com"
+              required
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:outline-none shadow-sm"
+            />
+          </div>
+
+          {/* Date of Birth */}
+          <div className="relative">
+            <label htmlFor="dob" className="block text-sm font-medium text-gray-700 mb-1">
+              Date of Birth
+            </label>
+            <CiCalendar className="absolute left-3 top-10 text-gray-400 text-lg" />
+            <input
+              type="date"
+              id="dob"
+              name="dob"
+              required
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:outline-none shadow-sm"
+            />
+          </div>
+
+          {/* Phone Number */}
+          <div className="relative">
+            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+              Phone Number
+            </label>
+            <CiPhone className="absolute left-3 top-10 text-gray-400 text-lg" />
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              placeholder="Enter phone number"
+              required
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:outline-none shadow-sm"
+            />
           </div>
         </div>
-      )}
+
+        {/* Gender */}
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">Gender</label>
+          <div className="flex items-center space-x-6 bg-gray-50 p-3 rounded-lg">
+            {["Male", "Female", "Other"].map((gender) => (
+              <label key={gender} className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="gender"
+                  value={gender}
+                  className="form-radio h-4 w-4 text-blue-500 focus:ring-blue-500"
+                  required
+                />
+                <span className="ml-2 text-gray-700">{gender}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="mt-6 flex space-x-4">
+          <button
+            type="button"
+            onClick={closeAddStudentModal}
+            className="w-1/2 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-100 transition shadow-sm"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className={`w-1/2 py-3 text-white rounded-lg transition-all shadow-sm ${
+              isSubmitting
+                ? "bg-yellow-400 cursor-not-allowed opacity-70"
+                : "bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600"
+            }`}
+          >
+            {isSubmitting ? "Adding Student..." : "Add Student"}
+          </button>
+        </div>
+
+        <p className="text-xs text-center text-gray-500 mt-4">
+          A welcome email with login credentials will be sent to the student.
+        </p>
+      </form>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

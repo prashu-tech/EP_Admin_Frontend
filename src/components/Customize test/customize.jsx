@@ -197,56 +197,56 @@ export default function StudentTestTable() {
   };
 
   return (
-    <div className="py-6 w-full mx-auto px-4 lg:px-8 bg-gray-50 min-h-screen">
+    <div className="py-6 w-full  mx-auto px-4 lg:px-8 bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
         {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">Student Test Dashboard</h1>
-          <p className="text-gray-500">Manage and analyze student test performances</p>
+        <div className="mb-8 w-fit mx-auto text-center">
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">Student Test Dashboard</h1>
+          <p className="text-gray-500 text-lg">Manage and analyze student test performances</p>
         </div>
         
-        {/* Search & Action Buttons */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
-          <div className="relative flex-1 w-full max-w-xl">
-            <div className="flex items-center">
-              <div className="relative flex-1">
-                <input
-                  type="text"
-                  placeholder="Search by name, ID, test name or subject..."
-                  className="w-full py-3 pl-12 pr-4 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300 transition-all shadow-sm text-gray-800"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  aria-label="Search students"
-                />
-                <span className="bg-[#007AFF] left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                  <CiSearch size={24} />
-                </span>
-              </div>
-              <button 
-                onClick={fetchData}
-                className="ml-2 px-4 py-3 bg-white text-gray-600 border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition-all active:scale-95"
-                aria-label="Refresh data"
-              >
-                Refresh
-              </button>
-            </div>
-          </div>
-          
-          <div className="flex gap-3 w-full lg:w-auto">
-            <button 
-              className="flex-1 lg:flex-none px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition-all active:scale-95 font-medium"
-            >
-              Customized Test
-            </button>
-            <button
-              onClick={downloadCSV}
-              className="flex-1 lg:flex-none px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition-all flex items-center justify-center active:scale-95 font-medium"
-              aria-label="Download test data as CSV"
-            >
-              Download <BsDownload className="ml-2" />
-            </button>
-          </div>
-        </div>
+       {/* Search & Action Buttons */}
+<div className="flex flex-col lg:flex-row  items-start lg:items-center gap-4 mb-6">
+  {/* Search + Refresh */}
+  <div className="relative flex-1 w-full ">
+    <div className="flex items-center">
+      <div className="relative flex-1">
+        <CiSearch
+          size={20}
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+        />
+        <input
+          type="text"
+          placeholder="Search by name, ID, test name or subject..."
+          className="w-full py-3 pl-12 pr-4 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all shadow-sm text-gray-800"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          aria-label="Search students"
+        />
+      </div>
+      <button
+        onClick={fetchData}
+        className="ml-3 px-5 py-3 bg-white text-gray-600 border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition-all active:scale-95"
+        aria-label="Refresh data"
+      >
+        Refresh
+      </button>
+    </div>
+  </div>
+
+  {/* Action Buttons */}
+  <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+    
+    <button
+      onClick={downloadCSV} 
+      className="flex-1 sm:flex-none px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition-all flex items-center justify-center active:scale-95 font-medium"
+      aria-label="Download test data as CSV"
+    >
+      Download <BsDownload className="ml-2" />
+    </button>
+  </div>
+</div>
+
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">

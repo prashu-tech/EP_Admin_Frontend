@@ -147,7 +147,7 @@ const SelectSubjectPage = () => {
     >
       <div className="w-full max-w-7xl mx-auto p-6">
         <motion.button 
-          className="bg-[#007AFF] lg:block hidden left-80 px-10 py-5 text-gray-400 border-[#BBBBBB] rounded-lg bg-transparent hover:bg-gray-100 shadow-[0_4px_6px_rgba(0,0,0,0.3)]"
+          className="absolute lg:block hidden left-80 px-10 py-5 text-gray-400 border-[#BBBBBB] rounded-lg bg-transparent hover:bg-gray-100 shadow-[0_4px_6px_rgba(0,0,0,0.3)]"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -219,7 +219,7 @@ const SelectSubjectPage = () => {
               <motion.img
                 src="Vector 1.png"  // Replace with the actual path of your arrow image
                 alt="Dropdown Arrow"
-                className="bg-[#007AFF] top-1/2 left-110 w-4 h-3 pointer-events-none mt-11"
+                className="absolute top-1/2 left-110 w-4 h-3 pointer-events-none mt-11"
                 animate={{ y: [0, 3, 0] }}
                 transition={{ repeat: Infinity, duration: 1.5, repeatType: "reverse" }}
               />
@@ -386,7 +386,7 @@ const SelectSubjectPage = () => {
 
         {/* Positive and Negative Marks Section */}
         <motion.div 
-          className="bg-[#007AFF] lg:block hidden left-[55%] transform -translate-x-[45%] top-[830px] w-[583px] h-fit bg-[#FFBB38] rounded-[38px] p-6 shadow-lg border border-[#FBB03B]"
+          className="absolute lg:block hidden left-[55%] transform -translate-x-[45%] top-[830px] w-[583px] h-fit bg-[#FFBB38] rounded-[38px] p-6 shadow-lg border border-[#FBB03B]"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.3, duration: 0.5 }}

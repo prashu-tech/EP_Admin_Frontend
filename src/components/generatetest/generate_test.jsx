@@ -11,7 +11,8 @@ import {
   Loader,
   Filter,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  ClipboardList
 } from "lucide-react";
 import * as XLSX from "xlsx";
 import Link from "next/link";
@@ -40,7 +41,9 @@ export default function TestDashboard() {
         setTestData(response.data.tests);
         setTestCount(response.data.tests.length);
       } catch (err) {
-        setError("Unable to load test data. Please try again later.");
+        // Instead of setting error, we'll just set empty test data
+        setTestData([]);
+        setTestCount(0);
       } finally {
         setLoading(false);
       }
@@ -167,22 +170,6 @@ export default function TestDashboard() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="rounded-lg bg-red-50 p-6 text-center">
-          <p className="text-lg font-medium text-red-800">{error}</p>
-          <button 
-            className="mt-4 rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700"
-            onClick={() => window.location.reload()}
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="flex min-h-screen flex-col bg-gray-50 pb-20">
       {/* Simplified Header with Centered Text */}
@@ -267,7 +254,7 @@ export default function TestDashboard() {
         <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row">
           <div className="relative flex flex-1 items-center gap-2">
             <div className="relative flex-1">
-              <div className="pointer-events-none bg-[#007AFF] inset-y-0 left-0 flex items-center pl-3">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                 <Search className="h-5 w-5 text-gray-400" />
               </div>
               <input
@@ -297,6 +284,7 @@ export default function TestDashboard() {
           <button
             onClick={downloadExcel}
             className="flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            disabled={testData.length === 0}
           >
             <Download className="h-5 w-5" />
             Export
@@ -356,11 +344,20 @@ export default function TestDashboard() {
                   })
                 ) : (
                   <tr>
-                    <td colSpan="9" className="px-6 py-10 text-center text-gray-500">
+                    <td colSpan="9" className="px-6 py-16 text-center text-gray-500">
                       <div className="flex flex-col items-center justify-center">
-                        <Search className="h-10 w-10 text-gray-300" />
-                        <p className="mt-2 text-lg font-medium">No tests found</p>
-                        <p className="text-sm text-gray-400">Try changing your search criteria or create a new test</p>
+                        <ClipboardList className="h-16 w-16 text-blue-300" />
+                        <p className="mt-4 text-xl font-medium text-gray-700">No Tests Created Yet</p>
+                        <p className="mt-2 text-sm text-gray-500">Start creating your first test by clicking the "Create New Test" button above</p>
+                        <Link href="/subjectselect">
+                          <button
+                            onClick={handleGenerate}
+                            className="mt-6 flex items-center rounded-md bg-blue-500 px-6 py-3 text-sm font-medium text-white shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                          >
+                            <Plus className="mr-2 h-5 w-5" />
+                            Create Your First Test
+                          </button>
+                        </Link>
                       </div>
                     </td>
                   </tr>
@@ -399,4 +396,4 @@ export default function TestDashboard() {
       </div>
     </div>
   );
-}
+} 

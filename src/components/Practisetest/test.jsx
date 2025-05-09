@@ -109,36 +109,33 @@ export default function PracticeTest() {
 
       <div className="max-w-6xl mx-auto">
         {/* Search and Actions Row */}
-        <div className="mb-6 bg-white shadow-md rounded-xl p-4 border border-gray-100">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            {/* Search Bar */}
-            <div className="relative w-full md:w-3/5">
-              <div className="bg-[#007AFF] inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                <CiSearch className="text-gray-400 text-xl" />
-              </div>
-              <input
-                type="text"
-                placeholder="Search by Name, Student ID, Test Name or Subject..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-12 pl-12 pr-4 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-gray-700"
-              />
-            </div>
+        <div className="mb-6 bg-white shadow-md rounded-xl p-6 border border-gray-100">
+  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    {/* Search Bar */}
+    <div className="relative w-full md:w-2/3">
+      <CiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
+      <input
+        type="text"
+        placeholder="Search by Name, Student ID, Test Name or Subject..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="w-full h-12 pl-12 pr-4 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-gray-700"
+      />
+    </div>
 
-            {/* Action Buttons */}
-            <div className="flex gap-3 w-full md:w-auto">
-              
-              
-              <button
-                onClick={downloadCSV}
-                className="flex-1 md:flex-auto bg-blue-500 text-white h-12 px-6 rounded-lg hover:bg-blue-600 transition-all flex items-center justify-center gap-2 shadow-sm"
-              >
-                <IoDownloadOutline className="text-lg" />
-                <span className="font-medium">Download</span>
-              </button>
-            </div>
-          </div>
-        </div>
+    {/* Action Buttons */}
+    <div className="w-full md:w-auto flex justify-end">
+      <button
+        onClick={downloadCSV}
+        className="w-full md:w-auto bg-blue-500 text-white h-12 px-6 rounded-lg hover:bg-blue-600 transition-all flex items-center justify-center gap-2 shadow-sm"
+      >
+        <IoDownloadOutline className="text-lg" />
+        <span className="font-medium">Download</span>
+      </button>
+    </div>
+  </div>
+</div>
+
         
         {/* Summary Cards Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">

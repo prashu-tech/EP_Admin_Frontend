@@ -4,20 +4,33 @@ import axios from "axios";
 import Link from "next/link";
 import { CiImageOn, CiSearch } from "react-icons/ci";
 import { IoSchoolOutline, IoAddOutline, IoPencilOutline, IoPersonOutline, IoCalendarOutline } from "react-icons/io5";
+import { useRouter } from "next/navigation";
 
 export default function Batches() {
   const [searchQuery, setSearchQuery] = useState("");
   const [batchData, setBatchData] = useState([]);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-
+  const router = useRouter()
   // Fetch batches from the backend
   useEffect(() => {
+
     const fetchBatches = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/studentdata/getbatch`);
-        setBatchData(response.data.batchData); // Assuming response contains batchData
+        let token = null;
+        if (typeof window !== "undefined") {
+          token = localStorage.getItem("adminAuthToken");
+        }
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/studentdata/getbatch`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setBatchData(response.data.batchData);
       } catch (error) {
         setError("Error fetching batch data: " + (error.response?.data?.message || error.message));
       } finally {
@@ -27,6 +40,25 @@ export default function Batches() {
     fetchBatches();
   }, []);
 
+
+  const handleIdClick = async (BatchId) => {
+    let batchId = null;
+    if (typeof window !== "undefined") {
+      batchId = localStorage.setItem("batchId", BatchId);
+    }
+
+    router.push("/batches/batchesInfo")
+  }
+
+  const handleAction = (batchId, batchName, no_of_students) => {
+    if(typeof window !== "undefined") {
+      localStorage.setItem("batchId", batchId);
+      localStorage.setItem("batchName", batchName);
+      localStorage.setItem("noOfStudents", no_of_students);
+    }
+    router.push("/batchesedit")
+  }
+  
   const filteredBatches = batchData.filter((batch) =>
     batch.batchId?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     batch.batchName?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -52,31 +84,29 @@ export default function Batches() {
       <div className="max-w-6xl mx-auto">
         {/* Search and Actions Row - Moved to top */}
         <div className="mb-6 bg-white shadow-md rounded-xl p-4 border border-gray-100">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            {/* Search Bar */}
-            <div className="relative w-full md:w-3/5">
-              <div className="bg-[#007AFF] inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                <CiSearch className="text-gray-400 text-xl" />
-              </div>
-              <input
-                type="text"
-                placeholder="Search by Batch ID or Name..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-12 pl-12 pr-4 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-gray-700"
-              />
-            </div>
+  <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+    
+    {/* Search Bar */}
+    <div className="relative w-full md:w-3/5">
+      <CiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
+      <input
+        type="text"
+        placeholder="Search by Batch ID or Name..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="w-full h-12 pl-12 pr-4 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-gray-700"
+      />
+    </div>
 
-            {/* New Batch Button */}
-            <Link href="/batchesedit">
-              <button className="w-full md:w-auto bg-yellow-500 text-white h-12 px-6 rounded-lg hover:bg-yellow-600 transition-all flex items-center justify-center gap-2 shadow-sm">
-                <IoAddOutline className="text-xl" />
-                <span className="font-medium">New Batch</span>
-              </button>
-            </Link>
-          </div>
-        </div>
-        
+    {/* New Batch Button */}
+    <Link href="/batchesedit">
+      <button className="w-full md:w-auto h-12 px-6 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all flex items-center justify-center gap-2 shadow-sm active:scale-95">
+        <IoAddOutline className="text-xl" />
+        <span className="font-medium">New Batch</span>
+      </button>
+    </Link>
+  </div>
+</div>
         {/* Summary Cards Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           {/* Batches Count Card */}
@@ -153,7 +183,7 @@ export default function Batches() {
                   </div>
                   <p className="text-xs text-gray-500">Based on last 30 days activity</p>
                 </div>
-                
+
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium text-gray-700">Assignment Completion</span>
@@ -164,7 +194,7 @@ export default function Batches() {
                   </div>
                   <p className="text-xs text-gray-500">Average across all batches</p>
                 </div>
-                
+
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium text-gray-700">Student Satisfaction</span>
@@ -215,7 +245,8 @@ export default function Batches() {
                           {index + 1}
                         </td>
                         <td className="py-4 px-6 border-r border-gray-200">
-                          <span className="bg-blue-50 text-blue-700 py-1 px-3 rounded-full text-xs font-medium">
+                          <span className="bg-blue-50 text-blue-700 py-1 px-3 rounded-full text-xs font-medium cursor-pointer"
+                            onClick={() => handleIdClick(batch.batchId)}>
                             {batch.batchId}
                           </span>
                         </td>
@@ -229,12 +260,14 @@ export default function Batches() {
                           </div>
                         </td>
                         <td className="py-4 px-6 text-center">
-                          <Link href={`/batchesedit?id=${batch.batchId}`}>
-                            <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors flex items-center justify-center gap-1 mx-auto">
+                          
+                            <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors flex items-center justify-center gap-1 mx-auto"
+                            onClick={()=> handleAction(batch.batchId, batch.batchName, batch.no_of_students)}
+                            >
                               <IoPencilOutline className="text-sm" />
                               <span>Edit</span>
                             </button>
-                          </Link>
+                          
                         </td>
                       </tr>
                     ))

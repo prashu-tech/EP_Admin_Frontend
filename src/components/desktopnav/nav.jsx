@@ -13,7 +13,7 @@ const DesktopNavbar = () => {
   const dropdownRef = useRef(null);
 
   const handleProfileClick = () => {
-    router.push("/profile");
+    router.push("/adminprofile");
   };
 
   const handleLogoutClick = () => {
@@ -52,7 +52,7 @@ const DesktopNavbar = () => {
         {isDropdownOpen && (
           <div
             ref={dropdownRef}
-            className="bg-[#007AFF] right-4 top-24 bg-white shadow-lg rounded-lg w-48 py-2 z-50"
+            className="absolute right-4 top-24 bg-white shadow-lg rounded-lg w-48 py-2 z-50"
           >
             <ul className="text-gray-700">
               <li
