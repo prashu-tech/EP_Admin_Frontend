@@ -7,13 +7,50 @@ import { IoSchoolOutline, IoAddOutline, IoPencilOutline, IoPersonOutline, IoCale
 import { useRouter } from "next/navigation";
 
 export default function Batches() {
+  const [testCount, setTestCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [batchData, setBatchData] = useState([]);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter()
+
+  const [highlightCreateBatch, setHighlightCreateBatch] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (window.location.hash === "#createBatch") {
+        setHighlightCreateBatch(true);
+
+        // Optional: remove highlight after a few seconds
+        setTimeout(() => setHighlightCreateBatch(false), 3000);
+      }
+    }
+  }, []);
+
   // Fetch batches from the backend
   useEffect(() => {
+
+    const fetchTestCount = async () => {
+      try {
+        let token = null;
+        if (typeof window !== "undefined") {
+          token = localStorage.getItem("adminAuthToken");
+        }
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/admintest/getTestCount`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setTestCount(response.data.testCount || 0);
+      } catch (error) {
+        setError("Error fetching batch data: " + (error.response?.data?.message || error.message));
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
     const fetchBatches = async () => {
       setIsLoading(true);
@@ -30,13 +67,14 @@ export default function Batches() {
             },
           }
         );
-        setBatchData(response.data.batchData);
+        setBatchData(response.data.batchData || []);
       } catch (error) {
         setError("Error fetching batch data: " + (error.response?.data?.message || error.message));
       } finally {
         setIsLoading(false);
       }
     };
+    fetchTestCount();
     fetchBatches();
   }, []);
 
@@ -51,14 +89,14 @@ export default function Batches() {
   }
 
   const handleAction = (batchId, batchName, no_of_students) => {
-    if(typeof window !== "undefined") {
+    if (typeof window !== "undefined") {
       localStorage.setItem("batchId", batchId);
       localStorage.setItem("batchName", batchName);
       localStorage.setItem("noOfStudents", no_of_students);
     }
     router.push("/batchesedit")
   }
-  
+
   const filteredBatches = batchData.filter((batch) =>
     batch.batchId?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     batch.batchName?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -84,29 +122,33 @@ export default function Batches() {
       <div className="max-w-6xl mx-auto">
         {/* Search and Actions Row - Moved to top */}
         <div className="mb-6 bg-white shadow-md rounded-xl p-4 border border-gray-100">
-  <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-    
-    {/* Search Bar */}
-    <div className="relative w-full md:w-3/5">
-      <CiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
-      <input
-        type="text"
-        placeholder="Search by Batch ID or Name..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="w-full h-12 pl-12 pr-4 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-gray-700"
-      />
-    </div>
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
 
-    {/* New Batch Button */}
-    <Link href="/batchesedit">
-      <button className="w-full md:w-auto h-12 px-6 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all flex items-center justify-center gap-2 shadow-sm active:scale-95">
-        <IoAddOutline className="text-xl" />
-        <span className="font-medium">New Batch</span>
-      </button>
-    </Link>
-  </div>
-</div>
+            {/* Search Bar */}
+            <div className="relative w-full md:w-3/5">
+              <CiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
+              <input
+                type="text"
+                placeholder="Search by Batch ID or Name..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full h-12 pl-12 pr-4 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-gray-700"
+              />
+            </div>
+
+            {/* New Batch Button */}
+            <Link href="/batchesedit">
+              <button
+                id="createBatch"
+                className={`w-full md:w-auto h-12 px-6 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all flex items-center justify-center gap-2 shadow-sm active:scale-95 ${highlightCreateBatch ? "animate-pulse" : ""}`}
+              >
+                <IoAddOutline className="text-xl" />
+                <span className="font-medium">New Batch</span>
+              </button>
+            </Link>
+
+          </div>
+        </div>
         {/* Summary Cards Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           {/* Batches Count Card */}
@@ -118,7 +160,7 @@ export default function Batches() {
               <div>
                 <p className="text-sm text-gray-500 font-medium">Total Batches</p>
                 <h3 className="text-2xl font-bold text-gray-800">{batchData.length}</h3>
-                <p className="text-xs text-gray-500 mt-1">Active batches in your account</p>
+                <p className="text-xs text-gray-500 mt-1">Created batches in your account</p>
               </div>
             </div>
             <div className="h-1 bg-blue-500"></div>
@@ -146,9 +188,9 @@ export default function Batches() {
                 <IoCalendarOutline className="text-green-600 text-2xl" />
               </div>
               <div>
-                <p className="text-sm text-gray-500 font-medium">Active Sessions</p>
-                <h3 className="text-2xl font-bold text-gray-800">12</h3>
-                <p className="text-xs text-gray-500 mt-1">Ongoing batch sessions this week</p>
+                <p className="text-sm text-gray-500 font-medium">Active Tests</p>
+                <h3 className="text-2xl font-bold text-gray-800">{testCount}</h3>
+                <p className="text-xs text-gray-500 mt-1">Ongoing tests in your account</p>
               </div>
             </div>
             <div className="h-1 bg-green-500"></div>
@@ -156,54 +198,89 @@ export default function Batches() {
         </div>
 
         {/* Performance Stats Card - Adjusted proportions */}
-        <div className="bg-white shadow-md rounded-xl overflow-hidden border border-gray-100 mb-6">
-          <div className="p-4 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-800">Batch Performance Overview</h3>
+        <div className="bg-white shadow-xl rounded-xl overflow-hidden border border-gray-200 mb-6">
+          <div className="p-6 border-b border-gray-300">
+            <h3 className="text-xl font-bold text-gray-900">Batch Management Overview</h3>
+            <p className="text-sm text-gray-500 mt-2">Manage batches efficiently with quick actions</p>
           </div>
-          <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Image with reduced width */}
-            <div className="md:col-span-1">
+            <div className="md:col-span-1 flex justify-center mt-13 items-center">
               <img
                 src="test.png"
-                alt="Batch Performance Chart"
-                className="w-full h-full object-cover rounded-lg border border-gray-200"
+                alt="Batch Management"
+                className="w-full max-w-[400px] h-44 object-cover rounded-lg border border-gray-200 shadow-md"
               />
             </div>
-            {/* Metrics with increased width */}
-            <div className="md:col-span-3 bg-gray-50 rounded-lg p-4">
-              <h4 className="text-sm font-medium text-gray-700 mb-4">Key Performance Indicators</h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-gray-700">Average Attendance</span>
-                    <span className="text-sm font-semibold text-blue-600">87%</span>
+
+            {/* Actions with increased width */}
+            <div className="md:col-span-2 space-y-6">
+              <h4 className="text-xl font-bold text-gray-800">What You Can Do</h4>
+
+              <div className="flex space-x-4">
+                {/* Create Batch */}
+                <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg shadow-lg hover:shadow-2xl transition-all">
+                  <div className="p-6 flex flex-col justify-between items-center">
+                    <div className="flex flex-col items-center">
+                      <h5 className="text-lg font-bold">Create a Batch</h5>
+                      <p className="text-sm text-gray-100 mt-2">Start a new batch and enroll students</p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        const el = document.getElementById("createBatch");
+                        if (el) {
+                          el.scrollIntoView({ behavior: "smooth", block: "center" });
+                          el.classList.add("ring-4", "ring-blue-400");
+
+                          // Remove highlight after 3 seconds
+                          setTimeout(() => {
+                            el.classList.remove("ring-4", "ring-blue-400");
+                          }, 3000);
+                        }
+                      }}
+                      className="mt-4 bg-white text-blue-600 font-semibold py-2 px-4 cursor-pointer rounded-full hover:bg-gray-100 transition-all"
+                    >
+                      Create New Batch
+                    </button>
+
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-blue-500 h-2 rounded-full" style={{ width: "87%" }}></div>
-                  </div>
-                  <p className="text-xs text-gray-500">Based on last 30 days activity</p>
                 </div>
 
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-gray-700">Assignment Completion</span>
-                    <span className="text-sm font-semibold text-green-600">92%</span>
+                {/* Update Batch */}
+                <div className="bg-gradient-to-r from-green-400 to-teal-500 text-white rounded-lg shadow-lg hover:shadow-2xl transition-all">
+                  <div className="p-6">
+                    <div className="flex flex-col items-center">
+                      <h5 className="text-lg font-bold">Update a Batch</h5>
+                      <p className="text-sm text-gray-100 mt-2">Modify the details of an existing batch</p>
+                    </div>
+                    <Link href="/batchesedit">
+                      <button
+                        className="mt-4 bg-white text-green-600 font-semibold py-2 px-4 cursor-pointer rounded-full hover:bg-gray-100 transition-all"
+                      // onClick={() => {/* Navigate to update batch page */ }}
+                      >
+                        Update Batch
+                      </button>
+                    </Link>
+
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-green-500 h-2 rounded-full" style={{ width: "92%" }}></div>
-                  </div>
-                  <p className="text-xs text-gray-500">Average across all batches</p>
                 </div>
 
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-gray-700">Student Satisfaction</span>
-                    <span className="text-sm font-semibold text-yellow-600">94%</span>
+                {/* View Batch Summary */}
+                <div className="bg-gradient-to-r from-yellow-500 to-orange-400 text-white  rounded-lg shadow-lg hover:shadow-2xl transition-all">
+                  <div className="p-6">
+                    <div className="flex flex-col items-center">
+                      <h5 className="text-lg font-bold">Batch Summary</h5>
+                      <p className="text-sm text-gray-100 mt-2">View the summary of all batches</p>
+                    </div>
+                    <Link href="#summary">
+                      <button
+                        className="mt-4 bg-white text-yellow-600 font-semibold py-2 px-4 cursor-pointer rounded-full hover:bg-gray-100 transition-all"
+                      // onClick={() => {/* Navigate to batch summary page */ }}
+                      >
+                        View Summary
+                      </button>
+                    </Link>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-yellow-500 h-2 rounded-full" style={{ width: "94%" }}></div>
-                  </div>
-                  <p className="text-xs text-gray-500">Based on student feedback</p>
                 </div>
               </div>
             </div>
@@ -227,7 +304,7 @@ export default function Batches() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
+              <table id="summary" className="w-full border-collapse">
                 <thead>
                   <tr className="bg-gradient-to-r from-gray-50 to-gray-100 text-gray-700 border-b-2 border-gray-200 uppercase text-xs font-semibold tracking-wider">
                     <th className="py-4 px-6 text-left border-r border-gray-200">#</th>
@@ -260,14 +337,14 @@ export default function Batches() {
                           </div>
                         </td>
                         <td className="py-4 px-6 text-center">
-                          
-                            <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors flex items-center justify-center gap-1 mx-auto"
-                            onClick={()=> handleAction(batch.batchId, batch.batchName, batch.no_of_students)}
-                            >
-                              <IoPencilOutline className="text-sm" />
-                              <span>Edit</span>
-                            </button>
-                          
+
+                          <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors flex items-center justify-center gap-1 mx-auto"
+                            onClick={() => handleAction(batch.batchId, batch.batchName, batch.no_of_students)}
+                          >
+                            <IoPencilOutline className="text-sm" />
+                            <span>Edit</span>
+                          </button>
+
                         </td>
                       </tr>
                     ))

@@ -116,12 +116,25 @@ const UpdateBatchForm = () => {
     }
 
     try {
+      let token = "";
+      if (typeof window !== "undefined") {
+        token=localStorage.getItem("adminAuthToken");
+      }
       // Send the batch details to the backend to create a new batch
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/studentdata/batch`, {
-        batchId: batchId,
-        batchName: batchName,
-        no_of_students: noOfStudents,
-      });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/studentdata/batch`,
+        {
+          batchId: batchId,
+          batchName: batchName,
+          no_of_students: noOfStudents,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        }
+      );
+      
 
       setSuccessMessage(response.data.message); // Assuming backend sends a message in response
       setTimeout(() => resetForm(), 3000); // Reset form after 3 seconds
