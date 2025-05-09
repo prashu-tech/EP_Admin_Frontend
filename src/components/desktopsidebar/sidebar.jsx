@@ -67,11 +67,7 @@ const Sidebar = () => {
       icon: <LuFileInput className="text-xl" />,
       href: "/generatetest",
     },
-    {
-      label: "Settings",
-      icon: <FaCogs className="text-xl" />,
-      href: "/paper_candidate_field",
-    },
+   
   ];
 
   return (

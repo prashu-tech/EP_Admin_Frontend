@@ -27,21 +27,34 @@ export default function TestDashboard() {
   const [error, setError] = useState(null);
   const [testCount, setTestCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // Fixed items per page
+  const itemsPerPage = 10;
   const router = useRouter();
   
-  // For determining if a test is completed based on date
-  const currentDate = new Date();
-
   // Fetch the test data from the backend
   useEffect(() => {
     const fetchTestData = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/newadmin/test-data`);
-        setTestData(response.data.tests);
-        setTestCount(response.data.tests.length);
+        if (typeof window !== "undefined") {
+          const token = localStorage.getItem("adminAuthToken");
+          if (!token) {
+            console.error("Admin auth token not found.");
+            setTestData([]);
+            setTestCount(0);
+            return;
+          }
+
+          const payload = JSON.parse(atob(token.split(".")[1]));
+          const adminId = payload.id;
+
+          const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/newadmin/admin-tests`, {
+            adminId,
+          });
+
+          setTestData(response.data.tests);
+          setTestCount(response.data.tests.length);
+        }
       } catch (err) {
-        // Instead of setting error, we'll just set empty test data
+        console.error("Error fetching test data:", err);
         setTestData([]);
         setTestCount(0);
       } finally {
@@ -51,6 +64,33 @@ export default function TestDashboard() {
 
     fetchTestData();
   }, []);
+
+  // Determine test status based on dates
+  const getTestStatus = (startDate, endDate) => {
+    const now = new Date();
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    if (now < start) {
+      return { 
+        status: "Inactive", 
+        color: "bg-gray-100 text-gray-800",
+        countLabel: "Upcoming"
+      };
+    }
+    if (now > end) {
+      return { 
+        status: "Completed", 
+        color: "bg-blue-100 text-blue-800",
+        countLabel: "Completed"
+      };
+    }
+    return { 
+      status: "Active", 
+      color: "bg-green-100 text-green-800",
+      countLabel: "Active"
+    };
+  };
 
   // Filtered data based on search with filter criteria
   const filteredRows = testData.filter((row) => {
@@ -76,49 +116,27 @@ export default function TestDashboard() {
     }
   });
 
+  // Calculate counts for dashboard cards
+  const statusCounts = testData.reduce((acc, test) => {
+    const status = getTestStatus(test.exam_start_date, test.exam_end_date).countLabel;
+    acc[status] = (acc[status] || 0) + 1;
+    return acc;
+  }, {});
+
   // Calculate pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredRows.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredRows.length / itemsPerPage);
-  
-  // Check if test is completed based on date
-  const isTestCompleted = (testDate) => {
-    const date = new Date(testDate);
-    return date < currentDate;
-  };
 
   const downloadExcel = () => {
-    // Enhanced Excel download with better formatting
     const worksheet = XLSX.utils.json_to_sheet(filteredRows);
-    
-    // Format headers
-    const headerStyle = {
-      font: { bold: true, color: { rgb: "000000" } },
-      fill: { fgColor: { rgb: "E9ECEF" } }
-    };
-    
-    // Apply some formatting to columns
-    const columnWidths = [
-      { wch: 10 }, // SR.NO
-      { wch: 15 }, // Test ID
-      { wch: 30 }, // Test Name
-      { wch: 20 }, // Batches
-      { wch: 10 }, // Marks
-      { wch: 15 }, // Status
-      { wch: 20 }, // Created At
-      { wch: 18 }, // Total Questions
-    ];
-    
-    worksheet['!cols'] = columnWidths;
-    
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Test Data");
     XLSX.writeFile(workbook, "test_data.xlsx");
   };
 
   const handleGenerate = () => {
-    // Clear all test-related local storage
     localStorage.removeItem("Biology");
     localStorage.removeItem("Chemistry");
     localStorage.removeItem("Physics");
@@ -133,7 +151,6 @@ export default function TestDashboard() {
     router.push("/test_preview");
   };
 
-  // Format date for better readability
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { 
@@ -143,20 +160,6 @@ export default function TestDashboard() {
       hour: '2-digit',
       minute: '2-digit'
     });
-  };
-
-  // Get status badge color
-  const getStatusBadge = (status) => {
-    switch(status?.toLowerCase()) {
-      case 'active':
-        return 'bg-green-100 text-green-800';
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'completed':
-        return 'bg-blue-100 text-blue-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
   };
 
   if (loading) {
@@ -172,7 +175,7 @@ export default function TestDashboard() {
 
   return (
     <div className="flex min-h-screen flex-col bg-gray-50 pb-20">
-      {/* Simplified Header with Centered Text */}
+      {/* Header */}
       <div className="bg-white px-8 py-6 shadow-sm">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-800">Test Management Dashboard</h1>
@@ -181,9 +184,9 @@ export default function TestDashboard() {
       </div>
 
       <div className="container mx-auto px-6 py-8">
-        {/* Dashboard Summary - Simpler cards */}
+        {/* Dashboard Summary */}
         <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
-          {/* Test Count Card */}
+          {/* Total Tests Card */}
           <div className="rounded-lg bg-white p-4 shadow-md">
             <div className="flex items-center justify-between">
               <div>
@@ -201,9 +204,7 @@ export default function TestDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500">Active Tests</p>
-                <p className="text-2xl font-bold text-gray-800">
-                  {testData.filter(test => !isTestCompleted(test.createdAt)).length}
-                </p>
+                <p className="text-2xl font-bold text-gray-800">{statusCounts["Active"] || 0}</p>
               </div>
               <div className="rounded-full bg-green-100 p-3 text-green-600">
                 <CheckCircle size={20} />
@@ -216,9 +217,7 @@ export default function TestDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500">Completed Tests</p>
-                <p className="text-2xl font-bold text-gray-800">
-                  {testData.filter(test => isTestCompleted(test.createdAt)).length}
-                </p>
+                <p className="text-2xl font-bold text-gray-800">{statusCounts["Completed"] || 0}</p>
               </div>
               <div className="rounded-full bg-purple-100 p-3 text-purple-600">
                 <CheckCircle size={20} />
@@ -227,7 +226,7 @@ export default function TestDashboard() {
           </div>
         </div>
         
-        {/* Horizontal Create Test Card */}
+        {/* Create Test Card */}
         <div className="mb-8">
           <Link href="/subjectselect">
             <div 
@@ -250,7 +249,7 @@ export default function TestDashboard() {
           </Link>
         </div>
 
-        {/* Search Bar with Simpler Filter Dropdown */}
+        {/* Search Bar */}
         <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row">
           <div className="relative flex flex-1 items-center gap-2">
             <div className="relative flex-1">
@@ -291,7 +290,7 @@ export default function TestDashboard() {
           </button>
         </div>
 
-        {/* Test Table with Borders and Centered Text */}
+        {/* Test Table */}
         <div className="overflow-hidden rounded-xl border-2 border-gray-300 bg-white shadow-md">
           <div className="overflow-x-auto">
             <table className="min-w-full table-auto">
@@ -303,7 +302,8 @@ export default function TestDashboard() {
                   <th className="border-b-2 border-r-2 border-gray-300 px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-700">Batches</th>
                   <th className="border-b-2 border-r-2 border-gray-300 px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-700">Marks</th>
                   <th className="border-b-2 border-r-2 border-gray-300 px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-700">Status</th>
-                  <th className="border-b-2 border-r-2 border-gray-300 px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-700">Created</th>
+                  <th className="border-b-2 border-r-2 border-gray-300 px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-700">Start Date</th>
+                  <th className="border-b-2 border-r-2 border-gray-300 px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-700">End Date</th>
                   <th className="border-b-2 border-r-2 border-gray-300 px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-700">Questions</th>
                   <th className="border-b-2 border-gray-300 px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-700">Actions</th>
                 </tr>
@@ -311,10 +311,7 @@ export default function TestDashboard() {
               <tbody className="bg-white">
                 {currentItems.length > 0 ? (
                   currentItems.map((row, index) => {
-                    // Determine if test is completed based on date
-                    const completed = isTestCompleted(row.createdAt);
-                    const displayStatus = completed ? "Completed" : row.status || "Active";
-                    const statusColor = completed ? "bg-blue-100 text-blue-800" : getStatusBadge(row.status);
+                    const statusInfo = getTestStatus(row.exam_start_date, row.exam_end_date);
                     
                     return (
                       <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
@@ -324,11 +321,12 @@ export default function TestDashboard() {
                         <td className="border-b border-r border-gray-300 px-6 py-4 text-center text-sm text-gray-700">{row.batch_name}</td>
                         <td className="border-b border-r border-gray-300 px-6 py-4 text-center text-sm font-medium text-gray-900">{row.marks}</td>
                         <td className="border-b border-r border-gray-300 px-6 py-4 text-center">
-                          <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${statusColor}`}>
-                            {displayStatus}
+                          <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${statusInfo.color}`}>
+                            {statusInfo.status}
                           </span>
                         </td>
-                        <td className="border-b border-r border-gray-300 px-6 py-4 text-center text-sm text-gray-700">{formatDate(row.createdAt)}</td>
+                        <td className="border-b border-r border-gray-300 px-6 py-4 text-center text-sm text-gray-700">{formatDate(row.exam_start_date)}</td>
+                        <td className="border-b border-r border-gray-300 px-6 py-4 text-center text-sm text-gray-700">{formatDate(row.exam_end_date)}</td>
                         <td className="border-b border-r border-gray-300 px-6 py-4 text-center text-sm font-medium text-gray-900">{row.no_of_questions}</td>
                         <td className="border-b border-gray-300 px-6 py-4 text-center">
                           <button
@@ -344,7 +342,7 @@ export default function TestDashboard() {
                   })
                 ) : (
                   <tr>
-                    <td colSpan="9" className="px-6 py-16 text-center text-gray-500">
+                    <td colSpan="10" className="px-6 py-16 text-center text-gray-500">
                       <div className="flex flex-col items-center justify-center">
                         <ClipboardList className="h-16 w-16 text-blue-300" />
                         <p className="mt-4 text-xl font-medium text-gray-700">No Tests Created Yet</p>
@@ -396,4 +394,4 @@ export default function TestDashboard() {
       </div>
     </div>
   );
-} 
+}

@@ -1,10 +1,9 @@
 "use client";
 import Head from "next/head";
-import { FaEye, FaQuestionCircle, FaClock, FaQuestion, FaTrophy } from "react-icons/fa";
-import { MdOutlineSchedule } from "react-icons/md";
+import { FaEye, FaQuestionCircle, FaClock, FaArrowLeft } from "react-icons/fa";
+import { MdOutlineSchedule, MdQuiz, MdGrade, MdSubject } from "react-icons/md";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
-import { IoIosArrowBack } from "react-icons/io";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Loading from "../Loading/Loading";
@@ -75,249 +74,221 @@ const TestPreview = () => {
 
   if (loading) {
     return (
-      <div className="bg-[#007AFF] top-[50%] left-[50%]">
+      <div className="h-screen flex items-center justify-center bg-white">
         <Loading />
       </div>
     );
   }
 
   if (error) {
-    return <div className="text-red-500">{error}</div>;
+    return (
+      <div className="h-screen flex items-center justify-center bg-white">
+        <div className="text-red-600 text-lg font-medium bg-red-50 px-6 py-4 rounded-lg shadow-sm">
+          {error}
+        </div>
+      </div>
+    );
   }
 
   return (
     <>
       <Head>
-        <title>Office Mode - Test Generator</title>
-        <meta name="description" content="Generate and manage tests in office mode" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>Test Preview</title>
+        <meta name="description" content="Preview test details before proceeding" />
       </Head>
 
-      <div className="relative">
-        {/* Top Left Blue Button */}
-        <div className="bg-[#007AFF] top-4 left-4 z-50">
-          <button
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold p-3 rounded-full shadow-lg flex items-center justify-center cursor-pointer"
-            onClick={() => router.back()}
-          >
-            <IoIosArrowBack size={20} />
-          </button>
-        </div>
-      </div>
-
-      <div className="flex items-center justify-center p-4">
-        <div className="bg-white w-full max-w-3xl">
-          {/* Header Section */}
-          <div className="flex justify-center mb-4">
-            <div className="flex justify-center hidden md:block mb-4 pt-0">
-              <button className="bg-white shadow-[0_4px_6px_rgba(0,0,0,0.2)] h-14 border border-gray-300 rounded-lg text-gray-400 text-sm py-3 px-6 font-['Segoe_UI'] cursor-pointer">
-                Generate Test
-              </button>
-            </div>
+      <div className="min-h-screen bg-gray-50">
+        {/* Header with Back Button */}
+        <header className="bg-white shadow-sm sticky top-0 z-10">
+          <div className="max-w-5xl mx-auto px-4 py-3 flex items-center">
+            <button
+              onClick={() => router.back()}
+              className="mr-4 text-blue-600 hover:bg-blue-50 p-2 rounded-full transition-colors"
+              aria-label="Go back"
+            >
+              <FaArrowLeft size={20} />
+            </button>
+            <h1 className="text-xl font-bold text-gray-800">Test Preview</h1>
           </div>
+        </header>
 
-          {/* Main Options with React Icons */}
-          <div className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-8 my-4">
+        <main className="max-w-5xl mx-auto px-4 py-6">
+          {/* Action Buttons */}
+          <div className="flex flex-wrap justify-center gap-4 mb-8">
             <button
               onClick={() => router.push("./test_preview")}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 cursor-pointer"
+              className="bg-blue-600 text-white font-medium py-2.5 px-5 rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-colors"
             >
-              <FaEye size={20} /> Test Preview
+              <FaEye /> Test Preview
             </button>
             <button
               onClick={() => router.push("./offline_mode")}
-              style={{ backgroundColor: "#FFBB38" }}
-              className="text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 hover:bg-yellow-600 cursor-pointer"
+              className="bg-amber-500 text-white font-medium py-2.5 px-5 rounded-lg flex items-center gap-2 hover:bg-amber-600 transition-colors"
             >
-              <FaQuestionCircle size={20} /> Offline Mode
+              <FaQuestionCircle /> Offline Mode
             </button>
             <button
               onClick={() => router.push("./schedule_test")}
-              style={{ backgroundColor: "#FFBB38" }}
-              className="text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 hover:bg-yellow-600 cursor-pointer"
+              className="bg-green-600 text-white font-medium py-2.5 px-5 rounded-lg flex items-center gap-2 hover:bg-green-700 transition-colors"
             >
-              <MdOutlineSchedule size={20} /> Schedule Test
+              <MdOutlineSchedule /> Schedule Test
             </button>
           </div>
 
-          {/* Test Details Heading */}
-          <div className="flex justify-center mb-4 pt-6">
-            <h2 className="text-xl hidden md:block font-semibold">
-              Test Details
-            </h2>
+          {/* Test Summary Card */}
+          <div className="bg-white rounded-lg shadow-sm mb-6 overflow-hidden">
+            <div className="bg-blue-600 text-white px-6 py-3">
+              <h2 className="text-lg font-semibold">Test Summary</h2>
+            </div>
+            
+            <div className="p-6">
+              <div className="flex flex-wrap -mx-3">
+                <div className="w-full sm:w-1/2 p-3">
+                  <div className="flex items-center p-3 bg-blue-50 rounded-lg">
+                    <div className="w-10 h-10 flex items-center justify-center bg-blue-100 text-blue-600 rounded-full mr-3">
+                      <MdQuiz size={20} />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Test Name</p>
+                      <p className="font-medium">{testData.testname}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="w-full sm:w-1/2 p-3">
+                  <div className="flex items-center p-3 bg-blue-50 rounded-lg">
+                    <div className="w-10 h-10 flex items-center justify-center bg-blue-100 text-blue-600 rounded-full mr-3">
+                      <MdGrade size={20} />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Difficulty</p>
+                      <p className="font-medium">{testData.difficulty}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="w-full sm:w-1/2 p-3">
+                  <div className="flex items-center p-3 bg-amber-50 rounded-lg">
+                    <div className="w-10 h-10 flex items-center justify-center bg-amber-100 text-amber-600 rounded-full mr-3">
+                      <FaClock size={18} />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Duration</p>
+                      <p className="font-medium">{testData.duration} minutes</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="w-full sm:w-1/2 p-3">
+                  <div className="flex items-center p-3 bg-amber-50 rounded-lg">
+                    <div className="w-10 h-10 flex items-center justify-center bg-amber-100 text-amber-600 rounded-full mr-3">
+                      <MdGrade size={20} />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Total Marks</p>
+                      <p className="font-medium">{testData.marks}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="w-full sm:w-1/2 p-3">
+                  <div className="flex items-center p-3 bg-green-50 rounded-lg">
+                    <div className="w-10 h-10 flex items-center justify-center bg-green-100 text-green-600 rounded-full mr-3">
+                      <MdQuiz size={20} />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Questions</p>
+                      <p className="font-medium">{testData.no_of_questions}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="w-full sm:w-1/2 p-3">
+                  <div className="flex items-center p-3 bg-green-50 rounded-lg">
+                    <div className="w-10 h-10 flex items-center justify-center bg-green-100 text-green-600 rounded-full mr-3">
+                      <MdSubject size={20} />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Batch</p>
+                      <p className="font-medium">{testData.batch_name}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="space-y-4">
-            {/* Test Details Section */}
-            <div className="rounded-lg w-full hidden md:block mx-auto overflow-hidden">
-              <div className="flex flex-col gap-3 p-2">
-                {/* Row 1: Test ID and Test Name */}
-                <div className="flex flex-col md:flex-row gap-3">
-                  <div className="flex-1 flex rounded-md overflow-hidden">
-                    <div className="w-1/2 bg-blue-500 text-white py-2 px-4 font-semibold border-r border-black">
-                      Test_id
-                    </div>
-                    <div className="w-1/2 bg-blue-500 text-white py-2 px-4">
-                      {testData.id}
-                    </div>
+          {/* Subject Content */}
+          <h2 className="text-xl font-bold text-gray-800 mb-4">Subject Content</h2>
+          
+          <div className="space-y-6">
+            {subjectTopics.map((subject, index) => (
+              <div key={index} className="bg-white rounded-lg shadow-sm overflow-hidden">
+                {/* Subject Header */}
+                <div className="p-4 flex items-center border-b border-gray-100">
+                  <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center mr-4">
+                    <Image 
+                      src="/Logo.png" 
+                      alt={subject.subject} 
+                      width={40} 
+                      height={40}
+                      className="object-contain" 
+                    />
                   </div>
-                  <div className="flex-1 flex rounded-md overflow-hidden">
-                    <div
-                      style={{ backgroundColor: "#FFBB38" }}
-                      className="w-1/2 text-white py-2 px-4 font-semibold border-r border-black"
-                    >
-                      Test_Name
-                    </div>
-                    <div
-                      style={{ backgroundColor: "#FFBB38" }}
-                      className="w-1/2 text-white py-2 px-4"
-                    >
-                      {testData.testname}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Row 2: Batch Name and Created At */}
-                <div className="flex flex-col md:flex-row gap-3 max-h-[50px]">
-                  <div className="flex-1 flex rounded-md border-1 overflow-hidden text-[13px]">
-                    <div className="w-1/2 bg-blue-500 text-white py-2 px-4 font-semibold border-r border-black">
-                      Batch Name
-                    </div>
-                    <div className="w-1/2 bg-blue-500 text-white py-2 px-4">
-                      {testData.batch_name}
-                    </div>
-                  </div>
-                  <div className="flex-1 flex rounded-md overflow-hidden text-[13px]">
-                    <div
-                      style={{ backgroundColor: "#FFBB38" }}
-                      className="w-1/2 text-white py-2 px-4 font-semibold border-r border-black"
-                    >
-                      Created at
-                    </div>
-                    <div
-                      style={{ backgroundColor: "#FFBB38" }}
-                      className="w-1/2 text-white py-2 px-4"
-                    >
-                      {testData.exam_start_date}
+                  
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold">{subject.subject}</h3>
+                    <div className="mt-1 flex flex-wrap gap-2">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        {subject.topics.reduce((sum, t) => sum + t.questionCount, 0)} Questions
+                      </span>
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        {subject.topics.reduce((sum, t) => sum + t.questionCount * 4, 0)} Marks
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                {/* Row 3: Marks and Difficulty */}
-                <div className="flex flex-col md:flex-row gap-3">
-                  <div className="flex-1 flex rounded-md overflow-hidden">
-                    <div className="w-1/2 bg-blue-500 text-white py-2 px-4 font-semibold border-r border-black">
-                      Marks
-                    </div>
-                    <div className="w-1/2 bg-blue-500 text-white py-2 px-4">
-                      {testData.marks}
-                    </div>
-                  </div>
-                  <div className="flex-1 flex rounded-md overflow-hidden">
-                    <div
-                      style={{ backgroundColor: "#FFBB38" }}
-                      className="w-1/2 text-white py-2 px-4 font-semibold border-r border-black"
-                    >
-                      Difficulty
-                    </div>
-                    <div
-                      style={{ backgroundColor: "#FFBB38" }}
-                      className="w-1/2 text-white py-2 px-4"
-                    >
-                      {testData.difficulty}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Preview Section */}
-            <div className="relative mt-6">
-              <h2 className="text-xl font-semibold w-full justify-center text-center">
-                Preview
-              </h2>
-              {/* Preview Box */}
-              <div className="bg-[#007AFF] top-0 right-1 bg-white p-4 rounded-xl drop-shadow-md flex space-x-4">
-                {/* Timer */}
-                <div className="flex flex-col justify-between items-center">
-                  <Image src="/timer.png" alt="Time" width={30} height={30} />
-                  <span className="text-black pt-2 text-center text-lg">
-                    {testData.duration} mins 
-                  </span>
-                </div>
-
-                {/* Questions */}
-                <div className="flex flex-col gap-1 items-center">
-                  <Image
-                    src="/question.png"
-                    alt="Questions"
-                    width={30}
-                    height={30}
-                  />
-                  <span className="text-black pt-2 text-center text-lg">
-                    {testData.no_of_questions} Qts
-                  </span>
-                </div>
-
-                {/* Marks */}
-                <div className="flex flex-col gap-1 items-center">
-                  <Image src="/medal.png" alt="Marks" width={30} height={30} />
-                  <span className="text-black pt-2 text-center text-lg">
-                    {testData.marks} mks
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Subjects and Topics Section */}
-            <div className="grid grid-cols-2 gap-3 space-y-6 mt-25">
-              {subjectTopics.map((subjectData, index) => (
-                <div key={index} className="bg-[#E1CFFF] w-fit space-y-3 px-6 py-3 rounded-[5px_5px_0_0] shadow-sm">
-                  <div className="flex space-x-3">
-                    <Image src="/Logo.png" alt="Subject" width={60} height={40} />
-                    <div className="flex flex-col gap-2">
-                      <h1 className="text-xl font-bold">{subjectData.subject}</h1>
-                      <div className="flex gap-2">
-                        <p className="bg-[#007AFF80] px-2 py-1 rounded-lg text-white text-[10px]">
-                          Total Questions: {subjectData.topics.reduce((sum, topic) => sum + topic.questionCount, 0)}
-                        </p>
-                        <p className="bg-[#007AFF80] px-2 py-1 rounded-lg text-white text-[10px]">
-                          Total Marks: {subjectData.topics.reduce((sum, topic) => sum + (topic.questionCount)*4, 0)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-white rounded-sm shadow-sm">
-                    <h1 className="px-6 py-2 font-semibold text-xl">
-                      Selected Chapters
-                    </h1>
-
-                    <div className="w-full pb-6 overflow-x-auto">
-                      <table className="w-full border-collapse">
-                        <thead>
-                          <tr className="bg-gray-100">
-                            <th className="py-2 px-4 text-center border-b border-gray-300">Sr.No</th>
-                            <th className="py-2 px-4 text-center border-b border-gray-300">Topic Name</th>
-                            <th className="py-2 px-4 text-center border-b border-gray-300">Questions</th>
+                {/* Topics Table */}
+                <div className="px-4 py-3">
+                  <h4 className="font-medium text-gray-700 mb-3">Topics</h4>
+                  <div className="overflow-hidden rounded-lg border border-gray-200">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">
+                            No.
+                          </th>
+                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Topic Name
+                          </th>
+                          <th scope="col" className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-28">
+                            Questions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {subject.topics.map((topic, i) => (
+                          <tr key={i} className="hover:bg-gray-50">
+                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                              {i + 1}
+                            </td>
+                            <td className="px-4 py-3 text-sm text-gray-800">
+                              {topic.topic}
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600 text-right font-medium">
+                              {topic.questionCount}
+                            </td>
                           </tr>
-                        </thead>
-                        <tbody>
-                          {subjectData.topics.map((topic, topicIndex) => (
-                            <tr key={topicIndex} className="border-b text-sm text-center border-gray-200 hover:bg-gray-50">
-                              <td className="py-3 px-4">{topicIndex + 1}</td>
-                              <td className="py-3 px-4">{topic.topic}</td>
-                              <td className="py-3 px-4">{topic.questionCount}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        </div>
+        </main>
       </div>
     </>
   );

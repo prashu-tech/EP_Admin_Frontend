@@ -39,32 +39,29 @@ function Page() {
   return (
     <div className="min-h-screen md:flex bg-white overflow-x-hidden">
       {/* Sidebar for Desktop */}
-      <div className="bg-[#007AFF]">
+      <div className="hidden md:block w-1/6 bg-[#007AFF]">
         <Sidebar />
       </div>
 
       {/* Main Content */}
-      <div className="w-full md:w-5/6 md:flex-1 bg-white flex flex-col h-screen">
+      <div className="w-full md:w-5/6 flex flex-col h-screen">
         {/* Desktop Navbar */}
         <div className="hidden md:block">
           <DesktopNavbar />
         </div>
 
         {/* Desktop Content */}
-        <main className="hidden md:block flex-1 overflow-y-auto p-4 space-y-4">
+        <main className="hidden md:block flex-1 overflow-y-auto p-4">
           <GenerateTestButton />
-          <ImageComponent />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 place-items-center">
-            {selectedSubjects.includes("Physics") && <PhysicsCard />}
-            {selectedSubjects.includes("Chemistry") && <ChemistryCard />}
-            {selectedSubjects.includes("Biology") && (
-              <div className="md:col-span-2 flex justify-center">
-                <BiologyCard />
-              </div>
-            )}
+          <div className="flex justify-end">
+            <ImageComponent />
           </div>
 
+          <div className="grid grid-cols-1 gap-4 w-full max-w-4xl mx-auto">
+            {selectedSubjects.includes("Physics") && <PhysicsCard />}
+            {selectedSubjects.includes("Chemistry") && <ChemistryCard />}
+            {selectedSubjects.includes("Biology") && <BiologyCard />}
+          </div>
 
           <Scheduletest />
         </main>

@@ -19,6 +19,7 @@ function Scheduletest() {
   });
   const [batchData, setBatchData] = useState([]);  // State to store batch data
   const [loading, setLoading] = useState(true);  // Loading state for fetching data
+  const [adminId, setAdminId] = useState("");
 
   useEffect(() => {
     const subjects = ["Physics", "Chemistry", "Biology"];
@@ -42,21 +43,41 @@ function Scheduletest() {
   }, []);
 
   useEffect(() => {
-    // Fetch batch info from the backend API
-    const fetchBatchData = async () => {
-      try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/studentdata/getbatch`);  // Adjust the URL to match your API
-        setBatchData(response.data.batchData);  // Store batch data in state
-        console.log("Fetched batch data:", response.data.batchData);  // Debugging line to check data
-      } catch (error) {
-        console.error("Error fetching batch data:", error);
-      } finally {
-        setLoading(false);  // Set loading to false after data fetch
+  // Fetch batch info from the backend API
+  const fetchBatchData = async () => {
+    try {
+      const token = localStorage.getItem("adminAuthToken");
+      if (!token) {
+        console.error("No admin token found");
+        return;
       }
-    };
+      
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const adminId = payload.id;
 
-    fetchBatchData();
-  }, []);
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/studentdata/batchnames`,
+        { adminId } // Send as request body
+      );
+
+      const formattedBatchData = response.data.batchData.map(batch => ({
+        batchId: batch.id || batch.batchId, // Use whichever field exists
+        batchName: batch.batchName
+      }));
+
+      setBatchData(formattedBatchData);
+      console.log("Fetched batch data:", formattedBatchData);
+
+    } catch (error) {
+      console.error("Error fetching batch data:", error);
+      toast.error("Failed to load batches");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchBatchData();
+}, []);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -67,6 +88,7 @@ function Scheduletest() {
 
   const handleCreateTest = async () => {
     const token = localStorage.getItem("adminAuthToken");
+    setAdminId(token);
     const testName = localStorage.getItem("testName");
 
 
