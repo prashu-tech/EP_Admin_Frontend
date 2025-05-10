@@ -51,7 +51,6 @@ const LoginAttendance = () => {
   const filterOptions = [
     { value: "fullName", label: "Student Name" },
     { value: "studentId", label: "Student ID" },
-    { value: "batchName", label: "Batch" },
   ];
 
   // Date range options
@@ -200,20 +199,7 @@ const LoginAttendance = () => {
         
         {/* Date Range Selector */}
         <div className="flex items-center space-x-2">
-          <div className="flex items-center bg-blue-100 text-blue-700 px-3 py-2 rounded-lg">
-            <FaCalendarAlt className="mr-2" />
-            <select 
-              value={dateRange}
-              onChange={(e) => setDateRange(e.target.value)}
-              className="bg-transparent border-none focus:outline-none text-blue-700 font-medium"
-            >
-              {dateRangeOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
+         
         </div>
       </div>
 

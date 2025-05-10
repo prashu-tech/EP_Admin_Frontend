@@ -89,9 +89,7 @@ const TopPerformersTable = ({ selectedMode }) => {
           <span className="text-white">
             Showing page {currentPage} of {totalPages}
           </span>
-          <button className="bg-white text-blue-600 px-4 py-2 rounded-md text-sm font-bold cursor-pointer hover:bg-blue-50 transition-colors duration-200 flex items-center gap-2">
-            Previous Test <FaChevronRight className="text-xs" />
-          </button>
+          
         </div>
       </div>
 
@@ -104,8 +102,7 @@ const TopPerformersTable = ({ selectedMode }) => {
               <th className="p-3 text-left font-semibold">Student ID</th>
               <th className="p-3 text-left font-semibold">Name</th>
               <th className="p-3 text-left font-semibold">Subject</th>
-              <th className="p-3 text-left font-semibold">Test Name</th>
-              <th className="p-3 text-left font-semibold">Tests</th>
+              <th className="p-3 text-left font-semibold">Tests Given</th>
               <th className="p-3 text-left font-semibold">Accuracy</th>
               <th className="p-3 text-left font-semibold">Marks</th>
             </tr>
@@ -127,9 +124,7 @@ const TopPerformersTable = ({ selectedMode }) => {
                 <td className="p-3">
                   {safeJoin(performer.subjectWisePerformance)}
                 </td>
-                <td className="p-3">
-                  {safeJoin(performer.testNames)}
-                </td>
+                
                 <td className="p-3">{performer.testsTaken}</td>
                 <td className="p-3">
                   <span className={`px-2 py-1 rounded-full text-sm ${

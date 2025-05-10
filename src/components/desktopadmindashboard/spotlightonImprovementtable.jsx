@@ -94,9 +94,7 @@ const SpotlightOnImprovementTablemobile = ({ selectedMode }) => {
           <span className="text-white">
             Showing page {currentPage} of {totalPages}
           </span>
-          <button className="bg-white text-purple-600 px-4 py-2 rounded-md text-sm font-bold cursor-pointer hover:bg-purple-50 transition-colors duration-200 flex items-center gap-2">
-            Previous Test <FaChevronRight className="text-xs" />
-          </button>
+          
         </div>
       </div>
 
@@ -109,7 +107,6 @@ const SpotlightOnImprovementTablemobile = ({ selectedMode }) => {
               <th className="p-3 text-left font-semibold">Student ID</th>
               <th className="p-3 text-left font-semibold">Name</th>
               <th className="p-3 text-left font-semibold">Subject</th>
-              <th className="p-3 text-left font-semibold">Test Name</th>
               <th className="p-3 text-left font-semibold">Tests</th>
               <th className="p-3 text-left font-semibold">Accuracy</th>
               <th className="p-3 text-left font-semibold">Marks</th>
@@ -127,9 +124,7 @@ const SpotlightOnImprovementTablemobile = ({ selectedMode }) => {
                 <td className="p-3">
                   {safeJoin(performer.subjectWisePerformance)}
                 </td>
-                <td className="p-3">
-                  {safeJoin(performer.testNames)}
-                </td>
+                
                 <td className="p-3">{performer.testsTaken}</td>
                 <td className="p-3">
                   <div className="flex flex-col gap-1">

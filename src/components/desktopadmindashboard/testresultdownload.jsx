@@ -142,7 +142,7 @@ const TestResultDownload = () => {
             <span className="text-blue-500">
               <FaFileExcel />
             </span>
-            Test Results
+            Last Test Results
           </h2>
           
           {/* Download Button */}
@@ -224,7 +224,6 @@ const TestResultDownload = () => {
       <div className="mt-4 pt-3 border-t border-gray-200">
         <div className="text-xs text-gray-500 flex justify-between">
           <span>Last updated: {new Date().toLocaleDateString()}</span>
-          <span className="text-blue-500 cursor-pointer hover:underline">View Details</span>
         </div>
       </div>
     </div>
