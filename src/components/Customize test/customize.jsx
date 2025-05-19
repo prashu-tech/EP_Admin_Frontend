@@ -2,10 +2,10 @@
 
 import { CiSearch } from "react-icons/ci";
 import { BsDownload } from "react-icons/bs";
-import { FiFilter } from "react-icons/fi";
-import { useMemo, useState, useEffect } from 'react';
+import { FiFilter, FiFileText } from "react-icons/fi";
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowRightCircle, ChevronDown } from 'lucide-react';
+import { ArrowRightCircle, ChevronDown, FileText, Download } from 'lucide-react';
 import axios from 'axios';
 
 export default function StudentTestTable() {
@@ -19,6 +19,7 @@ export default function StudentTestTable() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("");
   const [showFilterOptions, setShowFilterOptions] = useState(false);
+  const [showDownloadOptions, setShowDownloadOptions] = useState(false);
   const [stats, setStats] = useState({
     totalTests: 0,
     highestMarks: 0,
@@ -30,6 +31,9 @@ export default function StudentTestTable() {
   const [sortType, setSortType] = useState('score');
   const [totalTest, setTotalTest] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  
+  const downloadRef = useRef(null);
+  const filterRef = useRef(null);
   const router = useRouter();
 
   // Fetch data with localStorage caching
@@ -45,6 +49,23 @@ export default function StudentTestTable() {
     }
     setIsLoading(false);
   }, [filterType]);
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setShowFilterOptions(false);
+      }
+      if (downloadRef.current && !downloadRef.current.contains(event.target)) {
+        setShowDownloadOptions(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [filterRef, downloadRef]);
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -129,6 +150,7 @@ export default function StudentTestTable() {
     setTotalTest(sortedStudents.length);
   }, [sortedStudents]);
 
+  // Function to download the student data as CSV
   const downloadCSV = () => {
     const headers = ['SR.NO', 'STUDENT NAME', 'STUDENT ID', 'TEST NAME', 'SUBJECT', 'SCORE', 'TOTAL MARKS'];
     const rows = sortedStudents.map((student, index) => [
@@ -151,6 +173,142 @@ export default function StudentTestTable() {
     link.setAttribute('href', URL.createObjectURL(blob));
     link.setAttribute('download', 'students_test_data.csv');
     link.click();
+    
+    setShowDownloadOptions(false);
+  };
+  
+  // Function to download as PDF
+  const downloadPDF = () => {
+    // Create a printable document
+    const printWindow = window.open('', '_blank');
+    
+    if (!printWindow) {
+      alert('Please allow pop-ups to download PDF');
+      return;
+    }
+    
+    // Get subject label for table
+    const getSubjectLabel = (student) => {
+      if (student.subject) return student.subject;
+      if (student.subjects && student.subjects.length > 0) return student.subjects.join(", ");
+      return "N/A";
+    };
+    
+    // Get performance class for scores
+    const getScoreClass = (score, totalMarks) => {
+      const percentage = (score / totalMarks) * 100;
+      if (percentage >= 80) return "performance-high";
+      if (percentage >= 60) return "performance-medium";
+      return "performance-low";
+    };
+    
+    // Generate HTML content for PDF
+    let htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Student Test Results</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 30px; color: #333; }
+          h1 { color: #1e40af; margin-bottom: 20px; text-align: center; }
+          .summary { margin-bottom: 30px; display: flex; justify-content: space-between; }
+          .summary-card { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; width: 30%; }
+          .summary-title { font-size: 12px; color: #64748b; margin-bottom: 5px; }
+          .summary-value { font-size: 18px; font-weight: bold; color: #1e3a8a; }
+          
+          table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+          th { background-color: #1e40af; color: white; text-align: left; padding: 10px; font-size: 12px; }
+          td { padding: 8px 10px; border-bottom: 1px solid #e5e7eb; font-size: 11px; }
+          
+          .student-id { background-color: #dbeafe; color: #1e40af; padding: 3px 8px; border-radius: 12px; font-size: 10px; }
+          .subject-tag { background-color: #e0f2fe; color: #0369a1; padding: 3px 8px; border-radius: 12px; font-size: 10px; display: inline-block; }
+          
+          .performance-high { color: #16a34a; font-weight: bold; }
+          .performance-medium { color: #ca8a04; font-weight: bold; }
+          .performance-low { color: #dc2626; font-weight: bold; }
+          
+          .footer { margin-top: 30px; font-size: 11px; color: #64748b; text-align: center; border-top: 1px solid #e5e7eb; padding-top: 15px; }
+        </style>
+      </head>
+      <body>
+        <h1>Student Test Performance Report</h1>
+        
+        <div class="summary">
+          <div class="summary-card">
+            <div class="summary-title">Total Tests</div>
+            <div class="summary-value">${sortedStudents.length}</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-title">Highest Score</div>
+            <div class="summary-value">${stats.highestMarks}</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-title">Subject Distribution</div>
+            <div class="summary-value">${overallSummary.totalPhysicsTests}P / ${overallSummary.totalChemistryTests}C / ${overallSummary.totalBiologyTests}B</div>
+          </div>
+        </div>
+        
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Student Name</th>
+              <th>Student ID</th>
+              <th>Test Name</th>
+              <th>Subject</th>
+              <th>Score</th>
+              <th>Total Marks</th>
+              <th>Performance</th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
+    
+    // Add data rows
+    sortedStudents.forEach((student, index) => {
+      const subjectLabel = getSubjectLabel(student);
+      const scoreClass = getScoreClass(student.score, student.totalMarks);
+      const percentage = ((student.score / student.totalMarks) * 100).toFixed(1);
+      
+      htmlContent += `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${student.fullName || "N/A"}</td>
+          <td><span class="student-id">${student.studentId || "N/A"}</span></td>
+          <td>${student.testName || "N/A"}</td>
+          <td><span class="subject-tag">${subjectLabel}</span></td>
+          <td class="${scoreClass}">${student.score || 0}</td>
+          <td>${student.totalMarks || 0}</td>
+          <td class="${scoreClass}">${percentage}%</td>
+        </tr>
+      `;
+    });
+    
+    // Close table and add footer
+    htmlContent += `
+          </tbody>
+        </table>
+        
+        <div class="footer">
+          <p>Generated on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
+          <p>This report contains detailed test performance data for all students. For any questions, please contact the administration.</p>
+        </div>
+      </body>
+      </html>
+    `;
+    
+    // Write to the new window and trigger print
+    printWindow.document.open();
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+    
+    // After content is loaded, trigger print dialog which can be saved as PDF
+    printWindow.onload = function() {
+      printWindow.print();
+      // Some browsers may close the window after printing, some may not
+    };
+    
+    setShowDownloadOptions(false);
   };
 
   const toggleSortOrder = () => {
@@ -159,6 +317,10 @@ export default function StudentTestTable() {
 
   const toggleFilterOptions = () => {
     setShowFilterOptions(!showFilterOptions);
+  };
+  
+  const toggleDownloadOptions = () => {
+    setShowDownloadOptions(!showDownloadOptions);
   };
 
   const handleFilterSelection = (filter) => {
@@ -197,7 +359,7 @@ export default function StudentTestTable() {
   };
 
   return (
-    <div className="py-6 w-full  mx-auto px-4 lg:px-8 bg-gray-50 min-h-screen">
+    <div className="py-6 w-full mx-auto px-4 lg:px-8 bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
         {/* Page Header */}
         <div className="mb-8 w-fit mx-auto text-center">
@@ -206,46 +368,67 @@ export default function StudentTestTable() {
         </div>
         
        {/* Search & Action Buttons */}
-<div className="flex flex-col lg:flex-row  items-start lg:items-center gap-4 mb-6">
-  {/* Search + Refresh */}
-  <div className="relative flex-1 w-full ">
-    <div className="flex items-center">
-      <div className="relative flex-1">
-        <CiSearch
-          size={20}
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-        />
-        <input
-          type="text"
-          placeholder="Search by name, ID, test name or subject..."
-          className="w-full py-3 pl-12 pr-4 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all shadow-sm text-gray-800"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          aria-label="Search students"
-        />
-      </div>
-      <button
-        onClick={fetchData}
-        className="ml-3 px-5 py-3 bg-white text-gray-600 border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition-all active:scale-95"
-        aria-label="Refresh data"
-      >
-        Refresh
-      </button>
-    </div>
-  </div>
+      <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 mb-6">
+        {/* Search + Refresh */}
+        <div className="relative flex-1 w-full">
+          <div className="flex items-center">
+            <div className="relative flex-1">
+              <CiSearch
+                size={20}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+              <input
+                type="text"
+                placeholder="Search by name, ID, test name or subject..."
+                className="w-full py-3 pl-12 pr-4 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all shadow-sm text-gray-800"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                aria-label="Search students"
+              />
+            </div>
+            <button
+              onClick={fetchData}
+              className="ml-3 px-5 py-3 bg-white text-gray-600 border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition-all active:scale-95"
+              aria-label="Refresh data"
+            >
+              Refresh
+            </button>
+          </div>
+        </div>
 
-  {/* Action Buttons */}
-  <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-    
-    <button
-      onClick={downloadCSV} 
-      className="flex-1 sm:flex-none px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition-all flex items-center justify-center active:scale-95 font-medium"
-      aria-label="Download test data as CSV"
-    >
-      Download <BsDownload className="ml-2" />
-    </button>
-  </div>
-</div>
+        {/* Download Dropdown Button */}
+        <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+          <div className="relative" ref={downloadRef}>
+            <button
+              onClick={toggleDownloadOptions}
+              className="flex-1 sm:flex-none px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition-all flex items-center justify-center active:scale-95 font-medium"
+              aria-label="Download test data"
+            >
+              Download <ChevronDown className="ml-2 h-4 w-4" />
+            </button>
+            
+            {/* Download Options Dropdown */}
+            {showDownloadOptions && (
+              <div className="absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg z-10 border border-gray-200 py-1 animate-fade-in">
+                <button
+                  onClick={downloadCSV}
+                  className="flex items-center w-full text-left px-4 py-3 text-sm hover:bg-gray-50 text-gray-700"
+                >
+                  <Download className="text-green-600 mr-3 h-4 w-4" />
+                  <span>Download Excel</span>
+                </button>
+                <button
+                  onClick={downloadPDF}
+                  className="flex items-center w-full text-left px-4 py-3 text-sm hover:bg-gray-50 text-gray-700"
+                >
+                  <FileText className="text-red-600 mr-3 h-4 w-4" />
+                  <span>Download PDF</span>
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
 
 
         {/* Stats Cards */}
@@ -276,7 +459,7 @@ export default function StudentTestTable() {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-medium text-gray-700">Student Test Results</h2>
           
-          <div className="relative">
+          <div className="relative" ref={filterRef}>
             <button
               onClick={toggleFilterOptions}
               className="px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 flex items-center gap-2 transition-all active:scale-95"
@@ -289,7 +472,7 @@ export default function StudentTestTable() {
             </button>
 
             {showFilterOptions && (
-              <div className="bg-[#007AFF] right-0 mt-2 z-10 bg-white rounded-lg shadow-lg border border-gray-200 w-56 py-1 overflow-hidden">
+              <div className="absolute right-0 mt-2 z-10 bg-white rounded-lg shadow-lg border border-gray-200 w-56 py-1 overflow-hidden">
                 <div className="px-3 py-2 text-xs font-semibold text-gray-500 border-b border-gray-100">SORT BY</div>
                 <button
                   onClick={() => handleFilterSelection('low-performers')}
@@ -313,31 +496,7 @@ export default function StudentTestTable() {
                   By Student ID
                 </button>
 
-                <div className="px-3 py-2 text-xs font-semibold text-gray-500 border-b border-t border-gray-100 mt-1">FILTER BY SUBJECT</div>
-                <button
-                  onClick={() => handleFilterSelection('all-subjects')}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-50 text-gray-700 text-sm"
-                >
-                  All Subjects
-                </button>
-                <button
-                  onClick={() => handleFilterSelection('physics')}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-50 text-gray-700 text-sm"
-                >
-                  Physics Only
-                </button>
-                <button
-                  onClick={() => handleFilterSelection('chemistry')}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-50 text-gray-700 text-sm"
-                >
-                  Chemistry Only
-                </button>
-                <button
-                  onClick={() => handleFilterSelection('biology')}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-50 text-gray-700 text-sm"
-                >
-                  Biology Only
-                </button>
+                
               </div>
             )}
           </div>

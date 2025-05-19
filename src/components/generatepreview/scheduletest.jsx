@@ -86,22 +86,72 @@ function Scheduletest() {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleCreateTest = async () => {
+
+  const sendReviewedQuestions = async () => {
+  try {
     const token = localStorage.getItem("adminAuthToken");
-    setAdminId(token);
-    const testName = localStorage.getItem("testName");
+    if (!token) {
+      console.error("No admin token found");
+      return;
+    }
 
+    // Get the payload from localStorage
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const adminId = payload.id;
 
-    //Sorting data for quesitonIds
+    // Get the changed questions from localStorage
+    const changedQuestions = JSON.parse(localStorage.getItem("changedQuestions")) || [];
 
+    if (changedQuestions.length === 0) {
+      console.log("No questions to review");
+      return;
+    }
+
+    // Send each reviewed question to the backend
+    const reviewPromises = changedQuestions.map(async (question) => {
+      const reviewData = {
+        question_Id: question.questionId,
+        question_Text: question.questionText,
+        subject_Name: question.subjectName,
+        admin_Id: adminId,
+        chapter_Name: question.chapterName,
+      };
+
+      return axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/review/`, // Adjust this endpoint as needed
+        reviewData
+      );
+    });
+
+    await Promise.all(reviewPromises);
+    console.log("All questions reviewed successfully");
+  } catch (error) {
+    console.error("Error sending reviewed questions:", error);
+    throw error;
+  }
+};
+
+  const handleCreateTest = async () => {
+  const token = localStorage.getItem("adminAuthToken");
+  setAdminId(token);
+  const testName = localStorage.getItem("testName");
+
+  try {
+    // First send the reviewed questions
+    await sendReviewedQuestions();
+
+    // Then proceed with test creation
     const subjects = ["Physics", "Chemistry", "Biology"];
     let formattedQuestionData = [];
+    let formattedTopicNames = [];
 
     subjects.forEach((subject) => {
       const data = localStorage.getItem(subject);
       if (data) {
         try {
           const chapters = JSON.parse(data);
+          
+          // Prepare question IDs
           chapters.forEach((chapter) => {
             const ids = chapter.questions.map((q) => q.id);
             formattedQuestionData.push({
@@ -110,47 +160,31 @@ function Scheduletest() {
               ids: ids,
             });
           });
-        } catch (err) {
-          console.error(`Error parsing ${subject} data:`, err);
-        }
-      }
-    });
 
-
-    //sorted data for Chapter names
-
-    let formattedTopicNames = [];
-
-    subjects.forEach((subject) => {
-      const data = localStorage.getItem(subject);
-      if (data) {
-        try {
-          const chapters = JSON.parse(data);
+          // Prepare topic names
           const topicNames = chapters.map((chapter) => chapter.chapterName);
           formattedTopicNames.push({
             subject: subject,
             topic_names: topicNames,
           });
         } catch (err) {
-          console.error(`Error parsing topic names for ${subject}:`, err);
+          console.error(`Error parsing ${subject} data:`, err);
         }
       }
     });
 
-
-    // Process the form and prepare the payload
     const payload = {
       addedByAdminId: token,
       testname: testName,
       difficulty: "Medium",
-      subject: "Physics, Chemistry, Biology",  // Example subjects
+      subject: "Physics, Chemistry, Biology",
       marks: totalMarks,
       positivemarks: "4",
       negativemarks: "1",
       correctanswer: [],
-      question_ids: formattedQuestionData,  //formated data for this section
+      question_ids: formattedQuestionData,
       unitName: "Full Syllabus",
-      topic_name: formattedTopicNames,  // Example data
+      topic_name: formattedTopicNames,
       no_of_questions: totalQuestions,
       question_id: null,
       duration: formData.duration,
@@ -161,19 +195,26 @@ function Scheduletest() {
       status: "Active",
     };
 
-    try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/newadmin/admintest`, payload);
-      toast.success("Test created successfully!",{
-        duration: 5000
-      });
-      router.push("/generatetest");
-    } catch (error) {
-      console.error("Error creating test:", error);
-      toast.error("Failed to create test.",{
-        duration: 5000
-      });
-    }
-  };
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/newadmin/admintest`,
+      payload
+    );
+    
+    toast.success("Test created successfully!", {
+      duration: 5000
+    });
+    
+    // Clear the localStorage after successful creation if needed
+    // localStorage.removeItem("changedQuestions");
+    localStorage.removeItem("changedQuestions");
+    router.push("/generatetest");
+  } catch (error) {
+    console.error("Error in test creation process:", error);
+    toast.error("Failed to create test.", {
+      duration: 5000
+    });
+  }
+};
 
   return (
     <div className="relative overflow-hidden py-2">

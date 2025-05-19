@@ -1,16 +1,35 @@
 'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from 'next/navigation';
 import { CiSearch } from "react-icons/ci";
-import { IoDownloadOutline, IoSchoolOutline, IoBookOutline, IoCheckmarkCircleOutline, IoArrowForward } from "react-icons/io5";
+import { IoDownloadOutline, IoSchoolOutline, IoBookOutline, IoCheckmarkCircleOutline, IoArrowForward, IoFilterOutline, IoCloseOutline } from "react-icons/io5";
+import { FiFileText, FiDownload } from "react-icons/fi";
 import axios from 'axios';
 
 export default function PracticeTest() {
   const [students, setStudents] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [showDownloadOptions, setShowDownloadOptions] = useState(false);
+  
+  const searchRef = useRef(null);
+  const filterRef = useRef(null);
+  const downloadRef = useRef(null);
   const router = useRouter();
+
+  // Categories for search filter
+  const searchCategories = [
+    { value: "all", label: "All Categories" },
+    { value: "name", label: "Student Name" },
+    { value: "id", label: "Student ID" },
+    { value: "test", label: "Test Name" },
+    { value: "subject", label: "Subject" },
+  ];
 
   // Fetch data from the API once and store it in localStorage to persist it across refreshes
   useEffect(() => {
@@ -41,6 +60,73 @@ export default function PracticeTest() {
       fetchStudents();
     }
   }, []); 
+
+  // Generate search suggestions based on input and selected category
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchSuggestions([]);
+      return;
+    }
+
+    const query = searchQuery.toLowerCase();
+    let suggestions = [];
+    const maxSuggestions = 6;
+
+    // Helper function to add suggestions based on field
+    const addSuggestionsByField = (field, label) => {
+      const values = [...new Set(students
+        .map(student => student[field])
+        .filter(value => value && value.toString().toLowerCase().includes(query))
+      )];
+      
+      values.slice(0, 3).forEach(value => {
+        if (!suggestions.some(s => s.value === value)) {
+          suggestions.push({
+            value: value,
+            label: `${value} (${label})`,
+            field
+          });
+        }
+      });
+    };
+
+    // Add suggestions based on selected category
+    if (selectedCategory === "all" || selectedCategory === "name") {
+      addSuggestionsByField("fullName", "Student Name");
+    }
+    if (selectedCategory === "all" || selectedCategory === "id") {
+      addSuggestionsByField("studentId", "ID");
+    }
+    if (selectedCategory === "all" || selectedCategory === "test") {
+      addSuggestionsByField("testName", "Test");
+    }
+    if (selectedCategory === "all" || selectedCategory === "subject") {
+      addSuggestionsByField("subject", "Subject");
+    }
+
+    // Limit the number of suggestions
+    setSearchSuggestions(suggestions.slice(0, maxSuggestions));
+  }, [searchQuery, students, selectedCategory]);
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowSuggestions(false);
+      }
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setShowFilterDropdown(false);
+      }
+      if (downloadRef.current && !downloadRef.current.contains(event.target)) {
+        setShowDownloadOptions(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [searchRef, filterRef, downloadRef]);
 
   // Handling student name click to route to the student details page
   const handleStudentClick = (studentId) => {
@@ -75,17 +161,151 @@ export default function PracticeTest() {
       link.click();
       URL.revokeObjectURL(url);
     }
+    
+    setShowDownloadOptions(false);
+  };
+  
+  // Function to download the student data as PDF
+  const downloadPDF = () => {
+    // Create a printable document
+    const printWindow = window.open('', '_blank');
+    
+    if (!printWindow) {
+      alert('Please allow pop-ups to download PDF');
+      return;
+    }
+    
+    // Generate HTML content for PDF
+    let htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Student Test Results</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 30px; }
+          h1 { color: #2563eb; margin-bottom: 20px; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+          th { background-color: #2563eb; color: white; text-align: left; padding: 10px; font-size: 12px; }
+          td { padding: 8px 10px; border-bottom: 1px solid #e5e7eb; font-size: 11px; }
+          .subject-tag { background-color: #dbeafe; color: #1e40af; padding: 3px 8px; border-radius: 12px; font-size: 10px; }
+          .student-id { color: #3b82f6; font-weight: bold; }
+          .score-high { color: #16a34a; }
+          .score-medium { color: #f59e0b; }
+          .score-low { color: #ef4444; }
+          .footer { margin-top: 30px; font-size: 11px; color: #6b7280; text-align: center; }
+        </style>
+      </head>
+      <body>
+        <h1>Student Test Results</h1>
+        <table>
+          <thead>
+            <tr>
+              <th>SR.NO</th>
+              <th>STUDENT NAME</th>
+              <th>STUDENT ID</th>
+              <th>TEST NAME</th>
+              <th>SUBJECT</th>
+              <th>MARKS</th>
+              <th>PERCENTAGE</th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
+    
+    // Add data rows
+    filteredStudents.forEach((student, index) => {
+      const percentage = (student.marksObtained / student.totalMarks) * 100;
+      let scoreClass = '';
+      
+      if (percentage >= 80) {
+        scoreClass = 'score-high';
+      } else if (percentage >= 60) {
+        scoreClass = 'score-medium';
+      } else {
+        scoreClass = 'score-low';
+      }
+      
+      htmlContent += `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${student.fullName || "N/A"}</td>
+          <td class="student-id">${student.studentId || "N/A"}</td>
+          <td>${student.testName || "N/A"}</td>
+          <td><span class="subject-tag">${student.subject || "N/A"}</span></td>
+          <td>${student.marksObtained || 0}/${student.totalMarks || 0}</td>
+          <td class="${scoreClass}">${Math.round(percentage)}%</td>
+        </tr>
+      `;
+    });
+    
+    // Close table and add footer
+    htmlContent += `
+          </tbody>
+        </table>
+        <div class="footer">
+          <p>Generated on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
+          <p>Total Results: ${filteredStudents.length} | High Scorers: ${highScorers}</p>
+        </div>
+      </body>
+      </html>
+    `;
+    
+    printWindow.document.open();
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+    
+    // After the content is loaded, trigger print dialog which can be saved as PDF
+    printWindow.onload = function() {
+      printWindow.print();
+      // Some browsers may close the window after printing, some may not
+    };
+    
+    setShowDownloadOptions(false);
   };
 
-  // Filtered students based on search query
+  // Handle suggestion click
+  const handleSuggestionClick = (suggestion) => {
+    setSearchQuery(suggestion.value);
+    setShowSuggestions(false);
+  };
+
+  // Handle category selection
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+    setShowFilterDropdown(false);
+  };
+
+  // Clear search query
+  const clearSearch = () => {
+    setSearchQuery("");
+    setSearchSuggestions([]);
+  };
+
+  // Filtered students based on search query and selected category
   const filteredStudents = students.filter(student => {
     const q = searchQuery.toLowerCase();
-    return (
-      (student.fullName || "").toLowerCase().includes(q) ||
-      String(student.studentId || "").toLowerCase().includes(q) ||
-      (student.testName || "").toLowerCase().includes(q) ||
-      (student.subject || "").toLowerCase().includes(q)
-    );
+    
+    if (!q) return true;
+
+    // Filter based on selected category
+    switch (selectedCategory) {
+      case "name":
+        return (student.fullName || "").toLowerCase().includes(q);
+      case "id":
+        return String(student.studentId || "").toLowerCase().includes(q);
+      case "test":
+        return (student.testName || "").toLowerCase().includes(q);
+      case "subject":
+        return (student.subject || "").toLowerCase().includes(q);
+      case "all":
+      default:
+        return (
+          (student.fullName || "").toLowerCase().includes(q) ||
+          String(student.studentId || "").toLowerCase().includes(q) ||
+          (student.testName || "").toLowerCase().includes(q) ||
+          (student.subject || "").toLowerCase().includes(q)
+        );
+    }
   });
 
   // Calculate statistics
@@ -94,6 +314,11 @@ export default function PracticeTest() {
   const highScorers = filteredStudents.filter(student => 
     (student.marksObtained / student.totalMarks) >= 0.8
   ).length;
+
+  // Toggle download options
+  const toggleDownloadOptions = () => {
+    setShowDownloadOptions(!showDownloadOptions);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 p-6">
@@ -110,33 +335,130 @@ export default function PracticeTest() {
       <div className="max-w-6xl mx-auto">
         {/* Search and Actions Row */}
         <div className="mb-6 bg-white shadow-md rounded-xl p-6 border border-gray-100">
-  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-    {/* Search Bar */}
-    <div className="relative w-full md:w-2/3">
-      <CiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
-      <input
-        type="text"
-        placeholder="Search by Name, Student ID, Test Name or Subject..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="w-full h-12 pl-12 pr-4 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-gray-700"
-      />
-    </div>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            {/* Search Bar with Suggestions */}
+            <div className="relative w-full md:w-2/3" ref={searchRef}>
+              <div className="flex items-center">
+                <div className="relative flex-grow">
+                  <CiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
+                  <input
+                    type="text"
+                    placeholder={`Search ${selectedCategory !== "all" ? `by ${searchCategories.find(c => c.value === selectedCategory)?.label}` : "by Name, Student ID, Test Name or Subject..."}`}
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setShowSuggestions(true);
+                    }}
+                    onFocus={() => searchQuery && setShowSuggestions(true)}
+                    className="w-full h-12 pl-12 pr-10 bg-gray-50 border border-gray-200 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-gray-700"
+                  />
+                  {searchQuery && (
+                    <button 
+                      onClick={clearSearch}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      <IoCloseOutline className="text-xl" />
+                    </button>
+                  )}
+                </div>
+                
+                {/* Filter Button */}
+                <div className="relative" ref={filterRef}>
+                  <button
+                    onClick={() => setShowFilterDropdown(!showFilterDropdown)}
+                    className="h-12 px-4 bg-gray-50 border border-l-0 border-gray-200 rounded-r-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                  >
+                    <div className="flex items-center gap-1">
+                      <IoFilterOutline className="text-gray-500" />
+                      <span className="text-sm text-gray-600 hidden sm:inline">
+                        {searchCategories.find(c => c.value === selectedCategory)?.label}
+                      </span>
+                    </div>
+                  </button>
+                  
+                  {/* Filter Dropdown */}
+                  {showFilterDropdown && (
+                    <div className="absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg z-20 border border-gray-200 py-1 animate-fade-in">
+                      {searchCategories.map((category) => (
+                        <button
+                          key={category.value}
+                          onClick={() => handleCategoryChange(category.value)}
+                          className={`flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-50 ${
+                            selectedCategory === category.value ? 'text-yellow-600 font-medium' : 'text-gray-700'
+                          }`}
+                        >
+                          {category.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              {/* Search Suggestions */}
+              {showSuggestions && searchSuggestions.length > 0 && (
+                <div className="absolute left-0 right-0 mt-1 bg-white rounded-lg shadow-lg z-10 border border-gray-200 py-1 max-h-64 overflow-y-auto">
+                  {searchSuggestions.map((suggestion, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSuggestionClick(suggestion)}
+                      className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-50"
+                    >
+                      <CiSearch className="text-gray-400 mr-2" />
+                      <div>
+                        <span className="text-gray-800 mr-1">{suggestion.value}</span>
+                        <span className="text-xs text-gray-500">in {suggestion.field === "fullName" ? "Name" : suggestion.field === "studentId" ? "ID" : suggestion.field === "testName" ? "Test" : "Subject"}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
-    {/* Action Buttons */}
-    <div className="w-full md:w-auto flex justify-end">
-      <button
-        onClick={downloadCSV}
-        className="w-full md:w-auto bg-blue-500 text-white h-12 px-6 rounded-lg hover:bg-blue-600 transition-all flex items-center justify-center gap-2 shadow-sm"
-      >
-        <IoDownloadOutline className="text-lg" />
-        <span className="font-medium">Download</span>
-      </button>
-    </div>
-  </div>
-</div>
+            {/* Download Dropdown Button */}
+            <div className="w-full md:w-auto" ref={downloadRef}>
+              <div className="relative">
+                <button
+                  onClick={toggleDownloadOptions}
+                  className="w-full md:w-auto bg-blue-500 text-white h-12 px-6 rounded-lg hover:bg-blue-600 transition-all flex items-center justify-center gap-2 shadow-sm"
+                >
+                  <IoDownloadOutline className="text-lg" />
+                  <span className="font-medium">Download</span>
+                  <svg 
+                    className={`w-4 h-4 ml-1 transition-transform ${showDownloadOptions ? 'rotate-180' : ''}`} 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24" 
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </button>
+                
+                {/* Download Options Dropdown */}
+                {showDownloadOptions && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10 border border-gray-200 py-1 animate-fade-in">
+                    <button
+                      onClick={downloadCSV}
+                      className="flex items-center w-full text-left px-4 py-3 text-sm hover:bg-gray-50 text-gray-700"
+                    >
+                      <FiDownload className="text-green-600 mr-3" />
+                      <span>Download Excel</span>
+                    </button>
+                    <button
+                      onClick={downloadPDF}
+                      className="flex items-center w-full text-left px-4 py-3 text-sm hover:bg-gray-50 text-gray-700"
+                    >
+                      <FiFileText className="text-red-600 mr-3" />
+                      <span>Download PDF</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
 
-        
         {/* Summary Cards Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           {/* Total Tests Card */}

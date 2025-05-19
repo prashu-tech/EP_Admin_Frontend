@@ -74,147 +74,174 @@ export default function BiologyChapterList() {
     });
   };
 
-  // Helper function to update localStorage
-  const updateLocalStorage = (chapters) => {
-    const selectedChapters = chapters
-      .filter((chapter) => chapter.isChecked)
-      .map((chapter) => ({
-        chapterName: chapter.name,
-        unit: chapter.unit,
-        numQuestions: chapter.numQuestions,
-        totalMarks: chapter.numQuestions * 4,
-        questions: chapter.rows,
-      }));
+  // Helper function to update localStorage for both selected chapters and changed questions
+const updateLocalStorage = (chapters) => {
+  const selectedChapters = chapters
+    .filter((chapter) => chapter.isChecked)
+    .map((chapter) => ({
+      chapterName: chapter.name,
+      unit: chapter.unit,
+      numQuestions: chapter.numQuestions,
+      totalMarks: chapter.numQuestions * 4,
+      questions: chapter.rows,
+    }));
 
-    localStorage.setItem("Biology", JSON.stringify(selectedChapters));
-  };
+  localStorage.setItem("Biology", JSON.stringify(selectedChapters));
+
+  // Create and save the changedQuestions data
+  const changedQuestions = chapters
+    .filter(chapter => chapter.isChecked && chapter.rows.length > 0)
+    .flatMap(chapter => 
+      chapter.rows.map(row => ({
+        questionId: row.id,
+        questionText: row.question,
+        subjectName: "Biology",
+        chapterName: chapter.name,
+        unitName: chapter.unit,
+        originalIndex: row.originalIndex || chapter.questions.findIndex(q => q.id === row.id)
+      }))
+    );
+
+  localStorage.setItem("changedQuestions", JSON.stringify(changedQuestions));
+};
 
   const handleQuestionChange = (id, e) => {
-    // Get input value
-    let value = parseInt(e.target.value) || 0;
+  // Get input value
+  let value = parseInt(e.target.value) || 0;
+  
+  setChapters((prevChapters) => {
+    const targetChapter = prevChapters.find(chapter => chapter.id === id);
     
-    setChapters((prevChapters) => {
-      const targetChapter = prevChapters.find(chapter => chapter.id === id);
-      
-      // Check if there are questions available
-      if (!targetChapter.questions || targetChapter.questions.length === 0) {
-        return prevChapters;
-      }
-      
-      // Limit value to the maximum number of available questions
-      value = Math.min(value, targetChapter.maxQuestions);
-      
-      // Select the first n questions (or as many as available)
-      const selectedQuestions = targetChapter.questions.slice(0, value);
-      
-      // Create rows from selected questions
-      const newRows = selectedQuestions.map((q) => ({
-        id: q.id,
-        subject: "Biology",
-        question: q.question || "Question text not available",
-      }));
-      
-      // If numQuestions is > 0, ensure the chapter is checked
-      const isChecked = value > 0 ? true : targetChapter.isChecked;
-      
-      // Update chapters
-      const updatedChapters = prevChapters.map((chapter) =>
-        chapter.id === id
-          ? {
-              ...chapter,
-              isChecked: isChecked,
-              numQuestions: value,
-              totalMarks: value * 4,
-              rows: newRows,
-            }
-          : chapter
-      );
+    // Check if there are questions available
+    if (!targetChapter.questions || targetChapter.questions.length === 0) {
+      return prevChapters;
+    }
+    
+    // Limit value to the maximum number of available questions
+    value = Math.min(value, targetChapter.maxQuestions);
+    
+    // Select the first n questions (or as many as available)
+    const selectedQuestions = targetChapter.questions.slice(0, value);
+    
+    // Create rows from selected questions with all required details
+    const newRows = selectedQuestions.map((q) => ({
+      id: q.id,
+      subject: "Biology",
+      question: q.question || "Question text not available",
+      originalIndex: targetChapter.questions.findIndex(orig => orig.id === q.id),
+      chapterName: targetChapter.name,
+      unitName: targetChapter.unit
+    }));
+    
+    // If numQuestions is > 0, ensure the chapter is checked
+    const isChecked = value > 0 ? true : targetChapter.isChecked;
+    
+    // Update chapters
+    const updatedChapters = prevChapters.map((chapter) =>
+      chapter.id === id
+        ? {
+            ...chapter,
+            isChecked: isChecked,
+            numQuestions: value,
+            totalMarks: value * 4,
+            rows: newRows,
+          }
+        : chapter
+    );
 
-      // Update localStorage
-      updateLocalStorage(updatedChapters);
-      return updatedChapters;
-    });
-  };
+    // Update localStorage (which will now save both selected chapters and changed questions)
+    updateLocalStorage(updatedChapters);
+    return updatedChapters;
+  });
+};
 
   // Function to replace a question with another one from available questions
   const handleReplaceQuestion = (chapterId, rowIndex) => {
-    setRefreshing({ chapterId, rowIndex });
-    
-    setTimeout(() => {
-      setChapters(prevChapters => {
-        const chapter = prevChapters.find(c => c.id === chapterId);
-        if (!chapter) return prevChapters;
-        
-        // Get all available questions for this chapter excluding currently selected ones
-        const currentQuestionIds = new Set(chapter.rows.map(row => row.id));
-        const availableQuestions = chapter.questions.filter(q => !currentQuestionIds.has(q.id));
-        
-        // If no replacement questions available, show a message and return unchanged
-        if (availableQuestions.length === 0) {
-          alert("No more questions available for replacement in this chapter.");
-          setRefreshing(null);
-          return prevChapters;
-        }
-        
-        // Select a random question from available ones
-        const randomIndex = Math.floor(Math.random() * availableQuestions.length);
-        const newQuestion = availableQuestions[randomIndex];
-        
-        // Create updated chapter rows with the new question
-        const updatedRows = [...chapter.rows];
-        updatedRows[rowIndex] = {
-          id: newQuestion.id,
-          subject: "Biology",
-          question: newQuestion.question || "Question text not available",
-        };
-        
-        // Update the chapter with new rows
-        const updatedChapters = prevChapters.map(c => 
-          c.id === chapterId 
-            ? { ...c, rows: updatedRows }
-            : c
-        );
-        
-        // Update localStorage
-        updateLocalStorage(updatedChapters);
+  setRefreshing({ chapterId, rowIndex });
+  
+  setTimeout(() => {
+    setChapters(prevChapters => {
+      const chapter = prevChapters.find(c => c.id === chapterId);
+      if (!chapter) return prevChapters;
+      
+      // Get all available questions for this chapter excluding currently selected ones
+      const currentQuestionIds = new Set(chapter.rows.map(row => row.id));
+      const availableQuestions = chapter.questions.filter(q => !currentQuestionIds.has(q.id));
+      
+      // If no replacement questions available, show a message and return unchanged
+      if (availableQuestions.length === 0) {
+        alert("No more questions available for replacement in this chapter.");
         setRefreshing(null);
-        return updatedChapters;
-      });
-    }, 600); // Delay to show animation
-  };
+        return prevChapters;
+      }
+      
+      // Select a random question from available ones
+      const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+      const newQuestion = availableQuestions[randomIndex];
+      
+      // Create updated chapter rows with the new question
+      const updatedRows = [...chapter.rows];
+      updatedRows[rowIndex] = {
+        id: newQuestion.id,
+        subject: "Biology",
+        question: newQuestion.question || "Question text not available",
+        originalIndex: chapter.questions.findIndex(q => q.id === newQuestion.id),
+        chapterName: chapter.name,
+        unitName: chapter.unit
+      };
+      
+      // Update the chapter with new rows
+      const updatedChapters = prevChapters.map(c => 
+        c.id === chapterId 
+          ? { ...c, rows: updatedRows }
+          : c
+      );
+      
+      // Update localStorage (which will now save both selected chapters and changed questions)
+      updateLocalStorage(updatedChapters);
+      setRefreshing(null);
+      return updatedChapters;
+    });
+  }, 600); // Delay to show animation
+};
 
-  useEffect(() => {
-    const savedChapters = JSON.parse(localStorage.getItem("Biology")) || [];
-    
-    setChapters((prevChapters) =>
-      prevChapters.map((chapter) => {
-        const saved = savedChapters.find((sc) => sc.chapterName === chapter.name);
-        if (saved) {
-          // Ensure numQuestions doesn't exceed maxQuestions
-          const numQuestions = Math.min(saved.numQuestions, chapter.maxQuestions || 0);
-          
-          // Create rows based on numQuestions or use saved questions if available
-          const rows = saved.questions && saved.questions.length ? 
-            saved.questions : 
-            chapter.questions.slice(0, numQuestions).map(q => ({
-              id: q.id,
-              subject: "Biology",
-              question: q.question || "Question text not available",
-            }));
-          
-          return { 
-            ...chapter,
-            isChecked: true,
-            numQuestions: numQuestions,
-            totalMarks: numQuestions * 4,
-            rows: rows
-          };
-        }
-        return chapter;
-      })
-    );
-  }, []);
-
+useEffect(() => {
+  const savedChapters = JSON.parse(localStorage.getItem("Biology")) || [];
+  
+  setChapters((prevChapters) =>
+    prevChapters.map((chapter) => {
+      const saved = savedChapters.find((sc) => sc.chapterName === chapter.name);
+      if (saved) {
+        // Ensure numQuestions doesn't exceed maxQuestions
+        const numQuestions = Math.min(saved.numQuestions, chapter.maxQuestions || 0);
+        
+        // Create rows based on numQuestions or use saved questions if available
+        const rows = saved.questions && saved.questions.length ? 
+          saved.questions.map(q => ({
+            ...q,
+            originalIndex: chapter.questions.findIndex(orig => orig.id === q.id) || 0
+          })) : 
+          chapter.questions.slice(0, numQuestions).map(q => ({
+            id: q.id,
+            subject: "Biology",
+            question: q.question || "Question text not available",
+            originalIndex: chapter.questions.findIndex(orig => orig.id === q.id),
+            chapterName: chapter.name,
+            unitName: chapter.unit
+          }));
+        
+        return { 
+          ...chapter,
+          isChecked: true,
+          numQuestions: numQuestions,
+          totalMarks: numQuestions * 4,
+          rows: rows
+        };
+      }
+      return chapter;
+    })
+  );
+}, []);
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },

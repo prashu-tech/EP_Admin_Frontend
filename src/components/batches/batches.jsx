@@ -209,7 +209,7 @@ export default function Batches() {
               <img
                 src="test.png"
                 alt="Batch Management"
-                className="w-full max-w-[400px] h-44 object-cover rounded-lg border border-gray-200 shadow-md"
+                className="w-full max-w-[500px] h-full object-cover rounded-lg border border-gray-200 shadow-md"
               />
             </div>
 
@@ -217,12 +217,12 @@ export default function Batches() {
             <div className="md:col-span-2 space-y-6">
               <h4 className="text-xl font-bold text-gray-800">What You Can Do</h4>
 
-              <div className="flex space-x-4">
+              <div className="flex space-x-4 h-75 text-center">
                 {/* Create Batch */}
                 <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg shadow-lg hover:shadow-2xl transition-all">
-                  <div className="p-6 flex flex-col justify-between items-center">
-                    <div className="flex flex-col items-center">
-                      <h5 className="text-lg font-bold">Create a Batch</h5>
+                  <div className="p-6 flex flex-col justify-between h-full items-center">
+                    <div className="flex flex-col  items-center">
+                      <h5 className="text-4xl font-bold">Create a Batch</h5>
                       <p className="text-sm text-gray-100 mt-2">Start a new batch and enroll students</p>
                     </div>
                     <button
@@ -238,7 +238,7 @@ export default function Batches() {
                           }, 3000);
                         }
                       }}
-                      className="mt-4 bg-white text-blue-600 font-semibold py-2 px-4 cursor-pointer rounded-full hover:bg-gray-100 transition-all"
+                      className="mt-4 bg-white text-blue-600 font-semibold py-2 px-4 cursor-pointer rounded-full whitespace-nowrap hover:bg-gray-100 transition-all"
                     >
                       Create New Batch
                     </button>
@@ -248,9 +248,9 @@ export default function Batches() {
 
                 {/* Update Batch */}
                 <div className="bg-gradient-to-r from-green-400 to-teal-500 text-white rounded-lg shadow-lg hover:shadow-2xl transition-all">
-                  <div className="p-6">
+                  <div className="p-6 flex flex-col justify-between h-full">
                     <div className="flex flex-col items-center">
-                      <h5 className="text-lg font-bold">Update a Batch</h5>
+                      <h5 className="text-3xl font-bold">Update a Batch</h5>
                       <p className="text-sm text-gray-100 mt-2">Modify the details of an existing batch</p>
                     </div>
                     <Link href="/batchesedit">
@@ -267,14 +267,14 @@ export default function Batches() {
 
                 {/* View Batch Summary */}
                 <div className="bg-gradient-to-r from-yellow-500 to-orange-400 text-white  rounded-lg shadow-lg hover:shadow-2xl transition-all">
-                  <div className="p-6">
+                  <div className="p-6 flex flex-col justify-between h-full">
                     <div className="flex flex-col items-center">
-                      <h5 className="text-lg font-bold">Batch Summary</h5>
+                      <h5 className="text-3xl font-bold">Batch Summary</h5>
                       <p className="text-sm text-gray-100 mt-2">View the summary of all batches</p>
                     </div>
                     <Link href="#summary">
                       <button
-                        className="mt-4 bg-white text-yellow-600 font-semibold py-2 px-4 cursor-pointer rounded-full hover:bg-gray-100 transition-all"
+                        className="mt-4 bg-white text-yellow-600 font-semibold py-2 px-4 cursor-pointer rounded-full whitespace-nowrap hover:bg-gray-100 transition-all"
                       // onClick={() => {/* Navigate to batch summary page */ }}
                       >
                         View Summary

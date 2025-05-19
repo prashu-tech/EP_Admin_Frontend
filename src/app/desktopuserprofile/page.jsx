@@ -1,5 +1,8 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+
 import DesktopNavbar from "@/components/desktopnav/nav";
 import Sidebar from "@/components/desktopsidebar/sidebar";
 import AttendanceComponent from "@/components/desktopuserprofile/AttendanceComponent";
@@ -7,11 +10,10 @@ import ModeSwitcheruserProfile from "@/components/desktopuserprofile/ModeSwitche
 import ProfileCard from "@/components/desktopuserprofile/ProfileCard";
 import StatsCarddesktop from "@/components/desktopuserprofile/StatsCards";
 import ModeSwitcherChart from "@/components/desktopuserprofile/Subjectwiseperformance";
-import MobilebottomNavbar from "@/components/mobilenav/MobileBottomNavbar";
-import MobileNavbar from "@/components/mobilenav/mobilenav";
 import ChapterWisePerformance from "@/components/desktopuserprofile/ChapterWisePerformance";
 import TestResultDownload from "@/components/desktopuserprofile/testresultdownload";
-import axios from "axios";
+import MobilebottomNavbar from "@/components/mobilenav/MobileBottomNavbar";
+import MobileNavbar from "@/components/mobilenav/mobilenav";
 import Loading from "@/components/Loading/Loading";
 
 export default function Page() {
@@ -19,87 +21,82 @@ export default function Page() {
   const [subjectTotals, setSubjectTotals] = useState({});
   const [loading, setLoading] = useState(true);
 
-  // Fetch subject totals data from the backend
   useEffect(() => {
     const fetchSubjectTotals = async () => {
       try {
-        const studentId = localStorage.getItem("studentId"); // Get studentId from localStorage
+        const studentId = localStorage.getItem("studentId");
         if (!studentId) {
           console.log("Student ID is missing");
           setLoading(false);
           return;
         }
 
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/newadmin/test-result`, { studentId });
-        const totals = response.data.data.subjectTotals; // Assuming the API returns subjectTotals
-        setSubjectTotals(totals); // Set subject totals in state
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/newadmin/test-result`, {
+          studentId,
+        });
+
+        setSubjectTotals(response.data.data.subjectTotals || {});
       } catch (error) {
         console.error("Error fetching subject totals:", error);
       } finally {
-        setLoading(false); // Set loading to false once data is fetched
+        setLoading(false);
       }
     };
 
     fetchSubjectTotals();
   }, []);
 
-  // Handle mode change (Practice vs Customized)
   const handleModeChange = (mode) => {
     setSelectedMode(mode);
   };
 
   if (loading) {
-    return <div className="bg-[#007AFF] top-[50%] left-[50%]">
-      <Loading/>
-    </div>; // Show a loading state while data is being fetched
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loading />
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen md:flex bg-white">
-      {/* Desktop Sidebar Section (visible on md+) */}
-      <div className="md:w-1/6 bg-[#007AFF]">
+    <div className="min-h-screen flex flex-col md:flex-row bg-white">
+      {/* Sidebar (Desktop Only) */}
+      <aside className="hidden md:block md:w-1/6 bg-[#007AFF]">
         <Sidebar />
-      </div>
+      </aside>
 
-      {/* Desktop navbar Section */}
-      <div className="w-full md:w-5/6 md:flex-1 h-screen bg-white">
-        {/* Desktop Navbar (hidden on mobile) */}
+      {/* Main Content */}
+      <div className="flex-1 w-full h-full">
         <DesktopNavbar />
 
-        {/* Page Content */}
-        <main className="hidden md:block">
-          {/* Mode Switcher Buttons Component */}
+        <main className="hidden md:block px-6 py-4">
           <ModeSwitcheruserProfile
             selectedMode={selectedMode}
-            setSelectedMode={setSelectedMode}
+            setSelectedMode={handleModeChange}
           />
 
-          {/* Main Content */}
-          <div className="max-w-6xl mx-auto bg-white shadow-[1px_1px_5px_lightgray] rounded-lg mt-14">
+          <section className="max-w-6xl mx-auto bg-white shadow rounded-lg mt-10 p-6 space-y-8">
             <ProfileCard />
             <StatsCarddesktop />
             <AttendanceComponent selectedMode={selectedMode} />
 
-            <div className="flex justify-center items-center mt-5 mb-5 pr-[8rem] pl-[8rem] gap-10">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
               <TestResultDownload />
-
-              <div className="shadow-lg pb-9 mb-9">
-                {/* ModeSwitcherChart Component */}
-                <ModeSwitcherChart selectedMode={selectedMode} subjectTotals={subjectTotals} />
-              </div>
+              <ModeSwitcherChart
+                selectedMode={selectedMode}
+                subjectTotals={subjectTotals}
+              />
             </div>
-          </div>
-
+          </section>
         </main>
 
         {/* Mobile View */}
         <main className="block md:hidden">
           <MobileNavbar />
-          <MobilebottomNavbar />
-
-          <div className="block mr-5 ml-5 pb-25 mt-15 sm:hidden mx-auto bg-white rounded-lg justify-center">
-            {/* Mobile content can be added here if needed */}
+          <div className="p-4">
+            {/* Add mobile-optimized content if needed */}
           </div>
+          <MobilebottomNavbar />
         </main>
       </div>
     </div>

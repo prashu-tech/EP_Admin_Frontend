@@ -1,8 +1,22 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { FaUserGraduate, FaFilter, FaSearch, FaCalendarAlt, FaCheck } from "react-icons/fa";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import {
+  FaUserGraduate,
+  FaFilter,
+  FaSearch,
+  FaCalendarAlt,
+  FaCheck,
+} from "react-icons/fa";
 import { HiRefresh } from "react-icons/hi";
 import axios from "axios";
 
@@ -22,9 +36,13 @@ const CustomTooltip = ({ active, payload, label }) => {
         <div className="mt-2">
           {payload.map((entry, index) => (
             <div key={index} className="flex items-center gap-2 mt-1">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.fill }}></div>
+              <div
+                className="w-3 h-3 rounded-full"
+                style={{ backgroundColor: entry.fill }}
+              ></div>
               <p style={{ color: entry.fill }}>
-                {entry.name}: <span className="font-semibold">{entry.value}</span>
+                {entry.name}:{" "}
+                <span className="font-semibold">{entry.value}</span>
               </p>
             </div>
           ))}
@@ -134,8 +152,8 @@ const LoginAttendance = () => {
       <div className="bg-red-50 text-red-500 p-6 rounded-2xl flex flex-col items-center justify-center h-64">
         <div className="text-3xl mb-4">⚠️</div>
         <div>{error}</div>
-        <button 
-          onClick={() => window.location.reload()} 
+        <button
+          onClick={() => window.location.reload()}
           className="mt-4 bg-red-100 text-red-500 px-4 py-2 rounded-md hover:bg-red-200 flex items-center gap-2"
         >
           <HiRefresh /> Retry
@@ -163,7 +181,7 @@ const LoginAttendance = () => {
   const aggregatedData = {};
 
   // Initialize data for all days with zero values
-  uniqueDays.forEach(day => {
+  uniqueDays.forEach((day) => {
     aggregatedData[day] = { day, FullTest: 0, MeTest: 0, RecommendedTest: 0 };
   });
 
@@ -180,13 +198,22 @@ const LoginAttendance = () => {
   const finalChartData = uniqueDays.map((day) => aggregatedData[day]);
 
   // Calculate totals for summary
-  const totalFullTest = finalChartData.reduce((acc, item) => acc + (item.FullTest || 0), 0);
-  const totalMeTest = finalChartData.reduce((acc, item) => acc + (item.MeTest || 0), 0);
-  const totalRecommendedTest = finalChartData.reduce((acc, item) => acc + (item.RecommendedTest || 0), 0);
-  
+  const totalFullTest = finalChartData.reduce(
+    (acc, item) => acc + (item.FullTest || 0),
+    0
+  );
+  const totalMeTest = finalChartData.reduce(
+    (acc, item) => acc + (item.MeTest || 0),
+    0
+  );
+  const totalRecommendedTest = finalChartData.reduce(
+    (acc, item) => acc + (item.RecommendedTest || 0),
+    0
+  );
+
   // Custom tick formatter for the Y-Axis to show values like 1, 2, 4, etc.
   const formatYAxisTicks = (tickValue) => {
-    return tickValue % 1 === 0 ? tickValue : ''; // Only show whole numbers
+    return tickValue % 1 === 0 ? tickValue : ""; // Only show whole numbers
   };
 
   return (
@@ -196,11 +223,9 @@ const LoginAttendance = () => {
         <h2 className="text-2xl font-bold text-gray-800 mb-4 md:mb-0">
           Login Attendance Dashboard
         </h2>
-        
+
         {/* Date Range Selector */}
-        <div className="flex items-center space-x-2">
-         
-        </div>
+        <div className="flex items-center space-x-2"></div>
       </div>
 
       {/* Search and Filters */}
@@ -213,7 +238,10 @@ const LoginAttendance = () => {
             </div>
             <input
               type="text"
-              placeholder={`Search by ${filterOptions.find(opt => opt.value === filterBy)?.label || 'Name'}`}
+              placeholder={`Search by ${
+                filterOptions.find((opt) => opt.value === filterBy)?.label ||
+                "Name"
+              }`}
               className="border border-gray-300 rounded-lg pl-10 pr-4 py-3 w-full outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
               value={studentName}
               onChange={handleSearchChange}
@@ -283,60 +311,115 @@ const LoginAttendance = () => {
         <div className="bg-blue-50 rounded-lg p-4 shadow-sm">
           <div className="flex justify-between items-start">
             <h4 className="text-blue-700 font-medium">Full Tests</h4>
-            <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-bold">Total</span>
+            <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-bold">
+              Total
+            </span>
           </div>
-          <p className="text-3xl font-bold text-gray-800 mt-2">{totalFullTest}</p>
+          <p className="text-3xl font-bold text-gray-800 mt-2">
+            {totalFullTest}
+          </p>
           <p className="text-gray-500 text-sm mt-1">Complete test attempts</p>
         </div>
 
         <div className="bg-red-50 rounded-lg p-4 shadow-sm">
           <div className="flex justify-between items-start">
             <h4 className="text-red-700 font-medium">Me Tests</h4>
-            <span className="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold">Total</span>
+            <span className="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold">
+              Total
+            </span>
           </div>
           <p className="text-3xl font-bold text-gray-800 mt-2">{totalMeTest}</p>
-          <p className="text-gray-500 text-sm mt-1">Personalized test attempts</p>
+          <p className="text-gray-500 text-sm mt-1">
+            Personalized test attempts
+          </p>
         </div>
 
         <div className="bg-yellow-50 rounded-lg p-4 shadow-sm">
           <div className="flex justify-between items-start">
             <h4 className="text-yellow-700 font-medium">Recommended Tests</h4>
-            <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold">Total</span>
+            <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold">
+              Total
+            </span>
           </div>
-          <p className="text-3xl font-bold text-gray-800 mt-2">{totalRecommendedTest}</p>
+          <p className="text-3xl font-bold text-gray-800 mt-2">
+            {totalRecommendedTest}
+          </p>
           <p className="text-gray-500 text-sm mt-1">Suggested test attempts</p>
         </div>
       </div>
 
       {/* Chart Title */}
-      <h3 className="text-xl font-semibold text-gray-700 mb-4">Weekly Activity</h3>
+      <h3 className="text-xl font-semibold text-gray-700 mb-4">
+        Weekly Activity
+      </h3>
 
       {/* Bar Chart - Increased width */}
       <div className="w-full overflow-hidden">
         <ResponsiveContainer width="100%" height={400}>
           <BarChart data={finalChartData}>
-            <XAxis 
-              dataKey="day" 
-              tick={{ fill: '#4B5563' }}
-              axisLine={{ stroke: '#E5E7EB' }}
+            <defs>
+              <linearGradient id="fullTestGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#3b82f6" /> {/* blue-500 */}
+                <stop offset="100%" stopColor="#1e40af" /> {/* blue-900 */}
+              </linearGradient>
+
+              <linearGradient id="meTestGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#f87171" /> {/* red-400 */}
+                <stop offset="100%" stopColor="#b91c1c" /> {/* red-800 */}
+              </linearGradient>
+
+              <linearGradient
+                id="recommendedTestGradient"
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1"
+              >
+                <stop offset="0%" stopColor="#fde047" /> {/* yellow-300 */}
+                <stop offset="100%" stopColor="#ca8a04" /> {/* yellow-800 */}
+              </linearGradient>
+            </defs>
+
+            <XAxis
+              dataKey="day"
+              tick={{ fill: "#4B5563" }}
+              axisLine={{ stroke: "#E5E7EB" }}
               tickLine={false}
             />
-            <YAxis 
-              tickFormatter={formatYAxisTicks} 
-              tick={{ fill: '#4B5563' }}
-              axisLine={{ stroke: '#E5E7EB' }}
+            <YAxis
+              tickFormatter={formatYAxisTicks}
+              tick={{ fill: "#4B5563" }}
+              axisLine={{ stroke: "#E5E7EB" }}
               tickLine={false}
             />
             <Tooltip content={<CustomTooltip />} />
-            <Legend 
-              wrapperStyle={{ 
-                paddingTop: '20px',
-                fontWeight: '500',
+            <Legend
+              wrapperStyle={{
+                paddingTop: "20px",
+                fontWeight: "500",
               }}
             />
-            <Bar dataKey="FullTest" name="Full Tests" stackId="a" fill="#1E40AF" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="MeTest" name="Me Tests" stackId="a" fill="#EF4444" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="RecommendedTest" name="Recommended Tests" stackId="a" fill="#FACC15" radius={[4, 4, 0, 0]} />
+            <Bar
+              dataKey="FullTest"
+              name="Full Tests"
+              stackId="a"
+              fill="url(#fullTestGradient)"
+              radius={[4, 4, 0, 0]}
+            />
+            <Bar
+              dataKey="MeTest"
+              name="Me Tests"
+              stackId="a"
+              fill="url(#meTestGradient)"
+              radius={[4, 4, 0, 0]}
+            />
+            <Bar
+              dataKey="RecommendedTest"
+              name="Recommended Tests"
+              stackId="a"
+              fill="url(#recommendedTestGradient)"
+              radius={[4, 4, 0, 0]}
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -344,7 +427,8 @@ const LoginAttendance = () => {
       {/* No Data Message */}
       {filteredData.length === 0 && (
         <div className="text-center py-8 text-gray-500">
-          No data found for the selected filters. Try adjusting your search criteria.
+          No data found for the selected filters. Try adjusting your search
+          criteria.
         </div>
       )}
     </div>
