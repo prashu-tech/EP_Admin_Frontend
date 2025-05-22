@@ -146,13 +146,7 @@ const SelectSubjectPage = () => {
       transition={{ duration: 0.5 }}
     >
       <div className="w-full max-w-7xl mx-auto p-6">
-        <motion.button 
-          className="absolute lg:block hidden left-80 px-10 py-5 text-gray-400 border-[#BBBBBB] rounded-lg bg-transparent hover:bg-gray-100 shadow-[0_4px_6px_rgba(0,0,0,0.3)]"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          Generate Test
-        </motion.button>
+        
 
         {/* Top Section: Create Test */}
         <motion.div 
@@ -171,10 +165,10 @@ const SelectSubjectPage = () => {
           </motion.h3>
           <motion.input
             type="text"
-            placeholder="Test Name"
+            placeholder="Enter Test Name"
             value={testName}
             onChange={handleTestNameChange}
-            className="mt-4 px-9 py-2 border-none rounded-xl bg-[#D1E3FF] text-black font-bold text-lg w-full md:w-2/5 placeholder:text-gray-900 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.3)]"
+            className="mt-4 px-9 py-2 border-none rounded-xl bg-[#D1E3FF] text-black font-bold text-lg w-full md:w-2/5 placeholder:text-gray-400 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.3)]"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4, type: "spring", stiffness: 200, damping: 20 }}

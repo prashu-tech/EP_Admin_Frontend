@@ -209,7 +209,7 @@ export default function Batches() {
               <img
                 src="test.png"
                 alt="Batch Management"
-                className="w-full max-w-[500px] h-full object-cover rounded-lg border border-gray-200 shadow-md"
+                className="w-full max-w-[500px] h-75 object-cover rounded-lg border border-gray-200 shadow-md"
               />
             </div>
 
