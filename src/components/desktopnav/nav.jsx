@@ -3,29 +3,58 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FaSignOutAlt, FaUserAlt } from "react-icons/fa";
+import {jwtDecode} from "jwt-decode";
+import axios from "axios";
 
-/* -------------------------------------------
-   DESKTOP NAVBAR
--------------------------------------------- */
 const DesktopNavbar = () => {
   const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [navbarColor, setNavbarColor] = useState("from-blue-200 to-yellow-100");
   const dropdownRef = useRef(null);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
 
   const handleProfileClick = () => {
     router.push("/adminprofile");
   };
 
   const handleLogoutClick = () => {
-    localStorage.clear(); 
-    router.push("/"); 
+    localStorage.clear();
+    router.push("/");
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
+  useEffect(() => {
+    const fetchNavbarColor = async () => {
+      try {
+        const token = localStorage.getItem("adminAuthToken");
+        if (!token) return;
 
-  // Close dropdown when clicking outside
+        const decoded = jwtDecode(token);
+        const adminId = decoded?.id;
+
+        if (!adminId) return;
+
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/newadmin/colors`, {
+          id: adminId,
+        });
+
+        if (response.data.success) {
+          const color = response.data.colors.navbarColor;
+          if (color) {
+            setNavbarColor(""); // Remove gradient if solid color is set
+            document.documentElement.style.setProperty('--admin-navbar-color', color);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching navbar color:", error);
+      }
+    };
+
+    fetchNavbarColor();
+  }, []);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -34,14 +63,15 @@ const DesktopNavbar = () => {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
-    <div className="hidden md:flex h-[90px] bg-gradient-to-r from-blue-200 to-yellow-100 p-4 items-center justify-end relative">
-      {/* Right Section with Profile Image */}
+    <div
+      className={`hidden md:flex h-[90px] p-4 items-center justify-end relative ${
+        navbarColor ? `bg-gradient-to-r ${navbarColor}` : `bg-[var(--admin-navbar-color)]`
+      }`}
+    >
       <div className="flex items-center space-x-4 mr-4">
         <img
           src="/profilphoto.png"

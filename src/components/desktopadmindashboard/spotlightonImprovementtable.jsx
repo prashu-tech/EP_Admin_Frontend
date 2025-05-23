@@ -127,8 +127,8 @@ const SpotlightOnImprovementTablemobile = ({ selectedMode }) => {
                 
                 <td className="p-3">{performer.testsTaken}</td>
                 <td className="p-3">
-                  <div className="flex flex-col gap-1">
-                    <span className={`px-2 py-1 rounded-full text-sm ${
+                  <div className="flex flex-col gap-1 ml-2">
+                    <span className={`px-2 py-1 w-fit rounded-full text-sm ${
                       performer.accuracy >= 80 ? 'bg-green-100 text-green-600' : 
                       performer.accuracy >= 60 ? 'bg-yellow-100 text-yellow-600' : 
                       'bg-red-100 text-red-600'

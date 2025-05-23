@@ -254,8 +254,10 @@ const [filterFromCard, setFilterFromCard] = useState(null);
         <Sidebar />
       </div>
       
+      
       {/* Main content */}
       <div className="flex-1 py-8 px-6 overflow-x-hidden">
+        
         <div className="max-w-7xl mx-auto ">
           {/* Page Header with stats */}
           <div className="mb-8">
