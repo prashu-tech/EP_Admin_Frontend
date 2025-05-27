@@ -13,7 +13,7 @@ import {
 import { BiSolidDashboard } from "react-icons/bi";
 import { GiTestTubes } from "react-icons/gi";
 import { LuFileInput } from "react-icons/lu";
-import { PiStudent } from "react-icons/pi";
+import { PiStudent, PiBook } from "react-icons/pi";
 
 const Sidebar = () => {
   const pathname = usePathname();
@@ -58,11 +58,12 @@ const Sidebar = () => {
     { label: "Practice Test", icon: <AiOutlineFileText className="text-xl" />, href: "/Practisetest" },
     { label: "Customized Test", icon: <GiTestTubes className="text-xl" />, href: "/Customize" },
     { label: "Generate Test", icon: <LuFileInput className="text-xl" />, href: "/generatetest" },
+    { label : "Post Notice", icon : <PiBook className="text-xl" />, href : '/notice'},
   ];
 
   return (
     <div
-      className="hidden md:block fixed top-0 left-0 h-screen w-1/6 z-50 shadow-md"
+      className="hidden md:block h-screen fixed top-0 left-0 z-50 shadow-md"
       style={{ backgroundColor: sidebarColor }}
     >
       <div className="pt-4 pr-4 pl-4 flex justify-center items-center">

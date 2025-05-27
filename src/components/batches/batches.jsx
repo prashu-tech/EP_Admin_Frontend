@@ -109,11 +109,11 @@ export default function Batches() {
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 p-6">
       {/* Header */}
       <div className="flex justify-center mb-8">
-        <div className="bg-white shadow-md rounded-2xl overflow-hidden">
+        <div className="bg-white rounded-2xl overflow-hidden">
           <button
-            className="flex items-center justify-center gap-2 h-14 w-48 text-gray-700 text-sm py-3 px-8 font-medium transition-all hover:bg-gray-50"
+            className="flex items-center justify-center gap-4 h-14 w-48 text-gray-700 text-2xl py-3 px-8 font-bold transition-all hover:bg-gray-50"
           >
-            <IoSchoolOutline className="text-yellow-500 text-xl" />
+            <IoSchoolOutline className="text-yellow-500 text-2xl" />
             <span>Batches</span>
           </button>
         </div>
@@ -140,7 +140,7 @@ export default function Batches() {
             <Link href="/batchesedit">
               <button
                 id="createBatch"
-                className={`w-full md:w-auto h-12 px-6 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all flex items-center justify-center gap-2 shadow-sm active:scale-95 ${highlightCreateBatch ? "animate-pulse" : ""}`}
+                className={`cursor-pointer w-full md:w-auto h-12 px-6 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all flex items-center justify-center gap-2 shadow-sm active:scale-95 ${highlightCreateBatch ? "animate-pulse" : ""}`}
               >
                 <IoAddOutline className="text-xl" />
                 <span className="font-medium">New Batch</span>
@@ -227,16 +227,7 @@ export default function Batches() {
                     </div>
                     <button
                       onClick={() => {
-                        const el = document.getElementById("createBatch");
-                        if (el) {
-                          el.scrollIntoView({ behavior: "smooth", block: "center" });
-                          el.classList.add("ring-4", "ring-blue-400");
-
-                          // Remove highlight after 3 seconds
-                          setTimeout(() => {
-                            el.classList.remove("ring-4", "ring-blue-400");
-                          }, 3000);
-                        }
+                        router.push("/batchesedit")
                       }}
                       className="mt-4 bg-white text-blue-600 font-semibold py-2 px-4 cursor-pointer rounded-full whitespace-nowrap hover:bg-gray-100 transition-all"
                     >

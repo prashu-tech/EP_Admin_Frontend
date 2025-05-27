@@ -333,13 +333,13 @@ const Desktop_student = () => {
 
       {/* Top navigation button */}
       <div className="flex justify-center mb-8">
-        <div className="bg-white shadow-md rounded-2xl overflow-hidden">
+        <div className="bg-white rounded-2xl overflow-hidden">
           <button
             onClick={() => {/* Add navigation logic here */}}
-            className="flex items-center justify-center gap-2 h-14 w-48 text-gray-700 text-sm py-3 px-8 font-medium transition-all hover:bg-gray-50"
+            className="flex items-center justify-center gap-4 h-14 w-fit text-gray-700 text-2xl py-3 px-8 font-medium transition-all hover:bg-gray-50"
           >
-            <IoSchoolOutline className="text-yellow-500 text-xl" />
-            <span>Student</span>
+            <IoSchoolOutline className="text-yellow-500 text-2xl" />
+            <span>STUDENTS</span>
           </button>
         </div>
       </div>
@@ -349,7 +349,7 @@ const Desktop_student = () => {
         <div className="mb-8">
           <button
             onClick={handleDownloadTemplate}
-            className="flex items-center gap-2 bg-white shadow-md border border-gray-100 text-gray-700 py-3 px-5 rounded-xl hover:shadow-lg transition-all"
+            className="flex items-center gap-2 bg-white shadow-md border border-gray-100 text-gray-700 py-3 px-5 rounded-xl hover:shadow-lg transition-all cursor-pointer"
           >
             <IoDocumentTextOutline className="text-blue-500 text-xl" />
             <div className="flex flex-col items-start">
@@ -372,7 +372,7 @@ const Desktop_student = () => {
             <button
               onClick={openAddStudentModal}
               disabled={students.length >= STUDENT_LIMIT || isSubmitting}
-              className={`flex items-center gap-2 py-2.5 px-5 rounded-xl shadow-sm transition-all ${
+              className={`cursor-pointer flex items-center gap-2 py-2.5 px-5 rounded-xl shadow-sm transition-all ${
                 students.length >= STUDENT_LIMIT 
                 ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
                 : "bg-yellow-500 text-white hover:bg-yellow-600 hover:shadow"
@@ -386,7 +386,7 @@ const Desktop_student = () => {
               ref={importButtonRef}
               onClick={openModal}
               disabled={students.length >= STUDENT_LIMIT}
-              className={`flex items-center gap-2 py-2.5 px-5 rounded-xl shadow-sm transition-all ${
+              className={`cursor-pointer flex items-center gap-2 py-2.5 px-5 rounded-xl shadow-sm transition-all ${
                 students.length >= STUDENT_LIMIT 
                 ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
                 : "bg-green-500 text-white hover:bg-green-600 hover:shadow"

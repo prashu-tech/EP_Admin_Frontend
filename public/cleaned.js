@@ -1,6 +1,6 @@
 export const dataofquestions = {
     Physics: {
-      "Unit I: Physics and Measurement": {
+      "Unit I: Physical World and Measurement": {
         weightage: 2,
         expected_questions: 5,
         difficulty: "Medium",
@@ -63,14 +63,14 @@ export const dataofquestions = {
         time_to_complete: "2 hours",
         focus_priority: "Low",
       },
-      "Unit X: Oscillations and Waves": {
+      "Unit X: Oscillations, Waves, Sound": {
         weightage: 2,
         expected_questions: 5,
         difficulty: "Medium",
         time_to_complete: "4 hours",
         focus_priority: "Medium",
       },
-      "Unit XI: Electrostatics": {
+      "Unit XI: Electrostatics & Capacitors": {
         weightage: 3,
         expected_questions: 8,
         difficulty: "Hard",
@@ -84,14 +84,14 @@ export const dataofquestions = {
         time_to_complete: "4 hours",
         focus_priority: "Medium",
       },
-      "Unit XIII: Magnetic Effects of Current and Magnetism": {
+      "Unit XIII: Magnetism, Electromagnetism": {
         weightage: 3,
         expected_questions: 8,
         difficulty: "Hard",
         time_to_complete: "6 hours",
         focus_priority: "High",
       },
-      "Unit XIV: Electromagnetic Induction And Alternating Currents": {
+      "Unit XIV: Electromagnetic Induction, AC Circuits": {
         weightage: 2,
         expected_questions: 5,
         difficulty: "Medium",
