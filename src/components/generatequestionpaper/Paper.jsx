@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { IoIosArrowBack } from "react-icons/io";
-import { FaPrint, FaCheck } from "react-icons/fa";
+import { FaPrint, FaCheck, FaEye } from "react-icons/fa";
 import Link from "next/link";
 import axios from "axios";
 
@@ -58,189 +58,24 @@ export default function Paper() {
 
   const handleProceed = () => {
     setIsPreviewReady(true);
-    // Scroll to the preview
     setTimeout(() => {
-      document.getElementById("previewSection")?.scrollIntoView({ behavior: "smooth" });
+      document.getElementById("previewSection")?.scrollIntoView({ 
+        behavior: "smooth",
+        block: "start"
+      });
     }, 100);
   };
 
   const handlePrint = () => {
     const printWindow = window.open('', '_blank');
     
-    // Get the preview content HTML
-    const contentToPrint = printContentRef.current.innerHTML;
-    
-    // Create a complete HTML document with proper CSS
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>${formData.title || "Question Paper"}</title>
-        <style>
-          @page {
-            size: A4;
-            margin: 1.5cm;
-          }
-          body {
-            font-family: Arial, sans-serif;
-            line-height: 1.5;
-            color: black;
-            background: white;
-            margin: 0;
-            padding: 0;
-          }
-          .paper-page {
-            padding: 0;
-            max-width: 100%;
-            margin: 0 auto;
-            page-break-after: always;
-          }
-          .paper-page:last-child {
-            page-break-after: auto;
-          }
-          .header {
-            border-bottom: 2px solid #333;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-          }
-          .paper-title {
-            text-align: center;
-            font-size: 18pt;
-            font-weight: bold;
-            margin-bottom: 15px;
-          }
-          .paper-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 11pt;
-          }
-          .instructions {
-            border: 1px solid #ddd;
-            background-color: #f9f9f9;
-            padding: 10px;
-            margin-top: 10px;
-            font-size: 11pt;
-          }
-          .subject-heading {
-            font-size: 14pt;
-            font-weight: bold;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 5px;
-          }
-          .question-container {
-            margin-bottom: 20px;
-            page-break-inside: avoid;
-          }
-          .question-number {
-            font-weight: bold;
-            margin-right: 10px;
-            display: inline-block;
-            min-width: 25px;
-            vertical-align: top;
-          }
-          .question-content {
-            display: inline-block;
-            width: calc(100% - 40px);
-            vertical-align: top;
-          }
-          .question-text {
-            font-weight: 500;
-            margin-bottom: 8px;
-          }
-          .options-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-left: 20px;
-            margin-top: 10px;
-          }
-          .option-item {
-            display: flex;
-          }
-          .option-letter {
-            margin-right: 8px;
-            font-weight: 500;
-          }
-          .question-marks {
-            text-align: right;
-            font-size: 10pt;
-            color: #555;
-            margin-top: 5px;
-          }
-          .page-number {
-            text-align: center;
-            font-size: 10pt;
-            color: #777;
-            margin-top: 30px;
-            position: fixed;
-            bottom: 20px;
-            left: 0;
-            right: 0;
-          }
-          @media print {
-            body {
-              background: white;
-            }
-            .paper-page {
-              box-shadow: none;
-              border: none;
-            }
-          }
-        </style>
-      </head>
-      <body>
-        ${contentToPrint}
-      </body>
-      </html>
-    `);
-    
-    printWindow.document.close();
-    printWindow.focus();
-    
-    // Print after everything has loaded
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 500);
-  };
-
-  // A more intelligent pagination algorithm that accounts for actual content
-  const paginateQuestions = () => {
-    const pages = [];
-    let currentPage = [];
-    let currentSubject = null;
+    // Get all questions in a continuous format
+    const allQuestions = [];
     let questionCounter = 1;
     
-    // Process each subject's questions
     Object.entries(questionsBySubject).forEach(([subject, questions]) => {
-      // Check if we need a new page for a new subject
-      if (currentPage.length > 0 && 
-         (currentPage.length >= 5 || currentSubject !== subject)) {
-        pages.push({
-          questions: currentPage,
-          startNumber: questionCounter - currentPage.length
-        });
-        currentPage = [];
-      }
-      
-      currentSubject = subject;
-      
-      // Process each question in this subject
       questions.forEach((q) => {
-        // If page has 5 questions or more, start a new page
-        if (currentPage.length >= 5) {
-          pages.push({
-            questions: currentPage,
-            startNumber: questionCounter - currentPage.length
-          });
-          currentPage = [];
-        }
-        
-        // Add the question to the current page
-        currentPage.push({
+        allQuestions.push({
           ...q,
           subject,
           number: questionCounter++
@@ -248,115 +83,385 @@ export default function Paper() {
       });
     });
     
-    // Add the last page if there are any questions left
-    if (currentPage.length > 0) {
-      pages.push({
-        questions: currentPage,
-        startNumber: questionCounter - currentPage.length
-      });
-    }
+    // Create print content with continuous questions
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>${formData.title || "Question Paper"}</title>
+        <style>
+          @page {
+            size: A4;
+            margin: 2cm 1.5cm;
+          }
+          body {
+            font-family: 'Times New Roman', serif;
+            line-height: 1.6;
+            color: #000;
+            background: white;
+            margin: 0;
+            padding: 0;
+            font-size: 12pt;
+          }
+          
+          .paper-container {
+            max-width: 100%;
+            margin: 0 auto;
+          }
+          
+          .header {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+            page-break-after: avoid;
+          }
+          
+          .paper-title {
+            font-size: 20pt;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+          }
+          
+          .paper-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 15px;
+            text-align: left;
+          }
+          
+          .info-left, .info-right {
+            font-size: 11pt;
+          }
+          
+          .info-right {
+            text-align: right;
+          }
+          
+          .info-item {
+            margin-bottom: 5px;
+          }
+          
+          .instructions {
+            border: 1px solid #333;
+            background-color: #f8f8f8;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 11pt;
+            text-align: left;
+            border-radius: 3px;
+          }
+          
+          .instructions-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-decoration: underline;
+          }
+          
+          .questions-section {
+            margin-top: 25px;
+          }
+          
+          .subject-heading {
+            font-size: 14pt;
+            font-weight: bold;
+            margin: 25px 0 15px 0;
+            text-align: center;
+            text-transform: uppercase;
+            border-bottom: 1px solid #000;
+            padding-bottom: 8px;
+            page-break-after: avoid;
+          }
+          
+          .question-container {
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+            display: flex;
+            align-items: flex-start;
+          }
+          
+          .question-number {
+            font-weight: bold;
+            margin-right: 12px;
+            min-width: 30px;
+            flex-shrink: 0;
+          }
+          
+          .question-content {
+            flex: 1;
+          }
+          
+          .question-text {
+            font-weight: 500;
+            margin-bottom: 12px;
+            line-height: 1.5;
+          }
+          
+          .options-container {
+            margin-left: 15px;
+            margin-top: 10px;
+          }
+          
+          .option-item {
+            display: flex;
+            margin-bottom: 6px;
+            align-items: flex-start;
+          }
+          
+          .option-letter {
+            margin-right: 10px;
+            font-weight: 500;
+            min-width: 20px;
+          }
+          
+          .option-text {
+            flex: 1;
+            line-height: 1.4;
+          }
+          
+          .question-marks {
+            text-align: right;
+            font-size: 10pt;
+            color: #555;
+            margin-top: 8px;
+            font-style: italic;
+          }
+          
+          .footer {
+            position: fixed;
+            bottom: 1cm;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 9pt;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 5px;
+          }
+          
+          @media print {
+            body {
+              background: white !important;
+              -webkit-print-color-adjust: exact;
+            }
+            .no-print {
+              display: none !important;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="paper-container">
+          <!-- Header - only on first page -->
+          <div class="header">
+            <h1 class="paper-title">${formData.title || "Question Paper"}</h1>
+            
+            <div class="paper-info-grid">
+              <div class="info-left">
+                <div class="info-item"><strong>Duration:</strong> ${formData.duration} minutes</div>
+                <div class="info-item"><strong>Date:</strong> ${formData.date || 'Not specified'}</div>
+              </div>
+              <div class="info-right">
+                <div class="info-item"><strong>Total Marks:</strong> ${formData.marks}</div>
+                <div class="info-item"><strong>Batch:</strong> ${formData.batch || 'Not specified'}</div>
+              </div>
+            </div>
+            
+            ${formData.instruction ? `
+              <div class="instructions">
+                <div class="instructions-title">Instructions:</div>
+                <div>${formData.instruction}</div>
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- Questions Section -->
+          <div class="questions-section">
+            ${(() => {
+              let html = '';
+              let currentSubject = null;
+              
+              allQuestions.forEach((q, index) => {
+                // Add subject heading when subject changes
+                if (q.subject !== currentSubject) {
+                  currentSubject = q.subject;
+                  html += `<h3 class="subject-heading">${q.subject}</h3>`;
+                }
+                
+                html += `
+                  <div class="question-container">
+                    <div class="question-number">${q.number}.</div>
+                    <div class="question-content">
+                      <div class="question-text">${q.question}</div>
+                      
+                      ${q.options && q.options.length > 0 ? `
+                        <div class="options-container">
+                          ${q.options.map((opt, optIndex) => `
+                            <div class="option-item">
+                              <span class="option-letter">${String.fromCharCode(65 + optIndex)})</span>
+                              <span class="option-text">${opt}</span>
+                            </div>
+                          `).join('')}
+                        </div>
+                      ` : ''}
+                      
+                      <div class="question-marks">[${q.marks} Mark${q.marks > 1 ? 's' : ''}]</div>
+                    </div>
+                  </div>
+                `;
+              });
+              
+              return html;
+            })()}
+          </div>
+        </div>
+        
+      </body>
+      </html>
+    `;
     
-    return pages;
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.focus();
+    
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 500);
   };
 
-  const pages = paginateQuestions();
+  // Get all questions for preview
+  const getAllQuestions = () => {
+    const allQuestions = [];
+    let questionCounter = 1;
+    
+    Object.entries(questionsBySubject).forEach(([subject, questions]) => {
+      questions.forEach((q) => {
+        allQuestions.push({
+          ...q,
+          subject,
+          number: questionCounter++
+        });
+      });
+    });
+    
+    return allQuestions;
+  };
+
+  const allQuestions = getAllQuestions();
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Main content - shifted right to avoid sidebar overlap */}
+    <div className="min-h-screen overflow-x-hidden bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="container mx-auto py-8 px-4 ml-16 md:ml-20 lg:ml-24">
-        <div className="flex justify-between items-center mb-6">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
           <Link href="/offline_mode">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow flex items-center justify-center transition-colors">
+            <button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white p-3 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:shadow-xl transform hover:scale-105">
               <IoIosArrowBack size={20} />
             </button>
           </Link>
-          <h1 className="text-2xl font-bold text-center text-gray-800">Question Paper Generator</h1>
-          <div className="w-10"></div> {/* Spacer for balance */}
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">Question Paper Generator</h1>
+            <p className="text-gray-600">Create professional question papers with ease</p>
+          </div>
+          <div className="w-12"></div>
         </div>
 
         {/* Input Form Section */}
-        <div className="bg-white p-6 rounded-xl shadow-md mb-8 max-w-3xl mx-auto">
-          <h2 className="font-bold mb-6 text-xl text-gray-800 border-b pb-2">Paper Details</h2>
+        <div className="bg-white p-8 rounded-2xl shadow-xl mb-8 max-w-4xl mx-auto border border-gray-100">
+          <div className="flex items-center mb-6">
+            <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-full mr-4"></div>
+            <h2 className="font-bold text-2xl text-gray-800">Paper Configuration</h2>
+          </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Paper Title</label>
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">Paper Title</label>
               <input
                 type="text"
                 name="title"
-                placeholder="E.g., Mid-Term Mathematics Test"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                placeholder="E.g., Mid-Term Mathematics Examination"
+                className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
                 onChange={handleChange}
                 value={formData.title}
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Duration (minutes)</label>
+            
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">Duration (minutes)</label>
               <input
-                type="text"
+                type="number"
                 name="duration"
                 placeholder="E.g., 90"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
                 onChange={handleChange}
                 value={formData.duration}
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Total Marks</label>
+            
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">Total Marks</label>
               <input
-                type="text"
+                type="number"
                 name="marks"
                 placeholder="E.g., 100"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
                 onChange={handleChange}
                 value={formData.marks}
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Test Date</label>
+            
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">Test Date</label>
               <input
                 type="date"
                 name="date"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-gray-700"
+                className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-700 bg-gray-50 focus:bg-white"
                 onChange={handleChange}
                 value={formData.date}
               />
             </div>
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Instructions</label>
-              <textarea
-                name="instruction"
-                placeholder="Instructions for candidates..."
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition min-h-[100px]"
-                onChange={handleChange}
-                value={formData.instruction}
-              ></textarea>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Batch</label>
+            
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">Batch</label>
               <select
                 name="batch"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-gray-700"
+                className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-700 bg-gray-50 focus:bg-white"
                 onChange={handleChange}
                 value={formData.batch}
               >
                 <option value="">Select Batch</option>
-                <option value="Batch 1">Batch 1</option>
-                <option value="Batch 2">Batch 2</option>
+                <option value="Batch A">Batch A</option>
+                <option value="Batch B">Batch B</option>
+                <option value="Batch C">Batch C</option>
               </select>
+            </div>
+            
+            <div className="md:col-span-2 space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">Instructions for Candidates</label>
+              <textarea
+                name="instruction"
+                placeholder="Enter detailed instructions for the candidates taking this examination..."
+                className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 min-h-[120px] bg-gray-50 focus:bg-white resize-none"
+                onChange={handleChange}
+                value={formData.instruction}
+              ></textarea>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-wrap justify-center gap-4 mt-8">
+          <div className="flex flex-wrap justify-center gap-4 mt-8 pt-6 border-t border-gray-200">
             <button 
-              className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-3 text-lg rounded-lg transition-colors flex items-center gap-2"
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-200 flex items-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-105"
               onClick={handleProceed}
             >
-              <FaCheck /> Generate Preview
+              <FaEye /> Generate Preview
             </button>
-            <button className="bg-red-500 hover:bg-red-600 text-white px-10 py-3 text-lg rounded-lg transition-colors">
-              Cancel
+            <button className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+              Reset Form
             </button>
           </div>
         </div>
@@ -364,94 +469,90 @@ export default function Paper() {
         {/* Preview Section */}
         {isPreviewReady && (
           <div id="previewSection" className="mb-10">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-800">Paper Preview</h2>
+            <div className="flex max-w-4xl mx-auto justify-between items-center mb-6 bg-white p-6 rounded-2xl shadow-lg">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-800">Paper Preview</h2>
+                <p className="text-gray-600 mt-1">Review your question paper before printing</p>
+              </div>
               <button
                 onClick={handlePrint}
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors flex items-center gap-2"
+                className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 py-3 rounded-xl transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold"
               >
                 <FaPrint /> Print Paper
               </button>
             </div>
 
-            {/* Print Preview - This div contains what will be printed */}
+            {/* Preview Content */}
             <div ref={printContentRef} className="print-content">
-              {pages.map((page, pageIndex) => (
-                <div 
-                  key={pageIndex}
-                  className="paper-page bg-white mx-auto my-8 p-8 shadow-lg rounded-lg print:shadow-none print:my-0 print:rounded-none max-w-4xl"
-                >
-                  {/* Header */}
-                  <div className="header">
-                    <h1 className="paper-title">{formData.title || "Question Paper"}</h1>
-                    
-                    <div className="paper-info">
-                      <div>
-                        <p><strong>Duration:</strong> {formData.duration} minutes</p>
-                        <p><strong>Date:</strong> {formData.date}</p>
-                      </div>
-                      <div style={{ textAlign: 'right' }}>
-                        <p><strong>Total Marks:</strong> {formData.marks}</p>
-                        <p><strong>Batch:</strong> {formData.batch}</p>
-                      </div>
+              <div className="bg-white mx-auto p-10 shadow-xl rounded-2xl max-w-4xl border border-gray-200">
+                {/* Header */}
+                <div className="text-center border-b-2 border-gray-800 pb-6 mb-8">
+                  <h1 className="text-3xl font-bold mb-4 uppercase tracking-wide">{formData.title || "Question Paper"}</h1>
+                  
+                  <div className="grid grid-cols-2 gap-8 text-left text-sm">
+                    <div className="space-y-2">
+                      <p><strong>Duration:</strong> {formData.duration} minutes</p>
+                      <p><strong>Date:</strong> {formData.date || 'Not specified'}</p>
                     </div>
-                    
-                    {formData.instruction && (
-                      <div className="instructions">
-                        <p className="font-semibold">Instructions:</p>
-                        <p>{formData.instruction}</p>
-                      </div>
-                    )}
+                    <div className="space-y-2 text-right">
+                      <p><strong>Total Marks:</strong> {formData.marks}</p>
+                      <p><strong>Batch:</strong> {formData.batch || 'Not specified'}</p>
+                    </div>
                   </div>
+                  
+                  {formData.instruction && (
+                    <div className="border border-gray-300 bg-gray-50 p-4 mt-4 rounded-lg text-left">
+                      <p className="font-semibold mb-2 underline">Instructions:</p>
+                      <p className="text-sm leading-relaxed">{formData.instruction}</p>
+                    </div>
+                  )}
+                </div>
 
-                  {/* Questions Section */}
-                  <div className="questions-container">
-                    {page.questions.map((q, qIndex) => {
-                      const questionNumber = page.startNumber + qIndex;
-                      let currentSubject = q.subject;
-                      const showSubjectHeading = qIndex === 0 || 
-                                               page.questions[qIndex - 1].subject !== currentSubject;
-                      
-                      return (
-                        <div key={qIndex} className="question-container">
-                          {showSubjectHeading && (
-                            <h3 className="subject-heading">
+                {/* Questions */}
+                <div className="questions-container">
+                  {(() => {
+                    let currentSubject = null;
+                    return allQuestions.map((q, index) => (
+                      <div key={index}>
+                        {q.subject !== currentSubject && (() => {
+                          currentSubject = q.subject;
+                          return (
+                            <h3 className="text-lg font-bold text-center uppercase border-b border-gray-600 pb-2 mb-4 mt-6">
                               {q.subject}
                             </h3>
-                          )}
-                          
-                          <div className="question">
-                            <span className="question-number">{questionNumber}.</span>
-                            <div className="question-content">
-                              <div className="question-text">{q.question}</div>
-                              
-                              {q.options && q.options.length > 0 && (
-                                <div className="options-grid">
-                                  {q.options.map((opt, optIndex) => (
-                                    <div key={optIndex} className="option-item">
-                                      <span className="option-letter">{String.fromCharCode(65 + optIndex)})</span>
-                                      <span>{opt}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                              
-                              <div className="question-marks">
-                                [{q.marks} Marks]
+                          );
+                        })()}
+                        
+                        <div className="flex mb-6 items-start">
+                          <span className="font-bold mr-3 mt-1 min-w-[30px]">{q.number}.</span>
+                          <div className="flex-1">
+                            <div className="font-medium mb-3 leading-relaxed">{q.question}</div>
+                            
+                            {q.options && q.options.length > 0 && (
+                              <div className="ml-4 space-y-2">
+                                {q.options.map((opt, optIndex) => (
+                                  <div key={optIndex} className="flex items-start">
+                                    <span className="font-medium mr-3 min-w-[20px]">{String.fromCharCode(65 + optIndex)})</span>
+                                    <span className="leading-relaxed">{opt}</span>
+                                  </div>
+                                ))}
                               </div>
+                            )}
+                            
+                            <div className="text-right text-sm text-gray-600 mt-2 italic">
+                              [{q.marks} Mark{q.marks > 1 ? 's' : ''}]
                             </div>
                           </div>
                         </div>
-                      );
-                    })}
-                  </div>
-                  
-                  {/* Page Number */}
-                  <div className="page-number">
-                    Page {pageIndex + 1} of {pages.length}
-                  </div>
+                      </div>
+                    ));
+                  })()}
                 </div>
-              ))}
+                
+                {/* <div className="text-center mt-8 pt-4 border-t border-gray-300 text-sm text-gray-600">
+                  --- End of Question Paper ---
+                </div> */}
+              </div>
             </div>
           </div>
         )}
