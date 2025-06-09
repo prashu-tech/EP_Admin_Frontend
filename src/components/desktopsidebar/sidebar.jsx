@@ -14,6 +14,7 @@ import { BiSolidDashboard } from "react-icons/bi";
 import { GiTestTubes } from "react-icons/gi";
 import { LuFileInput } from "react-icons/lu";
 import { PiStudent, PiBook } from "react-icons/pi";
+import { Scan } from "lucide-react";
 
 const Sidebar = () => {
   const pathname = usePathname();
@@ -59,11 +60,12 @@ const Sidebar = () => {
     { label: "Customized Test", icon: <GiTestTubes className="text-xl" />, href: "/Customize" },
     { label: "Generate Test", icon: <LuFileInput className="text-xl" />, href: "/generatetest" },
     { label : "Post Notice", icon : <PiBook className="text-xl" />, href : '/notice'},
+    { label : "Scan OMR", icon : <Scan className="text-xl"/>, href : "/scan-omr"}
   ];
 
   return (
     <div
-      className="hidden md:block h-screen fixed top-0 left-0 z-50 shadow-md"
+      className="hidden w-60 md:block h-screen fixed top-0 left-0 z-50 shadow-md"
       style={{ backgroundColor: sidebarColor }}
     >
       <div className="pt-4 pr-4 pl-4 flex justify-center items-center">

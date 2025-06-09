@@ -12,96 +12,109 @@ const Home = () => {
   const router = useRouter(); 
 
   return (
-    <div className="relative min-h-screen bg-white">
-      <div className="flex items-center justify-center p-4">
-        <Head>
-          <title>Office Mode - Test Generator</title>
-          <meta
-            name="description"
-            content="Generate and manage tests in office mode"
-          />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-        
-        <div className="bg-[#007AFF] top-4 left-4 hidden md:block">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100">
+      <Head>
+        <title>Office Mode - Test Generator</title>
+        <meta
+          name="description"
+          content="Generate and manage tests in office mode"
+        />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      
+      {/* Header with Back Button */}
+      <div className="relative">
+        <div className="absolute top-6 left-6 z-10">
           <button 
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold p-3 rounded-full shadow-lg flex items-center justify-center cursor-pointer"
+            className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 font-semibold p-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center group"
             onClick={() => router.back()}
           >
-            <IoIosArrowBack size={20} />
+            <IoIosArrowBack size={20} className="group-hover:-translate-x-1 transition-transform duration-200" />
           </button>
         </div>
+      </div>
 
-        <div className="bg-white w-full">
-          {/* Header Section */}
-          <div className="bg-white w-full flex justify-center -mt-3 items-center h-20">
-            <button className="bg-white shadow-[0_4px_6px_rgba(0,0,0,0.2)] h-14 border border-gray-300 rounded-lg text-gray-400 hidden md:block text-sm py-3 px-6 font-['Segoe_UI'] cursor-pointer">
-              Generate Test
-            </button>
+      <div className="container mx-auto px-4 py-8">
+        
+        {/* Main Header */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-6 shadow-lg">
+            <LuBookCheck size={32} className="text-white" />
+          </div>
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">Test Generator</h1>
+          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            Create, manage and schedule tests with our comprehensive testing platform
+          </p>
+        </div>
+
+        
+
+        {/* Main Action Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
+          <div 
+            onClick={() => router.push("/test_preview")}
+            className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group hover:-translate-y-2 border border-gray-100"
+          >
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-amber-200 transition-colors duration-200">
+                <FaEye size={24} className="text-amber-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">Test Preview</h3>
+              <p className="text-gray-600 text-sm">Preview your test before publishing</p>
+            </div>
           </div>
 
-          {/* Test Questions Heading */}
-          <div className="flex justify-center mb-4">
-            <h2 className="text-xl font-semibold">Test Questions</h2>
+          <div 
+            onClick={() => router.push("/offline_mode")}
+            className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group hover:-translate-y-2 border border-gray-100"
+          >
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors duration-200">
+                <FaQuestionCircle size={24} className="text-blue-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">Offline Mode</h3>
+              <p className="text-gray-600 text-sm">Work without internet connection</p>
+            </div>
           </div>
 
-          {/* Main Options with React Icons */}
-          <div className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-8 my-4">
-            <button
-              onClick={() => router.push("/test_preview")}
-              style={{ backgroundColor: "#FFBB38" }}
-              className="text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 hover:bg-yellow-600 cursor-pointer"
-            >
-              <FaEye size={20} /> Test Preview
-            </button>
-            <button
-              onClick={() => router.push("/offline_mode")}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <FaQuestionCircle size={20} /> Offline Mode
-            </button>
-            <button
-              onClick={() => router.push("./schedule_test")}
-              style={{ backgroundColor: "#FFBB38" }}
-              className="text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 hover:bg-yellow-600 cursor-pointer"
-            >
-              <MdOutlineSchedule size={20} /> Schedule Test
-            </button>
+          <div 
+            onClick={() => router.push("./schedule_test")}
+            className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group hover:-translate-y-2 border border-gray-100"
+          >
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors duration-200">
+                <MdOutlineSchedule size={24} className="text-green-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">Schedule Test</h3>
+              <p className="text-gray-600 text-sm">Set up automated test scheduling</p>
+            </div>
           </div>
+        </div>
 
-            
-
-          {/* Action Buttons with Icons */}
-          <div className="flex w-full justify-center gap-6 sm:gap-6 my-6 overflow-x-auto">
+        {/* Quick Actions */}
+        <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 max-w-4xl mx-auto mb-12">
+          <h3 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Quick Actions</h3>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => router.push("/generatequestionpaper")}
-              className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-2 text-[10px] pr-6 rounded flex items-center justify-center gap-2 cursor-pointer"
+              className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-6 rounded-xl flex items-center justify-center gap-3 transition-all duration-200 hover:shadow-lg transform hover:-translate-y-1"
             >
-              <FaRegCircleQuestion size={12} /> Generate Question Paper
+              <FaRegCircleQuestion size={18} />
+              <span>Generate Question Paper</span>
             </button>
           
             <button 
               onClick={() => router.push("/generateanswerpaper")}
-              className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-2 text-[10px] pr-6 rounded flex items-center justify-center gap-2 cursor-pointer"
+              className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl flex items-center justify-center gap-3 transition-all duration-200 hover:shadow-lg transform hover:-translate-y-1"
             >
-              <CiPen size={15} /> Generate Answer Key
+              <CiPen size={20} />
+              <span>Generate Answer Key</span>
             </button>
-        
-           
           </div>
-
-          {/* Display Area - Centered */}
-          <div className="flex justify-center my-8">
-            <div className="rounded p-4 text-center w-full max-w-1/2 h-auto">
-              <img
-                src="/sample-question-paper.png"
-                alt="Sample Question Paper"
-                className="w-full h-auto rounded shadow-md object-contain"
-              />
-            </div>
-          </div>
-
         </div>
+
+        {/* Sample Preview */}
+        
       </div>
     </div>
   );

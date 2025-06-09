@@ -47,575 +47,497 @@ export default function AnswerPaper() {
     }, 100);
   };
 
-  const handlePrint = () => {
-    const printWindow = window.open("", "_blank");
+const handlePrint = () => {
+  const printWindow = window.open("", "_blank");
+  let currentSubject = null;
 
-    // Get all questions for continuous printing
-    const allQuestions = questions.map((q, index) => ({
-      ...q,
-      number: index + 1,
-    }));
+  const renderQuestions = (questions, showSubjects) => {
+    let output = "";
+    let lastSubject = null;
 
-    const printContent = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>${paperTitle}</title>
-        <style>
-          @page {
-            size: A4;
-            margin: 2cm 1.5cm;
-          }
-          body {
-            font-family: 'Times New Roman', serif;
-            line-height: 1.6;
-            color: #000;
-            background: white;
-            margin: 0;
-            padding: 0;
-            font-size: 12pt;
-          }
-          
-          .paper-container {
-            max-width: 100%;
-            margin: 0 auto;
-            position: relative;
-          }
-          
-          ${
-            showWatermark
-              ? `
-            .watermark {
-              position: fixed;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%) rotate(-30deg);
-              font-size: 120px;
-              color: rgba(0,0,0,0.05);
-              font-weight: bold;
-              z-index: 0;
-              pointer-events: none;
-              font-family: Arial, sans-serif;
-            }
-          `
-              : ""
-          }
-          
-          .header {
-            text-align: center;
-            border-bottom: 2px solid #000;
-            padding-bottom: 20px;
-            margin-bottom: 25px;
-            page-break-after: avoid;
-            position: relative;
-            z-index: 1;
-          }
-          
-          .paper-title {
-            font-size: 20pt;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-          }
-          
-          .paper-subtitle {
-            font-size: 14pt;
-            color: #555;
-            font-style: italic;
-          }
-          
-          .questions-section {
-            margin-top: 25px;
-            position: relative;
-            z-index: 1;
-          }
-          
-          .subject-heading {
-            font-size: 14pt;
-            font-weight: bold;
-            margin: 25px 0 15px 0;
-            text-align: center;
-            text-transform: uppercase;
-            border-bottom: 1px solid #000;
-            padding-bottom: 8px;
-            page-break-after: avoid;
-            color: #2563eb;
-          }
-          
-          .question-container {
-            margin-bottom: 25px;
-            page-break-inside: avoid;
-            border-left: 3px solid #e5e7eb;
-            padding-left: 15px;
-            margin-left: 10px;
-          }
-          
-          .question-header {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 12px;
-          }
-          
-          .question-number {
-            font-weight: bold;
-            margin-right: 12px;
-            min-width: 30px;
-            flex-shrink: 0;
-            color: #1f2937;
-          }
-          
-          .question-content {
-            flex: 1;
-          }
-          
-          .question-text {
-            font-weight: 500;
-            margin-bottom: 12px;
-            line-height: 1.5;
-          }
-          
-          .options-container {
-            margin-left: 15px;
-            margin-top: 10px;
-            margin-bottom: 15px;
-          }
-          
-          .option-item {
-            display: flex;
-            margin-bottom: 8px;
-            align-items: flex-start;
-          }
-          
-          .option-letter {
-            margin-right: 10px;
-            font-weight: 500;
-            min-width: 25px;
-          }
-          
-          .option-text {
-            flex: 1;
-            line-height: 1.4;
-          }
-          
-          .correct-option {
-            background-color: #dcfce7;
-            padding: 2px 6px;
-            border-radius: 4px;
-            border-left: 3px solid #16a34a;
-          }
-          
-          .question-marks {
-            font-size: 10pt;
-            color: #dc2626;
-            margin-top: 8px;
-            font-style: italic;
-            text-align: right;
-          }
-          
-          .solution-container {
-            background: #f0f9ff;
-            border: 1px solid #0ea5e9;
-            border-radius: 6px;
-            padding: 12px;
-            margin-top: 15px;
-            position: relative;
-          }
-          
-          .solution-header {
-            font-weight: bold;
-            color: #0369a1;
-            margin-bottom: 8px;
-            border-bottom: 1px solid #bae6fd;
-            padding-bottom: 4px;
-          }
-          
-          .correct-answer {
-            background: #dcfce7;
-            padding: 8px;
-            border-radius: 4px;
-            margin-bottom: 10px;
-            border-left: 4px solid #16a34a;
-          }
-          
-          .solution-text {
-            color: #374151;
-            line-height: 1.5;
-          }
-          
-          .footer {
-            position: fixed;
-            bottom: 1cm;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 9pt;
-            color: #666;
-            border-top: 1px solid #ddd;
-            padding-top: 5px;
-          }
-          
-          @media print {
-            body {
-              background: white !important;
-              -webkit-print-color-adjust: exact;
-            }
-            .no-print {
-              display: none !important;
-            }
-          }
-        </style>
-      </head>
-      <body>
-        ${showWatermark ? '<div class="watermark">ANSWER KEY</div>' : ""}
-        
-        <div class="paper-container">
-          <!-- Header - only on first page -->
-          <div class="header">
-            <h1 class="paper-title">${paperTitle}</h1>
-            <p class="paper-subtitle">Complete Solutions & Answer Key</p>
+    questions.forEach((q, idx) => {
+      // Group by subject if needed
+      if (showSubjects && q.subject !== lastSubject) {
+        output += `
+          <div class="subject-header">
+            ${q.subject}
           </div>
+        `;
+        lastSubject = q.subject;
+      }
 
-          <!-- Questions Section -->
-          <div class="questions-section">
-            ${(() => {
-              let html = "";
-              let currentSubject = null;
-
-              allQuestions.forEach((q, index) => {
-                // Add subject heading when subject changes
-                if (showSubjects && q.subject !== currentSubject) {
-                  currentSubject = q.subject;
-                  html += `<h3 class="subject-heading">${q.subject}</h3>`;
-                }
-
-                html += `
-                  <div class="question-container">
-                    <div class="question-header">
-                      <div class="question-number">${q.number}.</div>
-                      <div class="question-content">
-                        <div class="question-text">${q.question_text}</div>
-                        
-                        ${
-                          q.options
-                            ? `
-                          <div class="options-container">
-                            ${Object.entries(q.options)
-                              .map(
-                                ([key, value]) => `
-                              <div class="option-item ${
-                                q.correctanswer &&
-                                q.correctanswer.toLowerCase() ===
-                                  key.toLowerCase()
-                                  ? "correct-option"
-                                  : ""
-                              }">
-                                <span class="option-letter">${key.toUpperCase()})</span>
-                                <span class="option-text">${value}</span>
-                              </div>
-                            `
-                              )
-                              .join("")}
-                          </div>
-                        `
-                            : ""
-                        }
-                        
-                        ${
-                          showMarks
-                            ? `
-                          <div class="question-marks">[${q.marks || 4} Mark${
-                                (q.marks || 4) > 1 ? "s" : ""
-                              }]</div>
-                        `
-                            : ""
-                        }
-                        
-                        ${
-                          showSolutions
-                            ? `
-                          <div class="solution-container">
-                            <div class="solution-header">Solution & Answer</div>
-                            ${
-                              q.correctanswer
-                                ? `
-                              <div class="correct-answer">
-                                <strong>Correct Answer:</strong> ${q.correctanswer.toUpperCase()}
-                              </div>
-                            `
-                                : ""
-                            }
-                            ${
-                              q.solution
-                                ? `
-                              <div class="solution-text">
-                                <strong>Explanation:</strong><br>
-                                ${q.solution}
-                              </div>
-                            `
-                                : ""
-                            }
-                          </div>
-                        `
-                            : ""
-                        }
-                      </div>
+      output += `
+        <div class="question-block">
+          <div class="question-number">${idx + 1}.</div>
+          <div class="question-main">
+            <div class="question-text">${q.question_text}</div>
+            ${q.options ? `
+              <div class="options-block">
+                ${Object.entries(q.options).map(
+                  ([key, value]) => `
+                    <div class="option-row${q.correctanswer && q.correctanswer.toLowerCase() === key.toLowerCase() ? ' correct' : ''}">
+                      <span class="option-letter">${key.toUpperCase()})</span>
+                      <span>${value}</span>
                     </div>
-                  </div>
-                `;
-              });
-
-              return html;
-            })()}
+                  `
+                ).join("")}
+              </div>
+            ` : ""}
+            ${showMarks ? `<div class="marks-label">[${q.marks || 4} Mark${(q.marks || 4) > 1 ? "s" : ""}]</div>` : ""}
+            ${showSolutions ? `
+              <div class="solution-block">
+                <div class="solution-title">Solution & Answer</div>
+                ${q.correctanswer ? `<div class="correct-answer"><strong>Correct Answer:</strong> ${q.correctanswer.toUpperCase()}</div>` : ""}
+                ${q.solution ? `<div class="solution-text"><strong>Explanation:</strong><br>${q.solution}</div>` : ""}
+              </div>
+            ` : ""}
           </div>
         </div>
-        
-        
-      </body>
-      </html>
-    `;
-
-    printWindow.document.write(printContent);
-    printWindow.document.close();
-    printWindow.focus();
-
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 500);
+      `;
+    });
+    return output;
   };
 
+  const printContent = `
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>${paperTitle || "Answer Key"}</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 1.5cm;
+      }
+      body {
+        font-family: 'Times New Roman', serif;
+        font-size: 10pt;
+        margin: 0;
+        padding: 0;
+        color: #000;
+        background: #fff;
+        position: relative;
+      }
+      .page {
+        page-break-after: always;
+        padding: 20px;
+        position: relative;
+      }
+      .header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-bottom: 2px solid #222;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+        position: relative;
+      }
+      .title {
+        font-size: 20pt;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-align: center;
+        flex: 1;
+      }
+      .subtitle {
+        font-size: 11pt;
+        font-style: italic;
+        color: #555;
+        text-align: center;
+        margin-top: 3px;
+      }
+      .question-columns {
+        column-count: 2;
+        column-gap: 42px;
+        column-rule: 1px solid #eee;
+      }
+      .subject-header {
+        background: #ede9fe;
+        color: #5b21b6;
+        font-weight: bold;
+        font-size: 10pt;
+        text-transform: uppercase;
+        border-bottom: 1px solid #a78bfa;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        padding: 8px 8px 4px 0;
+        break-inside: avoid;
+      }
+      .question-block {
+        margin-bottom: 18px;
+        break-inside: avoid;
+        display: flex;
+        gap: 12px;
+        border-left: 3px solid #ede9fe;
+        padding-left: 10px;
+        min-height: 32px;
+      }
+      .question-number {
+        font-weight: bold;
+        min-width: 30px;
+        color: #222;
+      }
+      .question-main {
+        flex: 1;
+      }
+      .question-text {
+        font-weight: 500;
+        margin-bottom: 2px;
+        line-height: 1.4;
+      }
+      .options-block {
+        margin: 5px 0 8px 15px;
+      }
+      .option-row {
+        display: flex;
+        align-items: start;
+        margin-bottom: 2px;
+        padding: 2px 0;
+        font-size: 10pt;
+      }
+      .option-row.correct {
+        background: #e0fae4;
+        border-left: 3px solid #16a34a;
+        border-radius: 3px;
+      }
+      .option-letter {
+        font-weight: bold;
+        margin-right: 8px;
+        min-width: 18px;
+        color: #2563eb;
+      }
+      .marks-label {
+        text-align: right;
+        color: #b91c1c;
+        font-style: italic;
+        font-size: 9pt;
+        margin-top: 2px;
+        margin-bottom: 2px;
+        display: none;
+      }
+      .solution-block {
+        background: #f0f9ff;
+        border: 1px solid #38bdf8;
+        border-radius: 4px;
+        padding: 8px;
+        margin-top: 7px;
+        font-size: 10pt;
+      }
+      .solution-title {
+        font-weight: bold;
+        color: #0369a1;
+        margin-bottom: 4px;
+        border-bottom: 1px solid #bae6fd;
+        padding-bottom: 2px;
+      }
+      .correct-answer {
+        background: #e0fae4;
+        padding: 4px;
+        border-radius: 3px;
+        margin-bottom: 3px;
+        border-left: 2px solid #22c55e;
+      }
+      .solution-text {
+        color: #444;
+        line-height: 1.3;
+        margin-bottom: 2px;
+      }
+      .footer {
+        text-align: center;
+        font-size: 10pt;
+        margin-top: 30px;
+        border-top: 1px solid #eee;
+        padding-top: 10px;
+        color: #666;
+      }
+      .watermark {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-30deg);
+        font-size: 70px;
+        color: rgba(91, 33, 182, 0.07);
+        font-weight: bold;
+        z-index: 0;
+        pointer-events: none;
+        font-family: Arial, sans-serif;
+        user-select: none;
+        text-align: center;
+        width: 100vw;
+      }
+    </style>
+  </head>
+  <body>
+    ${showWatermark ? `<div class="watermark">NEXCORE</div>` : ""}
+    <div class="page">
+      <div class="header">
+        <div class="title">${paperTitle}</div>
+      </div>
+      <div class="question-columns">
+        ${renderQuestions(questions, showSubjects)}
+      </div>
+      <div class="footer">--- End of Answer Key ---</div>
+    </div>
+  </body>
+  </html>
+  `;
+
+  printWindow.document.write(printContent);
+  printWindow.document.close();
+
+  printWindow.onload = () => {
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+  };
+};
+
+
+  
 const handleOMRSheet = () => {
   const printWindow = window.open("", "_blank");
 
-  // Get all questions for OMR sheet
   const allQuestions = questions.map((q, index) => ({
     ...q,
     number: index + 1,
   }));
 
+  const questionsPerPage = 180;
+  const questionsPerColumn = 45;
+  const pages = [];
+for (let i = 0; i < allQuestions.length; i += questionsPerPage) {
+  pages.push(allQuestions.slice(i, i + questionsPerPage));
+}
+
+
   const omrContent = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>OMR Answer Sheet - ${paperTitle}</title>
-      <style>
-        @page {
-          size: A4;
-          margin: 1.5cm;
-        }
-        body {
-          font-family: 'Arial', sans-serif;
-          line-height: 1.4;
-          color: #000;
-          background: white;
-          margin: 0;
-          padding: 0;
-          font-size: 11pt;
-        }
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>OMR Answer Sheet - ${paperTitle}</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 1.5cm;
+      }
+      body {
+        font-family: 'Arial', sans-serif;
+        font-size: 10pt;
+        margin: 0;
+        padding: 0;
+        background: white;
+        color: #000;
+      }
+
+      .omr-page {
+        page-break-after: always;
+        padding: 0;
+      }
+
+      .omr-header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .omr-box {
+        border: 2px solid #000;
+        padding: 12px;
+        display: inline-block;
+        text-align: left;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .omr-title {
+        font-size: 16pt;
+        font-weight: bold;
+        text-align: center;
+        margin: 4px 0;
+      }
+
+      .omr-subtitle {
+        font-size: 11pt;
+        color: #444;
+        text-align: center;
+        margin-bottom: 10px;
+      }
+
+      .omr-info {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 30px;
+        font-size: 10pt;
+      }
+
+      .omr-info div {
+        flex: 1;
+      }
+
+      .info-line {
+        display: inline-block;
+        border-bottom: 1px solid #000;
+        width: 120px;
+        margin-left: 5px;
+      }
+
+      .omr-table {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.omr-table td {
+  padding: 2px 6px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.column {
+  flex: 1;
+  justify: space-between;
+  border: 1px solid black;
+  max-width: fit;
+  padding: 10px;
+}
+
+      .question-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 3px;
+        font-size: 6pt;
+      }
         
-        .omr-container {
-          max-width: 100%;
-          margin: 0 auto;
-        }
-        
-        .omr-header {
-          text-align: center;
-          border: 2px solid #000;
-          padding: 15px;
-          margin-bottom: 20px;
-        }
-        
-        .omr-title {
-          font-size: 18pt;
-          font-weight: bold;
-          margin-bottom: 8px;
-          text-transform: uppercase;
-        }
-        
-        .omr-subtitle {
-          font-size: 12pt;
-          color: #333;
-          margin-bottom: 10px;
-        }
-        
-        .student-info {
-          display: flex;
-          justify-content: space-between;
-          margin-top: 10px;
-          font-size: 10pt;
-        }
-        
-        .info-field {
-          border-bottom: 1px solid #000;
-          padding-bottom: 2px;
-          min-width: 200px;
-        }
-        
-        .instructions {
-          background-color: #f5f5f5;
-          border: 1px solid #ddd;
-          padding: 10px;
-          margin-bottom: 20px;
-          font-size: 9pt;
-        }
-        
-        .instructions h4 {
-          margin: 0 0 5px 0;
-          font-size: 10pt;
-        }
-        
-        .questions-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 15px;
-          margin-bottom: 20px;
-        }
-        
-        .question-row {
-          display: flex;
-          align-items: center;
-          margin-bottom: 8px;
-          padding: 4px;
-          border-bottom: 1px dotted #ccc;
-        }
-        
-        .question-number {
-          font-weight: bold;
-          min-width: 35px;
-          margin-right: 10px;
-          font-size: 10pt;
-        }
-        
-        .options-bubbles {
-          display: flex;
-          gap: 12px;
-          align-items: center;
-        }
-        
-        .bubble-option {
-          display: flex;
-          align-items: center;
-          gap: 3px;
-        }
-        
-        .bubble {
-          width: 16px;
-          height: 16px;
-          border: 2px solid #000;
-          border-radius: 50%;
-          display: inline-block;
-          position: relative;
-        }
-        
-        .bubble.filled {
-          background-color: #000;
-        }
-        
-        .option-label {
-          font-weight: 500;
-          font-size: 10pt;
-        }
-        
-        .section-break {
-          page-break-before: always;
-        }
-        
-        @media print {
-          body {
-            background: white !important;
-            -webkit-print-color-adjust: exact;
-          }
-          .no-print {
-            display: none !important;
-          }
-        }
-      </style>
-    </head>
-    <body>
-      <div class="omr-container">
-        <!-- Header -->
-        <div class="omr-header">
-          <h1 class="omr-title">OMR Answer Sheet</h1>
-          <p class="omr-subtitle">${paperTitle}</p>
-          <div class="student-info">
-            <div>Name: <span class="info-field"></span></div>
-            <div>Roll No: <span class="info-field"></span></div>
-            <div>Date: <span class="info-field"></span></div>
+      .question-number {
+        min-width: 20px;
+        font-weight: bold;
+        font-size: 7pt;
+      }
+
+      .options-bubbles {
+        display: flex;
+        gap: 10px;
+        margin-left: 10px;
+      }
+
+
+     .bubble-option {
+        width: 14px;
+        height: 14px;
+        border: 1px solid #000;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 6pt;
+        font-weight: bold;
+        line-height: 1;
+        text-align: center;
+        padding: 0;
+      }
+
+      .bubble-option.filled {
+        background-color: #000 !important;
+        color: transparent;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+
+
+            
+      .filled {
+        background-color: #000 !important;
+        color: transparent;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .bubble {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  line-height: 12px;
+  border: 1px solid #000;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 6pt;
+  font-weight: bold;
+  margin: 0 1px;
+}
+
+      .bubble.filled {
+        background-color: #000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .option-label {
+        font-size: 9pt;
+      }
+    </style>
+  </head>
+<body>
+  ${(() => {
+    const renderColumn = (columnQuestions) =>
+      columnQuestions
+        .map((q) => {
+          const correctText = q.correctanswer?.trim().toLowerCase();
+          const options = q.options || {};
+          const correctKey = Object.keys(options).find(
+            (key) => options[key]?.trim().toLowerCase() === correctText
+          );
+
+          return `
+            <div class="question-row">
+              <div class="question-number">${q.number}.</div>
+              <div class="options-bubbles">
+                ${["0", "1", "2", "3"]
+  .map((opt) => `
+    <div class="bubble-option ${correctKey?.toUpperCase() === opt ? "filled" : ""}">
+      ${opt}
+    </div>
+  `)
+
+                  .join("")}
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+
+    return pages
+      .map((pageQuestions) => {
+        const col1 = pageQuestions.slice(0, 45);
+        const col2 = pageQuestions.slice(45, 90);
+        const col3 = pageQuestions.slice(90, 135);
+        const col4 = pageQuestions.slice(135, 180);
+
+        return `
+          <div class="omr-page">
+            <div class="omr-header">
+              <div class="omr-box">
+                <h1 class="omr-title">OMR ANSWER SHEET</h1>
+                <p class="omr-subtitle">${paperTitle}</p>
+                <div class="omr-info">
+                  <div>Name: <span class="info-line"></span></div>
+                  <div>Roll No: <span class="info-line"></span></div>
+                  <div>Date: <span class="info-line"></span></div>
+                </div>
+              </div>
+            </div>
+            <div class="omr-table" style="display: flex; gap: 12px;">
+              <div class="column">${renderColumn(col1)}</div>
+              <div class="column">${renderColumn(col2)}</div>
+              <div class="column">${renderColumn(col3)}</div>
+              <div class="column">${renderColumn(col4)}</div>
+            </div>
           </div>
-        </div>
+        `;
+      })
+      .join("");
+  })()}
+</body>
 
-        <!-- Instructions -->
-        <div class="instructions">
-          <h4>Instructions:</h4>
-          • Use only black or blue pen to fill the bubbles completely<br>
-          • Fill only one bubble per question<br>
-          • Make dark marks that fill the circle completely<br>
-          • Do not make any stray marks on this sheet
-        </div>
-
-        <!-- Questions Grid -->
-        <div class="questions-grid">
-          ${(() => {
-            let html = "";
-            const questionsPerColumn = 25;
-
-            for (
-              let i = 0;
-              i < allQuestions.length;
-              i += questionsPerColumn
-            ) {
-              const columnQuestions = allQuestions.slice(
-                i,
-                i + questionsPerColumn
-              );
-
-              html += '<div class="question-column">';
-
-              columnQuestions.forEach((q) => {
-                // Get the correct answer text and find matching option key
-                const correctAnswerText = q.correctanswer?.trim().toLowerCase();
-                const options = q.options || {};
-                
-                // Find the correct option key by matching the value
-                const correctOptionKey = Object.keys(options).find(
-                  (key) => options[key]?.trim().toLowerCase() === correctAnswerText
-                );
-
-                html += `
-                  <div class="question-row">
-                    <span class="question-number">${q.number}.</span>
-                    <div class="options-bubbles">
-                      ${["0", "1", "2", "3"]
-                        .map(
-                          (option) => `
-                        <div class="bubble-option">
-                          <span class="option-label">${option}</span>
-                          <div class="bubble ${
-                            correctOptionKey === option ? "filled" : ""
-                          }"></div>
-                        </div>
-                      `
-                        )
-                        .join("")}
-                    </div>
-                  </div>
-                `;
-              });
-
-              html += "</div>";
-            }
-
-            return html;
-          })()}
-        </div>
-        
-        <div style="text-align: center; margin-top: 20px; font-size: 9pt; color: #666;">
-          --- End of Answer Sheet ---
-        </div>
-      </div>
-    </body>
-    </html>
+  </html>
   `;
 
   printWindow.document.write(omrContent);
@@ -627,6 +549,7 @@ const handleOMRSheet = () => {
     printWindow.close();
   }, 500);
 };
+  
 
   const handleOMRPreview = () => {
     setShowOMRPreview(true);
@@ -806,9 +729,7 @@ const handleOMRSheet = () => {
                   <h1 className="text-3xl font-bold mb-2 uppercase tracking-wide">
                     {paperTitle}
                   </h1>
-                  <p className="text-lg text-gray-600 italic">
-                    Complete Solutions & Answer Key
-                  </p>
+                 
                 </div>
 
                 {/* Questions */}
