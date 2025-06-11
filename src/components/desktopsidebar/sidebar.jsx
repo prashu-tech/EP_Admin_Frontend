@@ -68,11 +68,11 @@ const Sidebar = () => {
       className="hidden w-60 md:block h-screen fixed top-0 left-0 z-50 shadow-md"
       style={{ backgroundColor: sidebarColor }}
     >
-      <div className="pt-4 pr-4 pl-4 flex justify-center items-center">
+      <div className="my-10 flex justify-center items-center">
         <img
-          src="/signinlogomobileview.svg"
+          src="/nexcore-logo-pc.png"
           alt="Nexcore Logo"
-          className="w-40 h-24"
+          className="w-40 h-22"
         />
       </div>
 
